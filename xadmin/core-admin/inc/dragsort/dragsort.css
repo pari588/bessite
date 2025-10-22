@@ -1,0 +1,124 @@
+ul.dragsort-list {
+    width: 100%;
+}
+
+ul.dragsort-list ul {
+    margin-left: 20px;
+    margin-top: 3px;
+}
+
+ul.dragsort-list li {
+    display: block;
+    margin-top: 3px;
+}
+
+ul.dragsort-list li div.drag {
+    display: flex;
+}
+
+ul.dragsort-list li div.drag:hover {
+    cursor: move;
+}
+ul.dragsort-list li div.drag > div{
+    display: inline-flex;
+    align-items: center;
+}
+ul.dragsort-list li div.drag > div.center{
+    justify-content: center;
+}
+ul.dragsort-list li div.drag > div.right{
+    justify-content: flex-end;
+}
+ul.dragsort-list li div.drag div.title {
+    flex: 0 0 300px;
+    padding: 6px;
+    margin-left: 3px;
+}
+
+ul.dragsort-list li li div.drag div.title {
+    flex: 0 0 280px;
+}
+
+ul.dragsort-list li li li div.drag div.title {
+    flex: 0 0 260px;
+}
+
+ul.dragsort-list li li li li div.drag div.title {
+    flex: 0 0 240px;
+}
+
+ul.dragsort-list li li li li li div.drag div.title {
+    flex: 0 0 220px;
+}
+
+ul.dragsort-list li li li li li li div.drag div.title {
+    flex: 0 0 200px;
+}
+
+ul.dragsort-list li div.drag div.item {
+    flex: 1;
+    padding: 6px;
+    margin-left: 3px;
+}
+
+ul.dragsort-list li div.drag div.uri {
+    padding: 6px;
+    flex: 4;
+    margin-left: 3px;
+}
+
+li.sort-highlight {
+    border: 1px dashed red !important;
+    background: rgba(232, 232, 232, 0.5);
+    min-height: 25px;
+}
+
+ul.dragsort-title {
+    width: 100%;
+    display: flex;
+}
+
+ul.dragsort-title li {
+    flex: 1;
+    padding: 6px;
+    margin-left: 3px;
+    font-weight: 500;
+    text-transform:uppercase;
+    align-items: center;
+
+}
+
+ul.dragsort-title li.uri {
+    flex: 4;
+}
+
+ul.dragsort-title li.title {
+    flex: 0 0 300px;
+}
+ul.dragsort-title li.center{
+    text-align: center;
+}
+
+div.veiw-edit {
+    position: relative;
+}
+
+div.veiw-edit div.ve-wrap {
+    display: none;
+    position: absolute;
+    left: 0px;
+    top: -32px;
+}
+
+ul.dragsort-list li>div.drag:hover>div.title>div.veiw-edit div.ve-wrap {
+    display: block;
+}
+
+ul.dragsort-list>li:first-child div.veiw-edit div.ve-wrap {
+    top: calc(100% + 7px);
+}
+
+ul.dragsort-list>li:first-child div.veiw-edit div.ve-wrap:after {
+    top: -7px;
+    transform: rotate(180deg);
+}

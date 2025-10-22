@@ -1,0 +1,61 @@
+<?php
+// DEBUG (remove after it works):
+ini_set('display_errors','1'); ini_set('log_errors','1'); error_reporting(E_ALL);
+
+require_once __DIR__.'/../lib/auth.php'; auth_require();
+require_once __DIR__.'/../lib/db.php';
+require_once __DIR__.'/../lib/TDS26QBuilder.php';
+
+$fy = $_POST['fy'] ?? $_GET['fy'] ?? null;
+$q  = $_POST['quarter'] ?? $_GET['quarter'] ?? null;
+
+if (!$fy || !$q) {
+  http_response_code(400);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "Missing fy or quarter. Use POST fy=YYYY-YY&quarter=Q1|Q2|Q3|Q4 or go to /tds/admin/returns.php";
+  exit;
+}
+
+$firmId = (int)$pdo->query('SELECT id FROM firms LIMIT 1')->fetchColumn();
+if (!$firmId) {
+  http_response_code(500);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "No firm record found. Seed the firms table first."; exit;
+}
+
+$out = __DIR__.'/../uploads/stmt_'.preg_replace('/[^A-Za-z0-9]/','',$fy.'_'.$q).'_'.time();
+if (!is_dir($out) && !mkdir($out, 0775, true)) {
+  http_response_code(500);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "Cannot create output dir: $out"; exit;
+}
+
+try {
+  $res = TDS26QBuilder::build($firmId, $fy, $q, $out);
+} catch (Throwable $e) {
+  http_response_code(500);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "Builder error: ".$e->getMessage(); exit;
+}
+
+if (!class_exists('ZipArchive')) {
+  http_response_code(500);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "ZipArchive (php-zip) extension is not enabled."; exit;
+}
+
+$zip = $out.'.zip';
+$z = new ZipArchive();
+if ($z->open($zip, ZipArchive::CREATE)!==TRUE) {
+  http_response_code(500);
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "Failed to create zip file at $zip"; exit;
+}
+foreach (glob($out.'/*') as $f) { $z->addFile($f, basename($f)); }
+$z->close();
+
+header('Content-Type: application/zip');
+header('Content-Disposition: attachment; filename='.basename($zip));
+header('Content-Length: '.filesize($zip));
+readfile($zip);
+exit;

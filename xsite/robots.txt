@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Disallow administrative and backend paths
+Disallow: /xadmin/
+Disallow: /backend/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /cgi-bin/
+
+# Disallow temporary or irrelevant pages
+Disallow: /temp/
+Disallow: /test/
+
+# Sitemap location
+Sitemap: https://www.bombayengg.net/sitemap.xml

@@ -1,0 +1,1 @@
+<meta http-equiv="refresh" content="0;url=<?php echo SITEURL.'/xadmin/monthly-leave-report-list/'?>">

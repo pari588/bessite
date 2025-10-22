@@ -1,0 +1,11 @@
+/* M3-styled native date input */
+.m3-date{
+  width:100%; height:48px; padding:0 12px;
+  border:1px solid var(--m3-outline); border-radius:12px;
+  background:#fff; color:var(--m3-text);
+  font: 400 14px/1.2 Roboto, system-ui, sans-serif;
+}
+.m3-date:focus{ outline:none; border-color:var(--m3-primary);
+  box-shadow:0 0 0 3px rgba(103,80,164,.15);
+}
+.m3-date::-webkit-calendar-picker-indicator{ cursor:pointer }

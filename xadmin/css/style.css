@@ -1,0 +1,165 @@
+/*COMMON CSS==================================================*/
+*, *:before, *:after{-webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box;}
+html{font-size:10px; width:100%; height:100%;}
+body{height:100%; width:100%; font-family:'Roboto', sans-serif; font-weight:300; overflow:hidden; font-size:1.3rem; background-image:url(../images/lightbg.jpg); background-repeat:no-repeat; background-position:left top; background-size:cover;}
+body,html,div,p,span,ul,li,ol,a,img,iframe,i,h1,h2,h3,h4,h5,h6{margin:0px; padding:0px; outline:0px; border:0px; text-decoration:none; list-style-type:none;}
+/*----------*/
+a{-webkit-transition:all 0.4s ease 0s; -o-transition:all 0.4s ease 0s; transition:all 0.4s ease 0s;}
+
+a img{border:0px;}
+em{ color:#FF0000;} 
+
+/*HEADING ELEMENTS=========================================================*/
+h1,h2,h3,h4,h5,h6{float:left; width:100%; font-weight:300;}
+h1{font-size:2.6rem;}
+h2{font-size:2.4rem;}
+h3{font-size:2.2rem;}
+h4{font-size:2.0rem;}
+h5{font-size:1.8rem;}
+h6{font-size:1.6rem;}
+p{float:left; width:100%; margin:0 0 15px 0; padding:0; line-height:1.6rem;}
+
+/*FORM ELEMENTS============================================================*/
+input,textarea,select,form,label,button,div.select-box, div.select-box select,i.chk,i.rdo{margin:0px; padding:0px; outline:none; font-size:1.3rem; font-weight:400; font-family:'Roboto', sans-serif;}
+/*----------*/
+input[type=text], input[type=password], input[type=number], textarea{float:left; width:100%; padding:10px; border-width:1px; border-style:solid; resize:none; -webkit-transition:all 0.3s ease 0s; transition:all 0.3s ease 0s; -webkit-appearance: none; -moz-appearance: none; appearance: none;}
+/*----------*/
+textarea{height:100px; overflow:auto; overflow-y:auto; scrollbar-width:thin;}
+/*----------*/
+input[xtype=date],
+input[xtype=time],
+input[xtype=datetime]{background-repeat:no-repeat; background-position:calc(100% - 10px) center; background-size:15px; min-width:110px; padding-right:32px;}
+/*----------*/
+input[xtype=date]{background-image:url(../images/ico-date.png);}
+input[xtype=time]{background-image:url(../images/ico-time.png);}
+input[xtype=datetime]{background-image:url(../images/ico-date-time.png); background-size:18px;}
+/*----------*/
+label{float:left; width:100%; min-height:20px; font-weight:500; text-transform:uppercase;}
+/*----------*/
+
+div.select-box{float:left; min-width:50px; width:100%; position:relative; border-width:1px; border-style:solid; overflow:hidden; -webkit-transition:all ease-in-out 0.3s; transition:all ease-in-out 0.3s;}
+div.select-box select{float:left; width:100%; padding:10px; outline:none; border:0; background:none; -webkit-appearance:none; -moz-appearance:none; appearance:none; cursor:pointer;}
+div.select-box select option{padding:5px 10px; border:0px; cursor:pointer; border-width:1px; border-style:solid;}
+div.select-box:after{content:'\f0d7'; right:0px; top:0px; width:35px; height:100%; font-family:'FontAwesome'; position:absolute; pointer-events:none; display:flex; justify-content:center; align-items:center; font-size:1.6rem; line-height:1; -webkit-transition:all ease-in-out 0.3s; transition:all ease-in-out 0.3s;}
+
+/*ERROR MESSAGE==============================================================*/
+p.e{margin:1px 0; padding:0; font-size:1.1rem; line-height:1.2rem; color:#e64446; font-weight:normal;}
+.err input[type=text],
+.err input[type=password],
+.err textarea,
+.err .mx-list,
+.err .select-box{border:1px solid #e64446 !important;}
+
+/*BTN CSS====================================================================*/
+.btn{display:inline-block; height:28px; min-width:80px; line-height:28px; padding:0px 8px; border:0px; cursor:pointer; text-transform:uppercase; transition:all ease-in-out 0.3s; vertical-align:top; text-align:center;}
+.btn i, .btn.fa{font-size:1.4rem;}
+
+.btn:before{font-family:'FontAwesome';}
+.btn.ico{min-width:1px; height:auto; font-size:20px;}
+.btn.ico:hover{background-color:transparent !important;}
+
+/*----------*/
+.btn.b,
+.btn.l.b {padding:12px;}
+
+.fs{font-size:1.1rem !important;}
+
+/*BUTTON CSS====================================================================*/
+.button{display:inline-block; height:28px; line-height:28px; padding:0px 8px; border:0px; cursor:pointer; text-transform:uppercase; transition:all ease-in-out 0.3s; vertical-align:top; text-align:center;}
+
+/*ADD AND DEL BUTTON CSS==================================================*/
+a.del,a.add{display:inline-block; width:25px; height:25px; position:relative; vertical-align:middle;}
+a.del:before, a.del:after,a.add:before,a.add:after{content:""; position:absolute; left:50%; top:50%; transition:all ease-in-out 0.3s;}
+a.del:before,a.del:after{ width:1px; height:15px; margin-left:-0.5px; margin-top:-7.5px; }
+a.del:before{transform:rotate(45deg)}
+a.del:after{transform:rotate(-45deg)}
+a.del:hover:before{transform:rotate(-45deg);}
+a.del:hover:after{transform:rotate(45deg);}
+/*----------*/
+a.del.rl,
+a.del.rs{ border-radius:100%; -webkit-border-radius:100%; position:absolute;}
+a.del.rl{right:-12px !important; top:-13px !important;}
+
+a.del.rs{width:15px; height:15px; right:-7px; top:-7px;}
+a.del.rs:before, a.del.rs:after{height:9px; margin-left:-0.5px; margin-top:-4.5px;}
+
+/*ADD BUTTON CSS==================================================*/
+a.add:after{width:1px; height:15px; margin-top:-7.5px; margin-left:-1px;}
+a.add:before{width:15px; height:1px; margin-top:-1px; margin-left:-7.5px;}
+ a.add:hover:after, a.add:hover:before{transform:rotate(180deg);}
+
+.mxcon{ width: 10px; height: 10px; float: right; margin-top: 21px; margin-right: 10px;}
+.mxcon.live_ {border: 1px solid green;opacity: 0.7;}
+
+/*SCROLL BAR CSS===================================*/
+::-webkit-scrollbar{width:4px;height:4px;}
+
+/*FIELD SET CSS==================================================*/
+fieldset{float:left; width:calc(100% - 20px); margin-left:10px;  padding:10px;}
+fieldset legend{font-size:1.8rem;}
+fieldset legend h3{font-size:100%}
+
+/*PROGRESS BAR====================================================*/
+div#mxloader{display:none; position:fixed; width:100%; height:100%; overflow:auto; overflow-y:auto;scrollbar-width:thin; left:0; top:0; display:flex; justify-content:center; align-items:center; z-index:10012;}
+div#mxloader{display:block; position:absolute; background-color: rgba(255,255,255,0.85);}
+div#mxmsg{display:none; min-height:30px; min-width:100%; padding:10px; text-align:center; vertical-align:middle; font-size:2.0rem; }
+.spinner div{position:absolute; width:100px; height:100px; background-size:cover; background-repeat:no-repeat;  font-size:1.8rem; line-height:1.8rem; text-align:right; vertical-align:top; padding:3px;}
+.spinner .f1{-webkit-transform:translateZ(50px); -ms-transform:translateZ(50px); transform:translateZ(50px);}
+.spinner .f2{-webkit-transform:rotateY(90deg) translateZ(50px); -ms-transform:rotateY(90deg) translateZ(50px); transform:rotateY(90deg) translateZ(50px);}
+.spinner .f3{-webkit-transform:rotateY(90deg) rotateX(90deg) translateZ(50px); -ms-transform:rotateY(90deg) rotateX(90deg) translateZ(50px); transform:rotateY(90deg) rotateX(90deg) translateZ(50px);}
+.spinner .f4{-webkit-transform:rotateY(180deg) rotateZ(90deg) translateZ(50px); -ms-transform:rotateY(180deg) rotateZ(90deg) translateZ(50px); transform:rotateY(180deg) rotateZ(90deg) translateZ(50px);}
+.spinner .f5{-webkit-transform:rotateY(-90deg) rotateZ(90deg) translateZ(50px); -ms-transform:rotateY(-90deg) rotateZ(90deg) translateZ(50px); transform:rotateY(-90deg) rotateZ(90deg) translateZ(50px);}
+.spinner .f6{-webkit-transform:rotateX(-90deg) translateZ(50px); -ms-transform:rotateX(-90deg) translateZ(50px); transform:rotateX(-90deg) translateZ(50px);}
+.spinner{-webkit-animation:spincube 8s ease-in-out infinite; animation:spincube 8s ease-in-out infinite; -webkit-transform-style:preserve-3d; -ms-transform-style:preserve-3d; transform-style:preserve-3d; -webkit-transform-origin:50px 50px 0; -ms-transform-origin:50px 50px 0; transform-origin:50px 50px 0; position:absolute; left:50%; top:50%; margin-top:-150px; margin-left:-50px;}
+
+@-webkit-keyframes spincube{
+	16%{-webkit-transform:rotateY(-90deg);}
+	33%{-webkit-transform:rotateY(-90deg) rotateZ(90deg);}
+	50%{-webkit-transform:rotateY(180deg) rotateZ(90deg);}
+	66%{-webkit-transform:rotateY(90deg) rotateX(90deg);}
+	83%{-webkit-transform:rotateX(90deg);}
+}
+@keyframes spincube{
+	16%{-ms-transform:rotateY(-90deg); transform:rotateY(-90deg);}
+	33%{-ms-transform:rotateY(-90deg) rotateZ(90deg); transform:rotateY(-90deg) rotateZ(90deg);}
+	50%{-ms-transform:rotateY(180deg) rotateZ(90deg); transform:rotateY(180deg) rotateZ(90deg);}
+	66%{-ms-transform:rotateY(90deg) rotateX(90deg); transform:rotateY(90deg) rotateX(90deg);}
+	83%{-ms-transform:rotateX(90deg); transform:rotateX(90deg);}
+}
+
+/*MX DIALOGUE==================================================*/
+div.mxdialog{display:none; position:fixed; width:100%; height:100%; overflow:auto; overflow-y:auto;scrollbar-width:thin; left:0; top:0; display:flex; justify-content:center; align-items:center; z-index: 10011;}
+div.mxdialog div.body{display:flex; flex-flow:row wrap; justify-content:flex-start; align-items:flex-start; max-height:90%; padding:0; position:relative; min-width:300px; max-width:60%;}
+div.mxdialog div.content{ float:left; width:100%; margin:0px; padding:16px; max-height:75vh; overflow:auto; overflow-y:auto;scrollbar-width:thin; font-size: 1.4rem;line-height: 1.8rem;}
+div.mxdialog div.mx-btn{ float:left; width: 100%; text-align:center; padding-top: 16px;}
+div.mxdialog .btn{ margin: 0px 2px;}
+div.mxdialog h2{margin:0; padding:0; font-size:1.6rem; font-weight:500; text-transform:uppercase;}
+div.mxdialog ul{display:flex; flex-flow:row wrap; flex-flow:row wrap;}
+div.mxdialog ul li.cta{ text-align:center;}
+div.mxdialog ul li{ width:calc(100% - 5px); margin-bottom:10px;}
+div.mxdialog ul li.c2{width:calc(50% - 5px);}
+div.mxdialog ul li.c3{width:calc(33.3333% - 5px);}
+div.mxdialog ul li.c4{width:calc(25% - 5px);}
+div.mxdialog ul li.c2,
+div.mxdialog ul li.c3,
+div.mxdialog ul li.c4{margin-right:5px;}
+div.mxdialog.mx-file-browser div.body{padding:10px;}
+div.mxdialog form.wrap-data{overflow:auto;}
+div.mxdialog.mx-file-browser div.body{max-width:90%;}
+
+body .ui-widget-content{max-height:192px; overflow-y:auto; overflow-x:hidden;}
+/*----------*/
+.mxdialog a.del{right:5px; top:5px; position:absolute;}
+div.mxdialog h2{ padding:8px; margin:0;}
+
+
+
+
+
+/*========================== Theme.css copy to style.css add Start  =========================*/
+.mxcon.dev_, .mxcon.demo_{opacity: 0.5;}
+div.progress{display:block; width:100%; height:1px; margin:0; padding:0; position:absolute; top:50%; }
+div.progress span{float:left; height:1px; width:0%;}
+/*----------*/
+
+/*========================== Theme.css copy to style.css add End =========================*/
