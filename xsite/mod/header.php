@@ -45,11 +45,41 @@ $siteSettingInfo = getSiteInfo();
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+    <!-- Character Set & Viewport -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bombay Engineering Syndicate - Motors & Engineering Solutions in Mumbai & Ahmedabad</title>
-    <meta name="description" content="Bombay Engineering Syndicate offers energy-efficient motors and engineering solutions in Mumbai, Maharashtra, and Ahmedabad, Gujarat. Contact us for customized industrial needs!">
-    <meta name="keywords" content="motors Mumbai, motors Ahmedabad, pumps, water pumps, submersible pumps, residential pumps, energy-efficient motors, engineering solutions Mumbai, industrial motors Gujarat, Bombay Engineering Syndicate">
+
+    <!-- Primary Meta Tags -->
+    <title>Bombay Engineering Syndicate - Industrial Motors & Pumps in Mumbai & Ahmedabad</title>
+    <meta name="title" content="Bombay Engineering Syndicate - Industrial Motors & Pumps in Mumbai & Ahmedabad" />
+    <meta name="description" content="Leading supplier of energy-efficient motors, submersible pumps, and industrial solutions in Mumbai & Ahmedabad since 1957. Call +919820042210 or +919825014977 for enquiries." />
+    <meta name="keywords" content="motors Mumbai, pumps Ahmedabad, AC motors, submersible pumps, industrial motors, water pumps, energy-efficient motors, engineering solutions, Mumbai motors supplier, Ahmedabad pumps" />
+
+    <!-- Language & Content -->
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7" />
+    <meta name="author" content="Bombay Engineering Syndicate" />
+    <meta name="copyright" content="© 2024 Bombay Engineering Syndicate. All rights reserved." />
+
+    <!-- Local Business Specific -->
+    <meta name="geo.position" content="18.9333;72.8333" />
+    <meta name="ICBM" content="18.9333, 72.8333" />
+    <meta name="geo.placename" content="Mumbai, Maharashtra, India" />
+    <meta name="geo.region" content="IN-MH" />
+    <meta name="city" content="Mumbai, Ahmedabad" />
+    <meta name="state" content="Maharashtra, Gujarat" />
+    <meta name="country" content="India" />
+
+    <!-- Search Engine Robots -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="googlebot-news" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+
+    <!-- Format Detection & Canonical -->
+    <meta name="format-detection" content="telephone=yes" />
+    <link rel="canonical" href="<?php echo SITEURL; ?>" />
+    <link rel="alternate" hreflang="en-IN" href="<?php echo SITEURL; ?>" />
 
     <?php echo mxGetMeta(); ?>
     <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(SITEURL . '/' . LIBDIR . '/js/jquery-3.3.1.min.js'); ?>"></script>
@@ -61,21 +91,38 @@ $siteSettingInfo = getSiteInfo();
     <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(ADMINURL . '/core-admin/js/common.inc.js'); ?>"></script>
     <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(ADMINURL . '/core-admin/js/inside.inc.js'); ?>"></script>
 
-    <meta property="og:title" content="Bombay Engineering Syndicate - Motors in Mumbai & Ahmedabad" />
-    <meta property="og:description" content="Providing energy-efficient motors and engineering solutions in Mumbai and Ahmedabad since 1957." />
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Bombay Engineering Syndicate - Industrial Motors & Pumps Supplier" />
+    <meta property="og:description" content="Energy-efficient motors, submersible pumps & industrial solutions. Trusted supplier since 1957. Locations: Mumbai & Ahmedabad. Free Enquiry Form." />
     <meta property="og:url" content="<?php echo SITEURL; ?>" />
     <meta property="og:image" content="<?php echo SITEURL; ?>/images/moters.jpeg" />
+    <meta property="og:image:secure_url" content="<?php echo SITEURL; ?>/images/moters.jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Bombay Engineering Syndicate - Industrial Motors and Pumps" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_IN" />
+    <meta property="og:site_name" content="Bombay Engineering Syndicate" />
 
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bombay Engineering Syndicate - Motors & Pumps Supplier in Mumbai" />
+    <meta name="twitter:description" content="Leading supplier of energy-efficient industrial motors and pumps. Serving Mumbai & Ahmedabad since 1957." />
+    <meta name="twitter:image" content="<?php echo SITEURL; ?>/images/moters.jpeg" />
+    <meta name="twitter:creator" content="@BombayEngg" />
+
+    <!-- LocalBusiness Schema with Enhanced Properties -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": "Bombay Engineering Syndicate",
-            "description": "Supplier of energy-efficient motors and engineering solutions in Mumbai and Ahmedabad since 1957.",
+            "alternateName": "BES",
+            "description": "Leading supplier of energy-efficient industrial motors, submersible pumps, and engineering solutions.",
             "url": "<?php echo SITEURL; ?>",
+            "logo": "<?php echo SITEURL; ?>/images/logo.png",
+            "image": "<?php echo SITEURL; ?>/images/moters.jpeg",
             "telephone": ["+919820042210", "+919825014977"],
             "email": "besyndicate@gmail.com",
             "address": [{
@@ -95,6 +142,25 @@ $siteSettingInfo = getSiteInfo();
                     "addressCountry": "IN"
                 }
             ],
+            "priceRange": "$$",
+            "areaServed": [
+                {
+                    "@type": "City",
+                    "name": "Mumbai"
+                },
+                {
+                    "@type": "City",
+                    "name": "Ahmedabad"
+                },
+                {
+                    "@type": "State",
+                    "name": "Maharashtra"
+                },
+                {
+                    "@type": "State",
+                    "name": "Gujarat"
+                }
+            ],
             "openingHours": "Mo-Fr 09:00-18:00",
             "geo": [{
                     "@type": "GeoCoordinates",
@@ -107,11 +173,37 @@ $siteSettingInfo = getSiteInfo();
                     "longitude": "72.5714"
                 }
             ],
+            "foundingDate": "1957",
             "sameAs": [
                 "<?php echo !empty($siteSettingInfo['facebookUrl']) ? $siteSettingInfo['facebookUrl'] : ''; ?>",
                 "<?php echo !empty($siteSettingInfo['twitterUrl']) ? $siteSettingInfo['twitterUrl'] : ''; ?>",
                 "<?php echo !empty($siteSettingInfo['instaUrl']) ? $siteSettingInfo['instaUrl'] : ''; ?>",
                 "<?php echo !empty($siteSettingInfo['pintrestUrl']) ? $siteSettingInfo['pintrestUrl'] : ''; ?>"
+            ]
+        }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Bombay Engineering Syndicate",
+            "logo": "<?php echo SITEURL; ?>/images/logo.png",
+            "url": "<?php echo SITEURL; ?>",
+            "description": "Established in 1957, trusted supplier of industrial motors, pumps, and engineering solutions in India.",
+            "foundingDate": "1957",
+            "telephone": "+919820042210",
+            "email": "besyndicate@gmail.com",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+919820042210",
+                "contactType": "Customer Service"
+            },
+            "sameAs": [
+                "<?php echo !empty($siteSettingInfo['facebookUrl']) ? $siteSettingInfo['facebookUrl'] : ''; ?>",
+                "<?php echo !empty($siteSettingInfo['twitterUrl']) ? $siteSettingInfo['twitterUrl'] : ''; ?>",
+                "<?php echo !empty($siteSettingInfo['instaUrl']) ? $siteSettingInfo['instaUrl'] : ''; ?>"
             ]
         }
     </script>
@@ -145,6 +237,32 @@ $siteSettingInfo = getSiteInfo();
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/style.css'); ?>" />
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/device.css'); ?>" />
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/material-design-3.css'); ?>" />
+
+    <!-- Business Contact Information Meta Tags -->
+    <meta name="business:contact_data:street_address" content="17, Dr.V.B.Gandhi Marg (Forbes Street), Fort, Mumbai" />
+    <meta name="business:contact_data:locality" content="Mumbai" />
+    <meta name="business:contact_data:region" content="Maharashtra" />
+    <meta name="business:contact_data:postal_code" content="400023" />
+    <meta name="business:contact_data:country_name" content="India" />
+    <meta name="business:contact_data:phone_number" content="+919820042210" />
+    <meta name="business:contact_data:email" content="besyndicate@gmail.com" />
+
+    <!-- Business Hours Meta Tags -->
+    <meta name="business:hours:monday" content="09:00-18:00" />
+    <meta name="business:hours:tuesday" content="09:00-18:00" />
+    <meta name="business:hours:wednesday" content="09:00-18:00" />
+    <meta name="business:hours:thursday" content="09:00-18:00" />
+    <meta name="business:hours:friday" content="09:00-18:00" />
+    <meta name="business:hours:saturday" content="closed" />
+    <meta name="business:hours:sunday" content="closed" />
+
+    <!-- Mobile & Accessibility Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Bombay Engineering" />
+    <meta name="accessibility" content="compliant" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="theme-color" content="#1a1a1a" />
 </head>
 
 <body>
