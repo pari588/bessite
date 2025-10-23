@@ -144,6 +144,7 @@ $siteSettingInfo = getSiteInfo();
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/mellis-responsive.css'); ?>" />
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/style.css'); ?>" />
     <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/device.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/material-design-3.css'); ?>" />
 </head>
 
 <body>
