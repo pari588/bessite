@@ -213,7 +213,7 @@ function savePumpInquiry()
 // End.
 
 if (isset($_POST["xAction"])) {
-    require_once("../../../core/core.inc.php");
+    require_once(__DIR__ . "/../../../core/core.inc.php");
     $MXRES = mxCheckRequest(false, false);
     if ($MXRES["err"] == 0) {
         switch ($_POST["xAction"]) {
