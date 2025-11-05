@@ -66,18 +66,53 @@ function getPageHeader($imageName = "")
 function getSideNav()
 {
     global $DB, $TBLCAT, $PKCAT, $TPL, $ARRCAT, $CATSEOURI;
-    $topCat = $categoryID = $TPL->data["$PKCAT"];
+    $categoryID = isset($TPL->data["$PKCAT"]) ? $TPL->data["$PKCAT"] : 0;
+    $topCat = $categoryID;
+
+    // If viewing a category page, get the category from the URL
     if (is_array($TPL->uriArr) && count($TPL->uriArr) > 0) {
         $DB->vals = array(1, $TPL->uriArr[0]);
         $DB->types = "is";
-        $DB->sql = "SELECT $PKCAT,categoryTitle FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND seoUri=?";
+        $DB->sql = "SELECT $PKCAT,parentID FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND seoUri=?";
         $DB->dbRow();
-        $topCat = $DB->row["$PKCAT"];
+        if ($DB->numRows > 0) {
+            $categoryID = $DB->row["$PKCAT"];
+
+            // Check if this is a child category (has a parent)
+            $parentID = $DB->row["parentID"];
+            if ($parentID > 0) {
+                // This is a child category, so topCat should be the parent
+                $topCat = $parentID;
+            } else {
+                // This is a parent category
+                $topCat = $categoryID;
+            }
+        }
+    } else {
+        // If no category is set (listing page), default to parent "Residential Pumps" category
+        if ($categoryID == 0 && $TBLCAT == "pump_category") {
+            $DB->vals = array(1, "Residential Pumps");
+            $DB->types = "is";
+            $DB->sql = "SELECT $PKCAT FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND categoryTitle=?";
+            $DB->dbRow();
+            if ($DB->numRows > 0) {
+                $topCat = $categoryID = $DB->row["$PKCAT"];
+            }
+        }
     }
 
-    $ARRCAT = array($categoryID);
-    if ($topCat == $categoryID) {
+    // Set ARRCAT: if viewing a specific child category, show only that category
+    // If no specific category selected (viewing parent), show all children
+    if ($categoryID > 0 && $categoryID != $topCat) {
+        // Viewing a specific child category - show only its products
+        $ARRCAT = array($categoryID);
+    } else {
+        // Viewing parent category or no category selected - show all children
         $ARRCAT = getCatChilds($topCat);
+        // If no children, include the topCat itself
+        if (count($ARRCAT) == 0) {
+            $ARRCAT = array($topCat);
+        }
     }
 ?>
     <div class="col-xl-4 col-lg-4">
@@ -94,14 +129,23 @@ function getSideNav()
                         foreach ($dataL1 as $l1) {
                         ?>
                             <li>
-                                <span><?php echo $l1["categoryTitle"] ?></span>
                                 <?php
-                                $arrData[] = $l1["$PKCAT"];
+                                // Check if this L1 category has any children (L2)
                                 $DB->vals = array(1, $l1["$PKCAT"]);
                                 $DB->types = "ii";
                                 $DB->sql = "SELECT * FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND parentID=?";
                                 $dataL2 = $DB->dbRows();
-                                if ($DB->numRows > 0) { ?>
+                                $hasChildren = ($DB->numRows > 0);
+
+                                // If no children, render as a direct link; if has children, render as parent with span
+                                if (!$hasChildren) {
+                                    // No children - render as clickable link
+                                    $active = ($l1["$PKCAT"] == $categoryID) ? "active" : "";
+                                    echo '<a href="' . SITEURL . '/' . $l1["seoUri"] . '/" class="' . $active . '">' . $l1["categoryTitle"] . '</a>';
+                                } else {
+                                    // Has children - render as parent category with nested list
+                                    echo '<span>' . $l1["categoryTitle"] . '</span>';
+                                ?>
                                     <ul class="sub-category">
                                         <?php
                                         foreach ($dataL2 as $l2) {
@@ -132,7 +176,7 @@ function getSideNav()
   if(isset($TPL->data['categoryPID'])){
                                                         if ($l3["$PKCAT"] == $TPL->data['categoryPID']) {
                                                             $active1 = "class='active'";
-                                                        }  
+                                                        }
 }
 ?>
                                                         <li <?php echo $active1; ?>><a href="<?php echo SITEURL . '/' . $l3["seoUri"]; ?>/"><?php echo $l3["categoryTitle"] ?></a>
