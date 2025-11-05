@@ -71,21 +71,38 @@ function getSideNav()
 
     // If viewing a category page, get the category from the URL
     if (is_array($TPL->uriArr) && count($TPL->uriArr) > 0) {
-        $DB->vals = array(1, $TPL->uriArr[0]);
+        // Build the full hierarchical path from uriArr
+        $fullPath = implode("/", $TPL->uriArr);
+
+        // First try to match the full hierarchical path
+        $DB->vals = array(1, $fullPath);
         $DB->types = "is";
         $DB->sql = "SELECT $PKCAT,parentID FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND seoUri=?";
         $DB->dbRow();
-        if ($DB->numRows > 0) {
-            $categoryID = $DB->row["$PKCAT"];
 
-            // Check if this is a child category (has a parent)
+        if ($DB->numRows > 0) {
+            // Full path matched (e.g., pump/residential-pumps/mini-pumps)
+            $categoryID = $DB->row["$PKCAT"];
             $parentID = $DB->row["parentID"];
             if ($parentID > 0) {
-                // This is a child category, so topCat should be the parent
                 $topCat = $parentID;
             } else {
-                // This is a parent category
                 $topCat = $categoryID;
+            }
+        } else {
+            // If full path didn't match, try just the first segment
+            $DB->vals = array(1, $TPL->uriArr[0]);
+            $DB->types = "is";
+            $DB->sql = "SELECT $PKCAT,parentID FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND seoUri=?";
+            $DB->dbRow();
+            if ($DB->numRows > 0) {
+                $categoryID = $DB->row["$PKCAT"];
+                $parentID = $DB->row["parentID"];
+                if ($parentID > 0) {
+                    $topCat = $parentID;
+                } else {
+                    $topCat = $categoryID;
+                }
             }
         }
     } else {
@@ -114,12 +131,36 @@ function getSideNav()
             $ARRCAT = array($topCat);
         }
     }
+
+    // Determine which category's children to show in sidebar
+    // If viewing a category that HAS children, show its children
+    // Otherwise, show its parent's children (siblings)
+    $sidebarParentID = $topCat;
+    if ($categoryID > 0 && $categoryID != $topCat) {
+        // Viewing a leaf category - check if it has children
+        $DB->vals = array(1, $categoryID);
+        $DB->types = "ii";
+        $DB->sql = "SELECT COUNT(*) as childCount FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND parentID=?";
+        $DB->dbRow();
+        $hasChildren = $DB->row['childCount'] > 0;
+
+        if ($hasChildren) {
+            // Show this category's children
+            $sidebarParentID = $categoryID;
+        } else {
+            // Show parent's children (siblings)
+            $sidebarParentID = $topCat;
+        }
+    } else {
+        // Viewing a parent category - show its children
+        $sidebarParentID = $categoryID;
+    }
 ?>
     <div class="col-xl-4 col-lg-4">
         <div class="services-details-two__left">
             <div class="services-details-two__category">
                 <h3 class="product__sidebar-title">Categories</h3>
-                <?php $DB->vals = array(1, $topCat);
+                <?php $DB->vals = array(1, $sidebarParentID);
                 $DB->types = "ii";
                 $DB->sql = "SELECT * FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND parentID=?";
                 $dataL1 = $DB->dbRows();
