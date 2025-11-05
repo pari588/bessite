@@ -132,29 +132,9 @@ function getSideNav()
         }
     }
 
-    // Determine which category's children to show in sidebar
-    // If viewing a category that HAS children, show its children
-    // Otherwise, show its parent's children (siblings)
-    $sidebarParentID = $topCat;
-    if ($categoryID > 0 && $categoryID != $topCat) {
-        // Viewing a leaf category - check if it has children
-        $DB->vals = array(1, $categoryID);
-        $DB->types = "ii";
-        $DB->sql = "SELECT COUNT(*) as childCount FROM `" . $DB->pre . "$TBLCAT` WHERE status=? AND parentID=?";
-        $DB->dbRow();
-        $hasChildren = $DB->row['childCount'] > 0;
-
-        if ($hasChildren) {
-            // Show this category's children
-            $sidebarParentID = $categoryID;
-        } else {
-            // Show parent's children (siblings)
-            $sidebarParentID = $topCat;
-        }
-    } else {
-        // Viewing a parent category - show its children
-        $sidebarParentID = $categoryID;
-    }
+    // ALWAYS show the root "Pump" category (ID 1) and its complete hierarchy in sidebar
+    // This ensures consistent navigation across all pump pages
+    $sidebarParentID = 1;  // Root pump category
 ?>
     <div class="col-xl-4 col-lg-4">
         <div class="services-details-two__left">
