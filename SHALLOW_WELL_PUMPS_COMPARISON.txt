@@ -1,0 +1,107 @@
+SHALLOW WELL PUMPS - CROMPTON vs YOUR WEBSITE
+==============================================================
+Generated: 2025-11-06
+==============================================================
+
+CROMPTON CATALOG: 7 Total Products
+YOUR DATABASE: 3 Products
+
+COMPARISON ANALYSIS:
+==============================================================
+
+EXISTING PRODUCTS (3/7):
+---------
+1. SWJ1 - ✓ IN YOUR DATABASE (pumpID: 34)
+   HP: 1.0 | kW: 0.75 | Supply: 1PH
+   Description: Shallow well jet pump with 8m suction
+
+2. SWJ100AT-36 PLUS - ✓ IN YOUR DATABASE (pumpID: 35)
+   HP: 1.0 | kW: 0.75 | Supply: 1PH
+   Description: Shallow well jet pump with tank
+
+3. SWJ50AT-30 PLUS - ✓ IN YOUR DATABASE (pumpID: 36)
+   HP: 0.5 | kW: 0.37 | Supply: 1PH
+   Description: Shallow well pump with tank, 0.5 HP
+
+MISSING PRODUCTS (4/7):
+---------
+1. SWJ100AP-36 PLUS
+   HP: - | kW: - | Supply: 1PH
+   Description: Shallow well jet pump
+   Notes: No power rating in catalog - need to infer or contact Crompton
+
+2. SWJ100A-36 PLUS
+   HP: 1.0 | kW: 0.75 | Supply: 1PH
+   Description: Shallow well jet pump
+
+3. SWJ50AP-30 PLUS
+   HP: 0.5 | kW: 0.37 | Supply: 1PH
+   Description: Shallow well pump, 0.5 HP
+
+4. SWJ50A-30 PLUS
+   HP: 0.5 | kW: 0.37 | Supply: 1PH
+   Description: Shallow well pump
+
+==============================================================
+
+PRODUCT DETAILS TO ADD:
+==============================================================
+
+Product ID 1: SWJ100AP-36 PLUS
+- Title: SWJ100AP-36 PLUS
+- Description: Shallow well jet pump without tank
+- HP: 1.0 (assumed based on SWJ100 series)
+- kW: 0.75 (assumed)
+- Supply Phase: 1PH
+- Delivery Pipe: - (unknown)
+- No. of Stages: - (N/A for jet pumps)
+- ISI: - (Not certified)
+- MNRE: - (N/A)
+- Category: Shallow Well Pumps (ID: 26)
+
+Product ID 2: SWJ100A-36 PLUS
+- Title: SWJ100A-36 PLUS
+- Description: Shallow well jet pump
+- HP: 1.0
+- kW: 0.75
+- Supply Phase: 1PH
+- Delivery Pipe: -
+- No. of Stages: -
+- ISI: -
+- MNRE: -
+- Category: Shallow Well Pumps (ID: 26)
+
+Product ID 3: SWJ50AP-30 PLUS
+- Title: SWJ50AP-30 PLUS
+- Description: Shallow well pump without tank
+- HP: 0.5
+- kW: 0.37
+- Supply Phase: 1PH
+- Delivery Pipe: -
+- No. of Stages: -
+- ISI: -
+- MNRE: -
+- Category: Shallow Well Pumps (ID: 26)
+
+Product ID 4: SWJ50A-30 PLUS
+- Title: SWJ50A-30 PLUS
+- Description: Shallow well pump
+- HP: 0.5
+- kW: 0.37
+- Supply Phase: 1PH
+- Delivery Pipe: -
+- No. of Stages: -
+- ISI: -
+- MNRE: -
+- Category: Shallow Well Pumps (ID: 26)
+
+==============================================================
+
+NEXT STEPS:
+1. Download images for 4 missing products from Crompton
+2. Convert images to WebP format
+3. Create INSERT SQL statements
+4. Generate product thumbnails
+5. Verify display in frontend and xadmin
+
+==============================================================
