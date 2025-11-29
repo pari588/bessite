@@ -96,8 +96,8 @@ echo $strSearch;
                     foreach ($DB->rows as $expense) {
                         $isPaid = $expense["paymentStatus"] === "Paid";
                         $statusBadge = $isPaid ?
-                            '<span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="markPaymentStatus(' . $expense["fuelExpenseID"] . ', \'Unpaid\')">PAID</span>' :
-                            '<span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="markPaymentStatus(' . $expense["fuelExpenseID"] . ', \'Paid\')">UNPAID</span>';
+                            '<span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px;">PAID</span>' :
+                            '<span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px;">UNPAID</span>';
 
                         // Bill image download link
                         $billImageLink = "";
@@ -133,35 +133,3 @@ echo $strSearch;
     </div>
 </div>
 
-<script type="text/javascript">
-// Mark single expense as paid/unpaid by clicking the status badge
-function markPaymentStatus(fuelExpenseID, status) {
-    if (!confirm('Mark this expense as ' + status + '?')) {
-        return;
-    }
-
-    var action = status === 'Paid' ? 'MARK_PAID' : 'MARK_UNPAID';
-
-    $.post(
-        window.location.href.replace(/\/[^\/]*$/, '/x-fuel-expense.inc.php'),
-        {
-            xAction: action,
-            fuelExpenseID: fuelExpenseID
-        },
-        function(response) {
-            try {
-                var result = JSON.parse(response);
-                if (result.err === 0) {
-                    alert('Payment status updated successfully');
-                    location.reload();
-                } else {
-                    alert('Error: ' + result.msg);
-                }
-            } catch(e) {
-                alert('Error processing request');
-                console.log(response);
-            }
-        }
-    );
-}
-</script>
