@@ -140,25 +140,29 @@ function updatePaymentStatus(fuelExpenseID, newStatus) {
         return;
     }
 
-    // Use a form to submit POST data
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '<?php echo ADMINURL . "/mod/fuel-expense/x-fuel-expense.inc.php"; ?>';
+    // Use fetch API to submit POST data without page redirect
+    var formData = new FormData();
+    formData.append('xAction', newStatus === 'Paid' ? 'MARK_PAID' : 'MARK_UNPAID');
+    formData.append('fuelExpenseID', fuelExpenseID);
 
-    var actionInput = document.createElement('input');
-    actionInput.type = 'hidden';
-    actionInput.name = 'xAction';
-    actionInput.value = newStatus === 'Paid' ? 'MARK_PAID' : 'MARK_UNPAID';
-    form.appendChild(actionInput);
-
-    var idInput = document.createElement('input');
-    idInput.type = 'hidden';
-    idInput.name = 'fuelExpenseID';
-    idInput.value = fuelExpenseID;
-    form.appendChild(idInput);
-
-    document.body.appendChild(form);
-    form.submit();
+    fetch('<?php echo ADMINURL . "/mod/fuel-expense/x-fuel-expense.inc.php"; ?>', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.err === 0) {
+            // Success - reload the page to show updated status
+            setTimeout(function() {
+                location.reload();
+            }, 500);
+        } else {
+            alert('Error: ' + (data.msg || 'Failed to update status'));
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
 }
 </script>
 
