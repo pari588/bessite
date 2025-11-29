@@ -33,7 +33,7 @@
                                   <div class="col-xl-12">
                                       <div class="main-slider-two__content">
                                           <?php if ($key == 0) { ?>
-                                              <h2 class="main-slider-two__title"><?php echo $homeInfoDataArr["homeTitle"]; ?></h2>
+                                              <h1 class="main-slider-two__title">Industrial Motors & Submersible Pumps Supplier</h1>
                                               <?php echo $homeInfoDataArr["homeDesc"]; ?>
                                           <?php } ?>
                                           <div class="main-slider-two__btn-box">
@@ -65,7 +65,7 @@
                       <div class="process-one__single">
                           <div class="process-one__img-box">
                               <div class="process-one__img">
-                                  <img src="<?php echo SITEURL . '/images/icons/icon-1.svg' ?>" alt="" />
+                                  <img src="<?php echo SITEURL . '/images/icons/icon-1.svg' ?>" alt="<?php echo htmlspecialchars($homeInfoDataArr["otherTitleOne"], ENT_QUOTES, 'UTF-8'); ?> - Feature icon" />
                                   <!-- <i class="far fa-gem"></i> -->
                               </div>
                               <div class="process-one__count">
@@ -81,7 +81,7 @@
                       <div class="process-one__single">
                           <div class="process-one__img-box">
                               <div class="process-one__img">
-                                  <img src="<?php echo SITEURL . '/images/icons/icon-2.svg' ?>" alt="" />
+                                  <img src="<?php echo SITEURL . '/images/icons/icon-2.svg' ?>" alt="<?php echo htmlspecialchars($homeInfoDataArr["otherTitleTwo"], ENT_QUOTES, 'UTF-8'); ?> - Feature icon" />
                                   <!-- <i class="fas fa-infinity"></i> -->
                               </div>
                               <div class="process-one__count"></div>
@@ -96,7 +96,7 @@
                       <div class="process-one__single">
                           <div class="process-one__img-box">
                               <div class="process-one__img">
-                                  <img src="<?php echo SITEURL . '/images/icons/icon-3.svg' ?>" alt="" />
+                                  <img src="<?php echo SITEURL . '/images/icons/icon-3.svg' ?>" alt="<?php echo htmlspecialchars($homeInfoDataArr["otherTitleThree"], ENT_QUOTES, 'UTF-8'); ?> - Feature icon" />
                                   <!-- <i class="fab fa-react"></i> -->
                               </div>
                               <div class="process-one__count"></div>
@@ -118,7 +118,7 @@
           <div class="container">
               <div class="spa-center__content text-center">
                   <div class="spa-center__img">
-                      <img src="<?php echo SITEURL . '/images/icons/water-pump.png' ?>" alt="" />
+                      <img src="<?php echo SITEURL . '/images/icons/water-pump.png' ?>" alt="Water pump icon - submersible pump solutions" />
                   </div>
                   <h3 class="spa-center__title"><?php echo $homeInfoDataArr["otherTitleFour"]; ?></h3>
                   <p class="sub-title"><?php echo $homeInfoDataArr["otherDescFour"]; ?></p>
@@ -131,14 +131,14 @@
   <!--Services Start-->
   <section class="why-choose-one">
       <div class="why-choose-one__shape-1 float-bob-x">
-          <img src="<?php echo SITEURL . '/images/services-shape-bg.png' ?>" alt="">
+          <img src="<?php echo SITEURL . '/images/services-shape-bg.png' ?>" alt="Decorative shape - services section background">
       </div>
       <div class="container">
           <div class="row">
               <div class="col-xl-6">
                   <div class="why-choose-one__left">
                       <div class="why-choose-one__img">
-                          <img src="<?php echo SITEURL . '/uploads/home/' . $homeInfoDataArr["serviceImg"]; ?>" alt="" />
+                          <img src="<?php echo SITEURL . '/uploads/home/' . $homeInfoDataArr["serviceImg"]; ?>" alt="Industrial motors and pump installation services" />
                       </div>
                   </div>
               </div>
@@ -185,7 +185,7 @@
                       <div class="col-xl-2 col-lg-4 col-md-4 col-6">
                           <div class="instagram__single">
                               <div class="instagram__img">
-                                  <img src="<?php echo SITEURL . '/uploads/home/' . $val["bestPartnerImg"]; ?>" alt="">
+                                  <img src="<?php echo SITEURL . '/uploads/home/' . $val["bestPartnerImg"]; ?>" alt="<?php echo htmlspecialchars($val["bestPartnerName"], ENT_QUOTES, 'UTF-8'); ?> - Partner company logo">
                               </div>
                           </div>
                       </div>
@@ -197,44 +197,3 @@
   </section>
   <!--Our partners End-->
 
-  <!--Counter One Start-->
-  <section class="counter-one">
-      <div class="counter-one__bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%" style="background-image: url(<?php echo SITEURL . '/images/we-are_bg.jpeg' ?>);">
-      </div>
-      <div class="container">
-          <div class="row">
-              <!--Counter One Single Start-->
-              <div class="col-xl-3 col-lg-6 col-md-6">
-                  <div class="counter-one__single">
-                      <div class="counter-one__icon">
-                          <span class="far fa-calendar-alt"></span>
-                          <!-- <span class="icon-massage-1"></span> -->
-                      </div>
-                      <div class="counter-one__content-box">
-                          <div class="counter-one__count-box">
-                              <h3 class="odometer" data-count="<?php echo $homeInfoDataArr["effectiveIncrease"]; ?>%">00%</h3>
-                          </div>
-                          <p class="counter-one__text">Effective Increase</p>
-                      </div>
-                  </div>
-              </div>
-              <!--Counter One Single End-->
-              <!--Counter One Single Start-->
-              <div class="col-xl-3 col-lg-6 col-md-6">
-                  <div class="counter-one__single counter-one__single-2">
-                      <div class="counter-one__icon">
-                          <span class="far fa-thumbs-up"></span>
-                      </div>
-                      <div class="counter-one__content-box">
-                          <div class="counter-one__count-box">
-                              <h3 class="odometer" data-count="<?php echo $homeInfoDataArr["yearsExperience"]; ?>%">00</h3>
-                          </div>
-                          <p class="counter-one__text">Years Experience</p>
-                      </div>
-                  </div>
-              </div>
-              <!--Counter One Single End-->
-          </div>
-      </div>
-  </section>
-  <!--Counter One End-->

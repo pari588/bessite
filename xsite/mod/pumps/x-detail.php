@@ -1,5 +1,25 @@
 <?php
 $pumsDetailArr = getPDetail($TPL->data['pumpID']);
+
+// Include pump schema generator
+$schema_file = dirname(__FILE__) . '/../../core-site/pump-schema.inc.php';
+if (file_exists($schema_file)) {
+    require_once($schema_file);
+}
+
+// Get first detail record if available
+$detailData = !empty($pumsDetailArr) && count($pumsDetailArr) > 0 ? $pumsDetailArr[0] : null;
+
+// Generate and output Product Schema
+echoProductSchema($TPL->data, $detailData);
+
+// Generate and output BreadcrumbList Schema
+$breadcrumbs = array(
+    array('name' => 'Pumps', 'url' => SITEURL . '/pump/'),
+    array('name' => $TPL->dataM['categoryTitle'], 'url' => SITEURL . '/' . $TPL->dataM['seoUri'] . '/'),
+    array('name' => $TPL->data['pumpTitle'], 'url' => $_SERVER['REQUEST_URI'] ?? '')
+);
+echoBreadcrumbSchema($breadcrumbs);
 ?>
 <input type="hidden" id="pumpTitle" value="<?php echo $TPL->data['pumpTitle'] ?>">
 <input type="hidden" id="aCategoryTitle" value="<?php echo $TPL->dataM['categoryTitle'] ?>">
@@ -26,7 +46,7 @@ $pumsDetailArr = getPDetail($TPL->data['pumpID']);
         <div class="row">
             <div class="col-lg-6 col-xl-6">
                 <div class="product-details__img">
-                    <img src="<?php echo UPLOADURL . "/pump/530_530_crop_100/" . $TPL->data['pumpImage']; ?>" alt="">
+                    <img src="<?php echo UPLOADURL . "/pump/530_530_crop_100/" . $TPL->data['pumpImage']; ?>" alt="<?php echo htmlspecialchars($TPL->data['pumpTitle'], ENT_QUOTES, 'UTF-8'); ?> - Submersible pump specifications and features">
                 </div>
             </div>
             <div class=" col-lg-6 col-xl-6">
@@ -153,8 +173,6 @@ $pumsDetailArr = getPDetail($TPL->data['pumpID']);
                         </tbody>
                     </table>
                 </div>
-
-
             </div>
         </div>
     </section>

@@ -9,9 +9,9 @@ $DB->types = "ii";
 $DB->sql = "SELECT * FROM `" . $DB->pre . "user` WHERE status=? AND userID=?";
 $userData = $DB->dbRow();
 
-$DB->vals = array(1, $_SESSION['USER_ID']);
-$DB->types = "ii";
-$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? ORDER BY driverManagementID DESC";
+$DB->vals = array(1, $_SESSION['USER_ID'], date('Y-m-d'));
+$DB->types = "iis";
+$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? ORDER BY driverManagementID DESC";
 $driverManagement = $DB->dbRow();
 $driverNumRows = $DB->numRows;
 $driverManagementID = intval($driverManagement['driverManagementID'] ?? 0);
@@ -24,7 +24,7 @@ $driverManagementID = intval($driverManagement['driverManagementID'] ?? 0);
         <div class="container">
             <div class="login-logo">
 
-                <img src="<?php echo SITEURL; ?>/images/logo.png" alt="">
+                <img src="<?php echo SITEURL; ?>/images/logo.png" alt="Bombay Engineering Syndicate logo">
                 <h4>Driver Attendance</h4>
             </div>
             <div class="info">
@@ -32,7 +32,7 @@ $driverManagementID = intval($driverManagement['driverManagementID'] ?? 0);
                 <!-- <p>Monday, February 28, 2022 14:30</p> -->
                 <p><?php echo date("l, F d, Y H:i"); ?></p>
                 <div class="profile">
-                    <span><img src="<?php echo SITEURL; ?>/images/img_avatar.png" alt=""></span>
+                    <span><img src="<?php echo SITEURL; ?>/images/img_avatar.png" alt="Driver profile avatar - <?php echo htmlspecialchars($userData['userName'], ENT_QUOTES, 'UTF-8'); ?>"></span>
                     <h2><?php echo $userData['userName']; ?></h2>
                     <p><?php echo $userData['userCity']; ?></p>
                 </div>
@@ -54,5 +54,5 @@ $driverManagementID = intval($driverManagement['driverManagementID'] ?? 0);
             </ul>
         </div>
     </div>
-    <div class="footer-logo"><img src="<?php echo SITEURL; ?>/images/logo-2.png" alt=""></div>
+    <div class="footer-logo"><img src="<?php echo SITEURL; ?>/images/logo-2.png" alt="Bombay Engineering Syndicate footer logo"></div>
 </div>

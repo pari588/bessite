@@ -40,7 +40,7 @@ if ($DB->numRows <= 0) {
         <div class="container">
             <?php if (isset($kCenter['knowledgeCenterImage']) && $kCenter['knowledgeCenterImage'] != '') { ?>
                 <div class="img-box">
-                    <img src="<?php echo UPLOADURL . '/knowledge-center/' . $kCenter['knowledgeCenterImage'] ?>" alt="">
+                    <img src="<?php echo UPLOADURL . '/knowledge-center/' . $kCenter['knowledgeCenterImage'] ?>" alt="<?php echo htmlspecialchars($kCenter['knowledgeCenterTitle'], ENT_QUOTES, 'UTF-8'); ?> - Technical knowledge center article illustration">
                 </div>
             <?php } ?>
             <!-- <span class="date">28th July 2024</span> -->

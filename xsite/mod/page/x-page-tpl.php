@@ -22,7 +22,7 @@
                 <div class="about-one__left">
                     <div class="about-one__img-box wow fadeInLeft" data-wow-delay="30ms" data-wow-duration="1000ms">
                         <div class="about-one__img">
-                            <img src="<?php echo SITEURL . '/uploads/page/' . $TPL->data["pageImage"] ?>" alt="">
+                            <img src="<?php echo SITEURL . '/uploads/page/' . $TPL->data["pageImage"] ?>" alt="<?php echo htmlspecialchars($TPL->data['pageTitle'], ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
                     </div>
                 </div>

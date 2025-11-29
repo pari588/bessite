@@ -45,10 +45,10 @@ if (isset($TPL->uriArr[0]) && $TPL->uriArr[0] == "driver") {
 <!-- Contact Us form End. -->
 <footer class="site-footer" <?php echo $footerStyle; ?>>
     <div class="site-footer__shape-1 float-bob-x">
-        <img src="<?php echo SITEURL . '/images/footer-shape-1.png' ?>" alt="">
+        <img src="<?php echo SITEURL . '/images/footer-shape-1.png' ?>" alt="Decorative shape - footer section background">
     </div>
     <div class="site-footer__shape-2 float-bob-y">
-        <img src="<?php echo SITEURL . '/images/footer-shape-2.png' ?>" alt="">
+        <img src="<?php echo SITEURL . '/images/footer-shape-2.png' ?>" alt="Decorative shape - footer section accent">
     </div>
     <div class="container">
         <?php echo $siteSettingInfo["siteFooterInfo"]; ?>

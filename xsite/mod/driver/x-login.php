@@ -22,11 +22,11 @@ $MXFRM = new mxForm();
     <div class="login-page">
         <div class="container">
             <div class="login-logo">
-                <img src="<?php echo SITEURL ?>/images/logo.png" alt="">
+                <img src="<?php echo SITEURL ?>/images/logo.png" alt="Bombay Engineering Syndicate logo">
                 <h4>Driver Attendance System</h4>
             </div>
             <div class="img-box">
-                <img src="<?php echo SITEURL ?>/images/car.png">
+                <img src="<?php echo SITEURL ?>/images/car.png" alt="Driver attendance system vehicle icon">
             </div>
             <h3>Enter Pin</h3>
             <form class="wrap-data" name="frmLogin" id="frmLogin" action="" auto="false" method="post" enctype="multipart/form-data">

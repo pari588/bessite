@@ -1,4 +1,37 @@
-<?php getPageHeader(); ?>
+<?php
+getPageHeader();
+
+// Include pump schema generator
+$schema_file = dirname(__FILE__) . '/../../core-site/pump-schema.inc.php';
+if (file_exists($schema_file)) {
+    require_once($schema_file);
+}
+
+// Generate BreadcrumbList for category pages
+$breadcrumbs = array(
+    array('name' => 'Pumps', 'url' => SITEURL . '/pump/')
+);
+
+// Add category breadcrumbs if available
+if (!empty($TPL->dataM)) {
+    if (!empty($TPL->dataM['parentID']) && $TPL->dataM['parentID'] > 0) {
+        // Get parent category if this is a subcategory
+        global $DB;
+        $DB->sql = "SELECT categoryTitle, seoUri FROM `" . $DB->pre . "pump_category` WHERE categoryPID = ? AND status = 1";
+        $DB->vals = array($TPL->dataM['parentID']);
+        $DB->types = "i";
+        if ($DB->numRows > 0) {
+            $parent = $DB->dbRow();
+            $breadcrumbs[] = array('name' => $parent['categoryTitle'], 'url' => SITEURL . '/' . $parent['seoUri'] . '/');
+        }
+    }
+    // Add current category
+    $breadcrumbs[] = array('name' => $TPL->dataM['categoryTitle'], 'url' => SITEURL . '/' . $TPL->dataM['seoUri'] . '/');
+}
+
+// Output BreadcrumbList Schema
+echoBreadcrumbSchema($breadcrumbs);
+?>
 <section class="product">
     <div class="container">
         <div class="row">
@@ -28,7 +61,7 @@
                                                     <a href="<?php echo SITEURL . '/' . $d["cseoUri"] . '/' . $d["seoUri"] . '/'; ?>" class="thm-btn product__all-btn">Know More</a>
                                                 </div>
                                                 <div class="product__all-img">
-                                                    <img src="<?php echo UPLOADURL . "/pump/235_235_crop_100/" . $d["pumpImage"]; ?>" alt="">
+                                                    <img src="<?php echo UPLOADURL . "/pump/235_235_crop_100/" . $d["pumpImage"]; ?>" alt="<?php echo htmlspecialchars($d['pumpTitle'], ENT_QUOTES, 'UTF-8'); ?> - Submersible pump">
                                                 </div>
                                                 <div class="product__all-content">
                                                     <h4 class="product__all-title"><a href="#"><?php echo $d["pumpTitle"]; ?></a></h4>
