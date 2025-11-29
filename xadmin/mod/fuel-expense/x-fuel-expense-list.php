@@ -96,8 +96,8 @@ echo $strSearch;
                     foreach ($DB->rows as $expense) {
                         $isPaid = $expense["paymentStatus"] === "Paid";
                         $statusBadge = $isPaid ?
-                            '<span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px;">PAID</span>' :
-                            '<span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px;">UNPAID</span>';
+                            '<span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="updatePaymentStatus(' . $expense["fuelExpenseID"] . ', \'Unpaid\')">PAID</span>' :
+                            '<span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="updatePaymentStatus(' . $expense["fuelExpenseID"] . ', \'Paid\')">UNPAID</span>';
 
                         // Bill image download link
                         $billImageLink = "";
@@ -132,4 +132,33 @@ echo $strSearch;
         <?php } ?>
     </div>
 </div>
+
+<script type="text/javascript">
+// Update payment status directly via database
+function updatePaymentStatus(fuelExpenseID, newStatus) {
+    if (!confirm('Mark this expense as ' + newStatus + '?')) {
+        return;
+    }
+
+    // Use a form to submit POST data
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?php echo ADMINURL . "/mod/fuel-expense/x-fuel-expense.inc.php"; ?>';
+
+    var actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'xAction';
+    actionInput.value = newStatus === 'Paid' ? 'MARK_PAID' : 'MARK_UNPAID';
+    form.appendChild(actionInput);
+
+    var idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.name = 'fuelExpenseID';
+    idInput.value = fuelExpenseID;
+    form.appendChild(idInput);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
 
