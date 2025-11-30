@@ -142,7 +142,8 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
 
     // Run Tesseract command
     // Format: tesseract input.png output -l eng
-    $command = escapeshellcmd($tesseractPath) . ' ' .
+    // Use full path and proper argument quoting
+    $command = $tesseractPath . ' ' .
                escapeshellarg($processPath) . ' ' .
                escapeshellarg($tempOutputFile) . ' ' .
                '-l ' . escapeshellarg($tesseractLang) .
@@ -156,16 +157,27 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
 
     $output = array();
     $returnCode = 0;
-    exec($command, $output, $returnCode);
+
+    // Use passthru to capture ALL output including STDERR
+    ob_start();
+    passthru($command, $returnCode);
+    $passthruOutput = ob_get_clean();
 
     $logFn("Tesseract return code: " . $returnCode);
+    $logFn("Tesseract passthru output: " . $passthruOutput);
     if (!empty($output)) {
-        $logFn("Tesseract output: " . implode(" | ", $output));
+        $logFn("Tesseract exec output: " . implode(" | ", $output));
     }
 
     // Check if output file was created
     $outputFile = $tempOutputFile . '.txt';
     $logFn("Expected output: " . $outputFile . " (exists: " . (file_exists($outputFile) ? "yes" : "NO") . ")");
+
+    // If output file doesn't exist, check what files ARE in temp dir
+    if (!file_exists($outputFile)) {
+        $tmpFiles = glob(sys_get_temp_dir() . '/ocr_*', GLOB_NOSORT);
+        $logFn("Files in temp dir matching 'ocr_*': " . implode(", ", array_map('basename', $tmpFiles)));
+    }
 
     // Check if Tesseract succeeded
     if ($returnCode !== 0) {

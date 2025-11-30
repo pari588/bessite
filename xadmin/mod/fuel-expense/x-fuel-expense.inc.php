@@ -321,7 +321,9 @@ function processBillImageOCR() {
         }
 
         // Process with OCR
+        @file_put_contents(sys_get_temp_dir() . '/ocr_handler.log', "[" . date('Y-m-d H:i:s') . "] Calling processBillOCR($uploadPath)\n", FILE_APPEND);
         $ocrResult = processBillOCR($uploadPath);
+        @file_put_contents(sys_get_temp_dir() . '/ocr_handler.log', "[" . date('Y-m-d H:i:s') . "] processBillOCR returned status=" . $ocrResult["status"] . "\n", FILE_APPEND);
 
         if ($ocrResult["status"] === "success") {
             $MXRES["err"] = 0;
