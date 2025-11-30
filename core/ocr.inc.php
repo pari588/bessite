@@ -97,8 +97,10 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
 
             // Check if file was created (success)
             if (file_exists($tempImageFile) && $pdfReturnCode === 0) {
+                // Make sure the file is readable by any process
+                @chmod($tempImageFile, 0644);
                 $processPath = $tempImageFile;
-                $logFn("pdftoppm succeeded, using: " . $tempImageFile);
+                $logFn("pdftoppm succeeded, using: " . $tempImageFile . " (perms: " . substr(sprintf('%o', fileperms($tempImageFile)), -4) . ")");
             } else {
                 // pdftoppm failed, try next method
                 $logFn("pdftoppm conversion failed - file not created or non-zero return code");
@@ -121,8 +123,10 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
 
                 $logFn("convert return code: " . $pdfReturnCode);
                 if ($pdfReturnCode === 0 && file_exists($tempImageFile)) {
+                    // Make sure the file is readable by any process
+                    @chmod($tempImageFile, 0644);
                     $processPath = $tempImageFile;
-                    $logFn("ImageMagick convert succeeded");
+                    $logFn("ImageMagick convert succeeded, using: " . $tempImageFile . " (perms: " . substr(sprintf('%o', fileperms($tempImageFile)), -4) . ")");
                 } else {
                     // convert also failed
                     $tempImageFile = null;
@@ -183,19 +187,24 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
     if ($returnCode !== 0) {
         $response["message"] = "Tesseract processing failed with code: " . $returnCode;
         $response["debug"]["command"] = $command;
-        $response["debug"]["output"] = implode(" | ", $output);
+        $response["debug"]["passthruOutput"] = $passthruOutput;
         $response["debug"]["inputFile"] = $processPath;
-        $response["debug"]["fileExists"] = file_exists($processPath);
+        $response["debug"]["inputFileExists"] = file_exists($processPath);
+        $response["debug"]["outputFile"] = $outputFile;
+        $response["debug"]["outputFileExists"] = file_exists($outputFile);
+
         // Clean up temp PDF image if created
         if (!empty($tempImageFile) && file_exists($tempImageFile)) {
             @unlink($tempImageFile);
         }
-        $logFn("OCR failed, debug: " . json_encode($response["debug"]));
+        $logFn("OCR failed with return code $returnCode");
+        $logFn("Passthru output: " . $passthruOutput);
+        $logFn("Input file exists: " . (file_exists($processPath) ? "yes" : "NO"));
+        $logFn("Output file exists: " . (file_exists($outputFile) ? "yes" : "NO"));
         return $response;
     }
 
     // Read OCR output
-    $outputFile = $tempOutputFile . '.txt';
     if (!file_exists($outputFile)) {
         $response["message"] = "Tesseract output file not created";
         // Clean up temp PDF image if created
