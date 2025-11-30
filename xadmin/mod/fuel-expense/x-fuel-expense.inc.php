@@ -249,13 +249,22 @@ function deleteFuelExpense() {
 function processBillImageOCR() {
     global $DB, $MXRES;
 
+    $debugLog = sys_get_temp_dir() . '/ocr_handler.log';
+    $log = function($msg) use ($debugLog) {
+        @file_put_contents($debugLog, "[" . date('Y-m-d H:i:s') . "] $msg\n", FILE_APPEND);
+    };
+
+    $log("processBillImageOCR() called");
+
     try {
         // Check if file was uploaded
         if (!isset($_FILES["billImage"])) {
             $MXRES["err"] = 1;
             $MXRES["msg"] = "No image file uploaded";
+            $log("ERROR: No billImage in FILES");
             return;
         }
+        $log("File uploaded: " . $_FILES["billImage"]["name"]);
 
         // Check upload errors
         if ($_FILES["billImage"]["error"] !== UPLOAD_ERR_OK) {
@@ -309,21 +318,25 @@ function processBillImageOCR() {
         if (!move_uploaded_file($_FILES["billImage"]["tmp_name"], $uploadPath)) {
             $MXRES["err"] = 1;
             $MXRES["msg"] = "Failed to upload image - move_uploaded_file failed";
+            $log("ERROR: move_uploaded_file failed for $uploadPath");
             return;
         }
+        $log("File moved successfully to: $uploadPath (size: " . filesize($uploadPath) . ")");
 
         // Verify file exists and is readable
         if (!file_exists($uploadPath) || !is_readable($uploadPath)) {
             $MXRES["err"] = 1;
             $MXRES["msg"] = "Uploaded file is not readable";
+            $log("ERROR: File not readable at $uploadPath");
             @unlink($uploadPath);
             return;
         }
+        $log("File verified as readable");
 
         // Process with OCR
-        @file_put_contents(sys_get_temp_dir() . '/ocr_handler.log', "[" . date('Y-m-d H:i:s') . "] Calling processBillOCR($uploadPath)\n", FILE_APPEND);
+        $log("Calling processBillOCR($uploadPath)");
         $ocrResult = processBillOCR($uploadPath);
-        @file_put_contents(sys_get_temp_dir() . '/ocr_handler.log', "[" . date('Y-m-d H:i:s') . "] processBillOCR returned status=" . $ocrResult["status"] . "\n", FILE_APPEND);
+        $log("processBillOCR returned status=" . $ocrResult["status"] . ", message=" . $ocrResult["message"]);
 
         if ($ocrResult["status"] === "success") {
             $MXRES["err"] = 0;
