@@ -29,11 +29,23 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
         "debug" => array()
     );
 
+    // Create a custom log file for debugging
+    $logFile = sys_get_temp_dir() . '/ocr_debug.log';
+    $logFn = function($msg) use ($logFile) {
+        $timestamp = date('Y-m-d H:i:s');
+        @file_put_contents($logFile, "[$timestamp] $msg\n", FILE_APPEND);
+        error_log("[OCR] $msg");
+    };
+
+    $logFn("processBillOCR called with: $imagePath");
+
     // Validate image path
     if (!file_exists($imagePath)) {
         $response["message"] = "Image file not found: " . $imagePath;
+        $logFn("ERROR: File not found: $imagePath");
         return $response;
     }
+    $logFn("File exists: $imagePath, size: " . filesize($imagePath));
 
     // Check file size (limit to 5MB)
     if (filesize($imagePath) > 5242880) {
@@ -66,23 +78,31 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
 
         // Method 1: Try pdftoppm (first choice)
         $pdftoppmPath = trim(shell_exec("which pdftoppm 2>/dev/null"));
+        $logFn("pdftoppm path: " . $pdftoppmPath);
         if (!empty($pdftoppmPath)) {
             $tempImageFile = $tempDir . '/pdf_' . uniqid() . '.png';
             // pdftoppm creates files with extension appended to output prefix
             // IMPORTANT: Use -png flag for PNG output (more reliable)
             $outputPrefix = substr($tempImageFile, 0, -4);
             $pdfCommand = escapeshellcmd($pdftoppmPath) . ' -singlefile -png ' . escapeshellarg($imagePath) . ' ' . escapeshellarg($outputPrefix) . ' 2>&1';
+            $logFn("pdftoppm command: " . $pdfCommand);
+            $logFn("pdftoppm expected output: " . $tempImageFile);
             $pdfOutput = array();
             $pdfReturnCode = 0;
             exec($pdfCommand, $pdfOutput, $pdfReturnCode);
 
+            $logFn("pdftoppm return code: " . $pdfReturnCode);
+            $logFn("pdftoppm output: " . implode(" | ", $pdfOutput));
+            $logFn("pdftoppm output file exists: " . (file_exists($tempImageFile) ? "yes" : "NO"));
+
             // Check if file was created (success)
             if (file_exists($tempImageFile) && $pdfReturnCode === 0) {
                 $processPath = $tempImageFile;
+                $logFn("pdftoppm succeeded, using: " . $tempImageFile);
             } else {
                 // pdftoppm failed, try next method
+                $logFn("pdftoppm conversion failed - file not created or non-zero return code");
                 $tempImageFile = null;
-                error_log("[OCR] pdftoppm conversion failed with code: " . $pdfReturnCode . ", expected file: " . $tempImageFile . ", output: " . implode(" ", $pdfOutput));
             }
         }
 
@@ -91,25 +111,29 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
             $tempImageFile = $tempDir . '/pdf_' . uniqid() . '.png';
             // Convert PDF to PNG at 150 DPI for better OCR quality
             $convertPath = trim(shell_exec("which convert 2>/dev/null"));
+            $logFn("Trying ImageMagick convert as fallback, path: " . $convertPath);
             if (!empty($convertPath)) {
                 $pdfCommand = escapeshellcmd($convertPath) . ' -density 150 ' . escapeshellarg($imagePath) . ' ' . escapeshellarg($tempImageFile) . ' 2>&1';
+                $logFn("convert command: " . $pdfCommand);
                 $pdfOutput = array();
                 $pdfReturnCode = 0;
                 exec($pdfCommand, $pdfOutput, $pdfReturnCode);
 
+                $logFn("convert return code: " . $pdfReturnCode);
                 if ($pdfReturnCode === 0 && file_exists($tempImageFile)) {
                     $processPath = $tempImageFile;
+                    $logFn("ImageMagick convert succeeded");
                 } else {
                     // convert also failed
                     $tempImageFile = null;
-                    error_log("[OCR] ImageMagick convert failed with code: " . $pdfReturnCode . ", output: " . implode(" ", $pdfOutput));
+                    $logFn("ImageMagick convert failed with code: " . $pdfReturnCode . ", file exists: " . (file_exists($tempImageFile) ? "yes" : "NO"));
                 }
             }
         }
 
         // If conversion failed, log warning but try direct Tesseract processing anyway
         if (empty($tempImageFile)) {
-            error_log("[OCR] PDF conversion failed, attempting direct Tesseract processing on: " . $imagePath);
+            $logFn("PDF conversion failed, attempting direct Tesseract processing on: " . $imagePath);
         }
     }
 
@@ -124,17 +148,24 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
                '-l ' . escapeshellarg($tesseractLang) .
                ' 2>&1';
 
-    error_log("[OCR] Running Tesseract: " . $command);
-    error_log("[OCR] Input file: " . $processPath . " (exists: " . (file_exists($processPath) ? "yes" : "NO") . ")");
+    $logFn("Running Tesseract: " . $command);
+    $logFn("Input file: " . $processPath . " (exists: " . (file_exists($processPath) ? "yes" : "NO") . ")");
+    $logFn("Temp output file: " . $tempOutputFile);
+    $logFn("Process user: " . (function_exists('posix_getuid') ? posix_getuid() : 'N/A'));
+    $logFn("Temp dir: " . $tempDir . " (writable: " . (is_writable($tempDir) ? "yes" : "NO") . ")");
 
     $output = array();
     $returnCode = 0;
     exec($command, $output, $returnCode);
 
-    error_log("[OCR] Tesseract return code: " . $returnCode);
+    $logFn("Tesseract return code: " . $returnCode);
     if (!empty($output)) {
-        error_log("[OCR] Tesseract output: " . implode(" | ", $output));
+        $logFn("Tesseract output: " . implode(" | ", $output));
     }
+
+    // Check if output file was created
+    $outputFile = $tempOutputFile . '.txt';
+    $logFn("Expected output: " . $outputFile . " (exists: " . (file_exists($outputFile) ? "yes" : "NO") . ")");
 
     // Check if Tesseract succeeded
     if ($returnCode !== 0) {
@@ -147,7 +178,7 @@ function processBillOCR($imagePath = "", $vehicleID = 0) {
         if (!empty($tempImageFile) && file_exists($tempImageFile)) {
             @unlink($tempImageFile);
         }
-        error_log("[OCR] OCR failed, debug: " . json_encode($response["debug"]));
+        $logFn("OCR failed, debug: " . json_encode($response["debug"]));
         return $response;
     }
 

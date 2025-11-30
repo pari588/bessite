@@ -36,6 +36,13 @@ class Paging
 			$page_from = 1;
 			$page_to   = $this->tot_pages + 1;
 		}
+		// Ensure page numbers never go below 1
+		if ($page_from < 1) {
+			$page_from = 1;
+		}
+		if ($page_to < 1) {
+			$page_to = $this->tot_pages + 1;
+		}
 
 		if ($curr_page == 0) {
 			if ($this->ptype != "short")
@@ -86,6 +93,13 @@ class Paging
 		if ($this->tot_pages < $this->nav_length) {
 			$page_from = 1;
 			$page_to   = $this->tot_pages + 1;
+		}
+		// Ensure page numbers never go below 1
+		if ($page_from < 1) {
+			$page_from = 1;
+		}
+		if ($page_to < 1) {
+			$page_to = $this->tot_pages + 1;
 		}
 		if ($curr_page == 0) {
 			if ($this->ptype != "short")

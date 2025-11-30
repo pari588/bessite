@@ -1,0 +1,212 @@
+================================================================================
+CG GLOBAL MOTORS - QUICK REFERENCE SUMMARY
+================================================================================
+Source: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors
+Date: November 9, 2025
+Total Products: 33 across 7 categories
+
+================================================================================
+CATEGORY BREAKDOWN
+================================================================================
+
+1. HIGH VOLTAGE MOTORS (7 products)
+   - Air Cooled Induction Motors - IC 6A1A1, IC 6A1A6, IC 6A6A6 (CACA)
+   - Double Cage Motor for Cement Mill
+   - Water Cooled Induction Motors - IC 8A1W7 (CACW)
+   - Open Air Type Induction Motor - IC 0A1, IC 0A6 (SPDP)
+   - Tube Ventilated Induction Motor - IC 5A1A1, IC 5A1A6 (TETV)
+   - Fan Cooled Induction Motor - IC 4A1A1, IC 4A1A6 (TEFC)
+   - Energy Efficient Motors HV - N Series
+
+2. LOW VOLTAGE MOTORS (10 products)
+   - AXELERA Process Performance Motors
+   - Flame Proof Motors Ex 'db' (LV)
+   - SMARTOR–CG Smart Motors
+   - Non Sparking Motor Ex 'nA' / Ex 'ec' (LV)
+   - Increased Safety Motors Ex 'eb' (LV)
+   - Cast Iron enclosure motors (NEMA)
+   - Aluminum enclosure motors (NEMA)
+   - Cast Iron enclosure motors - Safe Area (IEC)
+   - Aluminium enclosure motors - Safe area (IEC)
+   - Slip Ring Motors (LV)
+
+3. ENERGY EFFICIENT MOTORS (3 products)
+   - International Efficiency IE2 /IE3-Apex series
+   - Super Premium IE4 Efficiency –Apex Series
+   - Totally Enclosed Fan Cooled Induction Motor - NG Series
+
+4. MOTORS FOR HAZARDOUS AREA - LV (3 products)
+   - Flame Proof Motors Ex 'd' (LV)
+   - Increased Safety Motors Ex 'e' (LV)
+   - Non Sparking Motor Ex 'n' (LV)
+
+5. DC MOTORS (2 products)
+   - Large DC Machines
+   - DC Motors (2.2 kW to 1500 kW, Frame IEC 100 to 630)
+
+6. MOTORS FOR HAZARDOUS AREAS - HV (4 products)
+   - Flame Proof Large Motors Ex 'd' (HV)
+   - Increased Safety Motors Ex 'e' (HV)
+   - Non Sparking Motor Ex 'n' (HV)
+   - Pressurized Motor Ex 'p' (HV)
+
+7. SPECIAL APPLICATION MOTORS (4 products)
+   - Double Cage Motor for Cement Mill
+   - Brake Motors (GD Series)
+   - Oil Well Pump Motor
+   - Re-Rolling Mill Motor
+
+================================================================================
+KEY TERMINOLOGY
+================================================================================
+
+COOLING METHODS (IC Codes):
+- IC 0A1/0A6 (SPDP) - Screen Protected Drip Proof
+- IC 4A1A1/4A1A6 (TEFC) - Totally Enclosed Fan Cooled
+- IC 5A1A1/5A1A6 (TETV) - Totally Enclosed Tube Ventilated
+- IC 6A1A1/6A1A6/6A6A6 (CACA) - Closed Air Circuit Air Cooled
+- IC 8A1W7 (CACW) - Closed Air Circuit Water Cooled
+
+EXPLOSION PROTECTION TYPES (Ex Codes):
+- Ex 'd'/'db' - Flameproof enclosure
+- Ex 'e'/'eb' - Increased safety
+- Ex 'n'/'nA' - Non-sparking/Type of protection 'n'
+- Ex 'p' - Pressurized enclosure
+- Ex 'ec' - Enclosed break
+
+EFFICIENCY CLASSES:
+- IE2 - High Efficiency
+- IE3 - Premium Efficiency
+- IE4 - Super Premium Efficiency
+
+MOUNTING TYPES:
+- IMB3 - Horizontal mounting with feet
+- IMV1 - Vertical mounting with shaft down
+- IMB5/IMV5 - Flange mounting
+
+ENCLOSURE RATINGS:
+- IP23 - Protected against solid objects >12mm, water spray at 60°
+- IP55 - Dust protected, water jets from all directions
+- IP56 - Dust tight, powerful water jets
+- IP65 - Dust tight, water jets from all directions
+
+STANDARDS:
+- IEC 60034 - Rotating electrical machines (International)
+- IS 325 - Rotating electrical machines (Indian Standard)
+- NEMA - National Electrical Manufacturers Association (North American)
+
+================================================================================
+FILES GENERATED
+================================================================================
+
+1. cg_motors_extracted_v2.json
+   - Complete structured product catalog in JSON format
+   - Includes: category, description, products array with name/link/image
+   - Machine-readable format for database import
+
+2. cg_motors_extracted.txt
+   - Human-readable plain text format
+   - Organized by category with product details
+   - Easy to read and print
+
+3. CG_MOTORS_COMPLETE_CATALOG.md
+   - Comprehensive markdown documentation
+   - Detailed product information with specifications
+   - Formatted for documentation and web display
+
+4. product_details_sample.json
+   - Sample detailed specifications for 4 products
+   - Includes features, applications, and technical specs
+   - Template for detailed product information
+
+5. CG_MOTORS_QUICK_SUMMARY.txt
+   - This file - quick reference guide
+   - Category breakdown and terminology
+
+================================================================================
+SAMPLE SPECIFICATIONS
+================================================================================
+
+Air Cooled Induction Motors (HV):
+- Shaft Height IMB3: 315 to 1400 mm
+- Frame Size IMV1: 740 to 2500
+- Insulation Class: F with VPI
+- Degree of Protection: IP55
+- Standards: IEC 60034 / IS 325
+
+DC Motors:
+- Power Range: 2.2 kW to 1500 kW
+- Frame: IEC 100 to 630
+- Construction: Laminated Yoke
+
+IE4 Super Premium Efficiency Motors:
+- Highest efficiency for maximum energy savings
+- Tested in CSA approved lab
+- Same frame size as lower efficiency motors
+- Extended motor life due to lower bearing temperature
+
+AXELERA Process Performance Motors:
+- Durable, rugged construction
+- High torque output
+- Advanced sealing technology
+- Corrosion-resistant coatings
+- VSD compatibility
+
+================================================================================
+APPLICATIONS BY CATEGORY
+================================================================================
+
+High Voltage Motors:
+- Industrial processes requiring high power
+- Heavy machinery and equipment
+- Cement mills, crushers, fans, pumps
+- Mining and mineral processing
+
+Low Voltage Motors:
+- General industrial applications
+- Process industries
+- Material handling
+- HVAC systems
+- Pumps and compressors
+
+Energy Efficient Motors:
+- Cost-sensitive applications
+- Continuous operation environments
+- Environmental compliance projects
+- Retrofit and replacement projects
+
+Hazardous Area Motors:
+- Oil & gas industry
+- Chemical plants
+- Petrochemical facilities
+- Paint and solvent areas
+- Grain handling facilities
+
+DC Motors:
+- Variable speed applications
+- Precise speed control requirements
+- High starting torque applications
+- Cranes and hoists
+- Rolling mills
+
+Special Application Motors:
+- Cement industry (Double Cage)
+- Oil well pumping
+- Steel re-rolling mills
+- Applications requiring braking
+
+================================================================================
+CONTACT & ADDITIONAL INFORMATION
+================================================================================
+
+For detailed specifications, pricing, or custom requirements:
+Visit: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors
+
+Each product has its own detailed page with:
+- Complete technical specifications
+- Application guidelines
+- Installation instructions
+- Performance curves
+- Dimension drawings
+
+================================================================================

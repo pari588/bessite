@@ -89,6 +89,10 @@ $(document).ready(function (e) {
         },
         url: function (value) {
             return /^(http|https|ftp)\:\/\/[a-z\d\-\.]+\.[a-z]{2,3}(:[a-z\d]*)?\/?([a-z\d\-\._\?\,\'\/\\\+&amp;%\$#\=~])*$/i.test(value);
+        },
+        indianmobile: function (value) {
+            // Indian mobile number validation: 10 digits starting with 6-9
+            return /^[6-9]\d{9}$/.test(value);
         }
     };
 
@@ -115,7 +119,8 @@ $(document).ready(function (e) {
         'dateISO': '{TITLE} should be a valid date (ISO).',
         'time': '{TITLE} is not a valid time',
         'datetime': '{TITLE} is not a valid date time',
-        'url': '{TITLE} is not a valid url'
+        'url': '{TITLE} is not a valid url',
+        'indianmobile': '{TITLE} should be a valid 10-digit Indian mobile number (starting with 6-9)'
     };
 
     $setmxmsg = function (el, arrMsg, validate) {

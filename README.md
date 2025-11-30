@@ -1,2 +1,0 @@
-# bessite
-BES Website code

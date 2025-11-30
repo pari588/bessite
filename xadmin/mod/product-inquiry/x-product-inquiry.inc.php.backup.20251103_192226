@@ -1,0 +1,1 @@
+<?php if (function_exists("setModVars")) setModVars(array("TBL" => "product_inquiry", "PK" => "productInquiryID", "UDIR" => array("uploadFile" => "product-inquiry", "uploadFileD" => "product-inquiry")));

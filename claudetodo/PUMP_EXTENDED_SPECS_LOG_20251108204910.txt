@@ -1,0 +1,70 @@
+[✓ MAIN] ARMOR1.0-CQU - Updated 4 fields
+[✓ DETAIL] ARMOR1.0-CQU - Inserted 2 detail records
+[✓ MAIN] ARMOR1.5-DSU - Updated 4 fields
+[✓ DETAIL] ARMOR1.5-DSU - Inserted 2 detail records
+[✓ MAIN] CFMSMB3D0.50-V24 - Updated 4 fields
+[✓ MAIN] CFMSMB5D1.00-V24 - Updated 3 fields
+[✓ DETAIL] CFMSMB5D1.00-V24 - Inserted 2 detail records
+[✓ MAIN] CMB05NV PLUS - Updated 1 fields
+[✓ DETAIL] CMB05NV PLUS - Inserted 2 detail records
+[✓ MAIN] CMB10NV PLUS - Updated 1 fields
+[✓ DETAIL] CMB10NV PLUS - Inserted 2 detail records
+[✓ MAIN] DMB10D PLUS - Updated 1 fields
+[✓ DETAIL] DMB10D PLUS - Inserted 1 detail records
+[✓ MAIN] DMB10DCSL - Updated 1 fields
+[✓ DETAIL] DMB10DCSL - Inserted 1 detail records
+[✓ DETAIL] GLIDE PLUS I - Inserted 1 detail records
+[✓ DETAIL] GLIDE PLUS II - Inserted 1 detail records
+[✓ DETAIL] GLORY PLUS I - Inserted 1 detail records
+[✓ MAIN] MAD052(1PH)Y-14 - Updated 4 fields
+[✓ MAIN] MAD052(1PH)Y-18+ - Updated 4 fields
+[✓ MAIN] MAD052(1PH)Y-21+ - Updated 4 fields
+[✓ MAIN] MAD12(1PH)Y-30 - Updated 4 fields
+[✓ DETAIL] MASTER DURA I - Inserted 1 detail records
+[✓ DETAIL] MASTER DURA II - Inserted 1 detail records
+[✓ DETAIL] MASTER PLUS I - Inserted 1 detail records
+[✓ DETAIL] MASTER PLUS II - Inserted 1 detail records
+[✓ MAIN] MBG1.52 - Updated 4 fields
+[✓ MAIN] MBG12(1PH)-21 - Updated 4 fields
+[✓ MAIN] MBG12(3PHASE) - Updated 4 fields
+[✓ MAIN] MBK22(1PH)-24 - Updated 4 fields
+[✓ MAIN] MBM12(1PH) - Updated 4 fields
+[✓ MAIN] MBQ22(1PH)-12U - Updated 4 fields
+[✓ MAIN] MBQ22-1PH-14 - Updated 4 fields
+[✓ MAIN] MIK22-18 - Updated 4 fields
+[✓ MAIN] MIK32-27 - Updated 4 fields
+[✓ MAIN] MIN32-26 - Updated 4 fields
+[✓ MAIN] MINH52-30 - Updated 4 fields
+[✓ DETAIL] MINI CREST I - Inserted 2 detail records
+[✓ DETAIL] MINI CREST II - Inserted 2 detail records
+[✓ MAIN] Mini Everest Mini Pump - Updated 2 fields
+[✓ DETAIL] Mini Everest Mini Pump - Inserted 2 detail records
+[✓ DETAIL] Mini Force I - Inserted 2 detail records
+[✓ DETAIL] MINI MARVEL I - Inserted 2 detail records
+[✓ DETAIL] MINI MARVEL II - Inserted 2 detail records
+[✓ DETAIL] MINI MASTER I - Inserted 2 detail records
+[✓ DETAIL] MINI MASTER II - Inserted 2 detail records
+[✓ DETAIL] MINI MASTERPLUS I - Inserted 2 detail records
+[✓ DETAIL] MINI MASTERPLUS II - Inserted 2 detail records
+[✓ DETAIL] MINI SUMO I - Inserted 2 detail records
+[✓ MAIN] MIP52-27 - Updated 4 fields
+[✓ MAIN] MIP7.52-30 - Updated 4 fields
+[✓ DETAIL] NILE DURA I - Inserted 1 detail records
+[✓ DETAIL] NILE PLUS I - Inserted 1 detail records
+[✓ MAIN] OWE052(1PH)Z-21FS - Updated 4 fields
+[✓ DETAIL] OWE052(1PH)Z-21FS - Inserted 2 detail records
+[✓ MAIN] OWE12(1PH)Z-28 - Updated 4 fields
+[✓ DETAIL] OWE12(1PH)Z-28 - Inserted 2 detail records
+[✓ MAIN] PRIMO I - Updated 4 fields
+[✓ DETAIL] PRIMO I - Inserted 1 detail records
+[✓ MAIN] STAR DURA I - Updated 4 fields
+[✓ DETAIL] STAR DURA I - Inserted 1 detail records
+[✓ MAIN] STAR PLUS I - Updated 4 fields
+[✓ DETAIL] STAR PLUS I - Inserted 1 detail records
+[✓ DETAIL] STAR PLUS II - Inserted 1 detail records
+[✓ MAIN] ULTIMO I - Updated 4 fields
+[✓ DETAIL] ULTIMO I - Inserted 1 detail records
+[✓ MAIN] ULTIMO II - Updated 4 fields
+[✓ DETAIL] ULTIMO II - Inserted 1 detail records
+[✓ MAIN] WIN PLUS I - Updated 3 fields
+[✓ DETAIL] WIN PLUS I - Inserted 1 detail records

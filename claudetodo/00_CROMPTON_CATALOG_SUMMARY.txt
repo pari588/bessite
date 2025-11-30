@@ -1,0 +1,43 @@
+CROMPTON RESIDENTIAL PUMPS - CATALOG SUMMARY
+============================================================
+
+Visit: https://www.crompton.co.in/pages/residential-pumps
+
+PRODUCT CATEGORIES AND COUNTS:
+------------------------------------------------------------
+Mini Pumps..............................  24 products
+DMB-CMB Pumps...........................   4 products
+Shallow Well Pumps......................   7 products
+3-Inch Borewell Submersibles............   3 products
+4-Inch Borewell Submersibles............   7 products
+Residential Openwell Pumps..............   2 products
+Pressure Booster Pumps..................   5 products
+Control Panels..........................   2 products
+Circulatory In-line Pumps...............   1 products
+------------------------------------------------------------
+TOTAL...................................  55 products
+
+DATA FIELDS FOR EACH PRODUCT:
+------------------------------------------------------------
+1. Product Name
+2. Description
+3. HP
+4. kW
+5. Supply Phase
+6. Delivery Pipe
+7. No. of Stages
+8. ISI
+9. MNRE
+
+============================================================
+DATA AVAILABILITY NOTES:
+------------------------------------------------------------
+• ISI Certification: Shown where available
+• MNRE Certification: Limited data from website
+• Number of Stages: Available for borewell submersibles
+• Delivery Pipe: Shown for applicable models
+• Dash (-): Information not available on website
+
+For complete technical specifications, contact:
+Crompton Customer Support
+Or request detailed product datasheets

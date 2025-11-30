@@ -1,0 +1,128 @@
+<!-- Material Design 3 Feature Cards - Copy this HTML -->
+<style>
+  .features-section {
+    padding: 80px 20px;
+    background: white;
+  }
+  
+  .features-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  
+  .feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s;
+  }
+  
+  .feature-card:hover {
+    box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #0b7ad1 0%, #0a6ab8 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s;
+  }
+  
+  .feature-card:hover .feature-icon {
+    transform: scale(1.1);
+  }
+  
+  .feature-icon svg {
+    width: 36px;
+    height: 36px;
+    stroke: white;
+  }
+  
+  .feature-title {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 500;
+    color: #0b7ad1;
+    margin: 0 0 16px 0;
+  }
+  
+  .feature-description {
+    font-size: 14px;
+    line-height: 20px;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  @media (max-width: 1024px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .features-section {
+      padding: 40px 20px;
+    }
+  }
+</style>
+
+<section class="features-section">
+  <div class="features-container">
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m5.6-13.6L14.5 8.5M9.5 14.5l-3.1 3.1M23 12h-6m-6 0H5m13.6 5.6l-3.1-3.1M9.5 9.5l-3.1-3.1"></path>
+          </svg>
+        </div>
+        <h3 class="feature-title">Wider Choice</h3>
+        <p class="feature-description">
+          We offer motors of various sizes and configurations to suit specific application as demanded by Clients.
+        </p>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <h3 class="feature-title">Energy Efficient</h3>
+        <p class="feature-description">
+          We supply motors of the highest quality and superior energy efficiency resulting in power saving and a lesser carbon footprint.
+        </p>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <h3 class="feature-title">Reliability</h3>
+        <p class="feature-description">
+          Our Motors can perform under extreme conditions resulting in continuous production and generating savings for the user.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

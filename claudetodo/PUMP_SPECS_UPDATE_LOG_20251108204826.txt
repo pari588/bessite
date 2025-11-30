@@ -1,0 +1,101 @@
+[✓ MAIN] 100W12RA3TP-50 - Updated 4 fields
+[✓ MAIN] 100W15RA3TP-50 - Updated 4 fields
+[✓ MAIN] 100W25RA5TP-50 - Updated 4 fields
+[✓ MAIN] 3W10AK1A - Updated 3 fields
+[✓ DETAIL] 3W10AK1A - Inserted 1 detail records
+[✓ MAIN] 3W10AP1D - Updated 3 fields
+[✓ DETAIL] 3W10AP1D - Inserted 1 detail records
+[✓ MAIN] 3W12AP1D - Updated 3 fields
+[✓ DETAIL] 3W12AP1D - Inserted 1 detail records
+[✓ MAIN] 4VO1.5/12-BUE(U4S) - Updated 2 fields
+[✓ MAIN] 4VO1.5/14-BUE(U4S) - Updated 2 fields
+[✓ MAIN] 4VO1/10-BUE(U4S) - Updated 2 fields
+[✓ MAIN] 4VO1/7-BUE(U4S) - Updated 2 fields
+[✓ MAIN] 4VO10BU1EU - Updated 2 fields
+[✓ MAIN] 4VO7BU1EU - Updated 2 fields
+[✓ MAIN] 4W10BU1AU - Updated 2 fields
+[✓ DETAIL] 4W10BU1AU - Inserted 5 detail records
+[✓ MAIN] 4W12BF1.5E - Updated 2 fields
+[✓ MAIN] 4W14BF1.5E - Updated 2 fields
+[✓ MAIN] 4W14BU2EU - Updated 2 fields
+[✓ DETAIL] 4W14BU2EU - Inserted 5 detail records
+[✓ MAIN] 4W7BU1AU - Updated 2 fields
+[✓ DETAIL] 4W7BU1AU - Inserted 5 detail records
+[✓ DETAIL] AQUAGOLD 100-33 - Inserted 3 detail records
+[✓ MAIN] AQUAGOLD 150 - Updated 4 fields
+[✓ DETAIL] AQUAGOLD 150 - Inserted 3 detail records
+[✓ DETAIL] AQUAGOLD 50-30 - Inserted 3 detail records
+[✓ MAIN] AQUAGOLD DURA 150 - Updated 4 fields
+[✓ DETAIL] AQUAGOLD DURA 150 - Inserted 3 detail records
+[⚠ SKIPPED] ARMOR1.0-CQU - No matching template found
+[⚠ SKIPPED] ARMOR1.5-DSU - No matching template found
+[⚠ SKIPPED] CFMSMB3D0.50-V24 - No matching template found
+[⚠ SKIPPED] CFMSMB5D1.00-V24 - No matching template found
+[✓ DETAIL] CHAMP DURA I - Inserted 1 detail records
+[✓ DETAIL] CHAMP DURA II - Inserted 1 detail records
+[✓ DETAIL] CHAMP PLUS I - Inserted 1 detail records
+[✓ DETAIL] CHAMP PLUS II - Inserted 1 detail records
+[⚠ SKIPPED] CMB05NV PLUS - No matching template found
+[⚠ SKIPPED] CMB10NV PLUS - No matching template found
+[⚠ SKIPPED] DMB10D PLUS - No matching template found
+[⚠ SKIPPED] DMB10DCSL - No matching template found
+[✓ DETAIL] FLOMAX PLUS I - Inserted 1 detail records
+[✓ DETAIL] FLOMAX PLUS II - Inserted 1 detail records
+[⚠ SKIPPED] GLIDE PLUS I - No matching template found
+[⚠ SKIPPED] GLIDE PLUS II - No matching template found
+[⚠ SKIPPED] GLORY PLUS I - No matching template found
+[⚠ SKIPPED] MAD052(1PH)Y-14 - No matching template found
+[⚠ SKIPPED] MAD052(1PH)Y-18+ - No matching template found
+[⚠ SKIPPED] MAD052(1PH)Y-21+ - No matching template found
+[⚠ SKIPPED] MAD12(1PH)Y-30 - No matching template found
+[⚠ SKIPPED] MASTER DURA I - No matching template found
+[⚠ SKIPPED] MASTER DURA II - No matching template found
+[⚠ SKIPPED] MASTER PLUS I - No matching template found
+[⚠ SKIPPED] MASTER PLUS II - No matching template found
+[⚠ SKIPPED] MBG1.52 - No matching template found
+[⚠ SKIPPED] MBG12(1PH)-21 - No matching template found
+[⚠ SKIPPED] MBG12(3PHASE) - No matching template found
+[⚠ SKIPPED] MBK22(1PH)-24 - No matching template found
+[⚠ SKIPPED] MBM12(1PH) - No matching template found
+[⚠ SKIPPED] MBQ22(1PH)-12U - No matching template found
+[⚠ SKIPPED] MBQ22-1PH-14 - No matching template found
+[⚠ SKIPPED] MIK22-18 - No matching template found
+[⚠ SKIPPED] MIK32-27 - No matching template found
+[⚠ SKIPPED] MIN32-26 - No matching template found
+[⚠ SKIPPED] MINH52-30 - No matching template found
+[⚠ SKIPPED] MINI CREST I - No matching template found
+[⚠ SKIPPED] MINI CREST II - No matching template found
+[⚠ SKIPPED] Mini Everest Mini Pump - No matching template found
+[✓ MAIN] Mini Force I - Updated 4 fields
+[✓ DETAIL] Mini Force I - Inserted 2 detail records
+[✓ MAIN] MINI FORCE II - Updated 4 fields
+[✓ DETAIL] MINI MARVEL I - Inserted 1 detail records
+[✓ DETAIL] MINI MARVEL II - Inserted 1 detail records
+[✓ DETAIL] MINI MASTER I - Inserted 1 detail records
+[✓ DETAIL] MINI MASTER II - Inserted 1 detail records
+[✓ DETAIL] MINI MASTERPLUS I - Inserted 1 detail records
+[✓ DETAIL] MINI MASTERPLUS II - Inserted 1 detail records
+[⚠ SKIPPED] MINI SUMO I - No matching template found
+[⚠ SKIPPED] MIP52-27 - No matching template found
+[⚠ SKIPPED] MIP7.52-30 - No matching template found
+[⚠ SKIPPED] NILE DURA I - No matching template found
+[⚠ SKIPPED] NILE PLUS I - No matching template found
+[⚠ SKIPPED] OWE052(1PH)Z-21FS - No matching template found
+[⚠ SKIPPED] OWE12(1PH)Z-28 - No matching template found
+[⚠ SKIPPED] PRIMO I - No matching template found
+[⚠ SKIPPED] STAR DURA I - No matching template found
+[⚠ SKIPPED] STAR PLUS I - No matching template found
+[⚠ SKIPPED] STAR PLUS II - No matching template found
+[✓ MAIN] SWJ1 - Updated 4 fields
+[✓ DETAIL] SWJ1 - Inserted 2 detail records
+[✓ MAIN] SWJ100A-36 PLUS - Updated 4 fields
+[✓ MAIN] SWJ100AP-36 PLUS - Updated 4 fields
+[✓ MAIN] SWJ100AT-36 PLUS - Updated 4 fields
+[✓ DETAIL] SWJ100AT-36 PLUS - Inserted 2 detail records
+[✓ MAIN] SWJ50A-30 PLUS - Updated 4 fields
+[✓ MAIN] SWJ50AP-30 PLUS - Updated 4 fields
+[✓ MAIN] SWJ50AT-30 PLUS - Updated 4 fields
+[✓ DETAIL] SWJ50AT-30 PLUS - Inserted 2 detail records
+[⚠ SKIPPED] ULTIMO I - No matching template found
+[⚠ SKIPPED] ULTIMO II - No matching template found
+[⚠ SKIPPED] WIN PLUS I - No matching template found

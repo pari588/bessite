@@ -1,0 +1,252 @@
+================================================================================
+PUMP INQUIRY FORM - COMPREHENSIVE ANALYSIS & IMPLEMENTATION PLAN
+================================================================================
+
+CURRENT STATE:
+==============
+
+Frontend Form Fields (4 fields):
+  1. userName (Name - Company or Personal) - Text
+  2. userEmail (Email) - Text
+  3. userMobile (Mobile) - Text
+  4. enquiryText (Enquiry Details) - Textarea
+
+Database Table: pump_inquiry
+  Current columns:
+  - pumpInquiryID (Primary Key)
+  - userName
+  - userEmail
+  - userMobile
+  - enquiryText
+  - createdDate
+  - status
+
+Admin Panel:
+  - Simple read-only list view
+  - Shows: ID, Name, Email, Mobile, Enquiry, Date
+  - Has search functionality
+  - NO edit/add functionality
+  - NO file upload handling
+
+Files to Modify:
+  Frontend:
+    - /xsite/mod/pump-inquiry/x-pump-inquiry.php (form layout)
+    - /xsite/mod/pump-inquiry/x-pump-inquiry-inc.php (backend logic)
+    - /xsite/mod/pump-inquiry/inc/js/x-pump-inquiry.inc.js (validation/behavior)
+
+  Admin:
+    - /xadmin/mod/pump-inquiry/x-pump-inquiry-list.php (list view)
+    - /xadmin/mod/pump-inquiry/x-pump-inquiry.inc.php (backend)
+    - (May need to create: x-pump-inquiry-add-edit.php for admin form)
+
+================================================================================
+
+PROPOSED EXTENSIVE FORM FIELDS:
+================================
+
+SECTION 1: CONTACT INFORMATION
+  - Company Name (Text) *required
+  - Contact Person Name (Text) *required
+  - Email Address (Email) *required
+  - Mobile Number (Text) *required
+  - Phone Number (Text) optional
+  - Address (Textarea) optional
+
+SECTION 2: PUMP SPECIFICATIONS
+  - Pump Type (Dropdown): Centrifugal, Submersible, Reciprocating, Rotary, Turbine, Other
+  - Pump Make/Brand (Text) optional
+  - Power Rating (Dropdown): 0.5 KW, 1 KW, 1.5 KW, 2.2 KW, 3.7 KW, 5.5 KW, 7.5 KW, 11 KW, 15 KW, 22 KW, Other
+  - Capacity (Dropdown): 10-50 LPM, 50-100 LPM, 100-500 LPM, 500-1000 LPM, 1000+ LPM, Other
+  - Head/Pressure (Text) - with unit selection: meters/feet/bar/PSI
+  - Fluid Type (Dropdown): Water, Oil, Slurry, Caustic, Acid, Other
+  - Operating Voltage (Dropdown): 1-Phase 230V, 3-Phase 415V, 3-Phase 380V, 3-Phase 440V, 3-Phase 460V, Other
+  - Frequency (Dropdown): 50 Hz, 60 Hz
+
+SECTION 3: MATERIAL & DESIGN
+  - Material (Dropdown): Cast Iron, Ductile Iron, Stainless Steel, Bronze, Other
+  - Connection Type (Dropdown): Flanged, NPT Threaded, BSP Threaded, Other
+  - Special Features (Checkboxes): Auto cutoff, Thermal protection, Energy efficient, Weather resistant, Other
+
+SECTION 4: APPLICATION & REQUIREMENTS
+  - Application (Dropdown): Agriculture, Industrial, Domestic, Mining, Dewatering, Other
+  - Delivery Timeframe (Dropdown): EX-STOCK, 1-2 weeks, 2-4 weeks, 4-8 weeks, More than 8 weeks
+  - Is this for replacement? (Radio): Yes / No
+  
+  [IF YES - Show Section 5]
+  
+SECTION 5: EXISTING PUMP DETAILS (Conditional - if replacement = Yes)
+  - Existing Pump Make (Text)
+  - Existing Pump Power Rating (Text)
+  - Existing Pump Capacity (Text)
+  - Existing Pump Head (Text)
+  - Existing Pump Age/Year (Text)
+  - Issues with current pump (Textarea)
+
+SECTION 6: ADDITIONAL INFORMATION
+  - Special Requirements (Textarea)
+  - Attach Drawing/Document (File upload) - PDF, DOC, DOCX, XLS, XLSX, JPG, PNG
+  - Quantity Required (Number)
+  - Any other specifications (Textarea)
+
+SECTION 7: OFFER PREFERENCE
+  - Offer Type (Checkboxes): Estimated Quote, Firm Quote, Sample Available
+  
+SECTION 8: RECAPTCHA
+  - Google reCAPTCHA v3 (invisible)
+
+================================================================================
+
+IMPLEMENTATION REQUIREMENTS:
+=============================
+
+DATABASE CHANGES:
+  1. ALTER pump_inquiry table to add new columns:
+     - companyName (VARCHAR 100)
+     - contactPersonName (VARCHAR 100) 
+     - phoneNumber (VARCHAR 20)
+     - address (TEXT)
+     - pumpType (INT - foreign key or VARCHAR 50)
+     - pumpMakeBrand (VARCHAR 100)
+     - powerRating (VARCHAR 50)
+     - capacity (VARCHAR 50)
+     - head (VARCHAR 50)
+     - headUnit (VARCHAR 20) - meters/feet/bar/psi
+     - fluidType (VARCHAR 50)
+     - voltage (VARCHAR 50)
+     - frequency (VARCHAR 10)
+     - material (VARCHAR 50)
+     - connectionType (VARCHAR 50)
+     - specialFeatures (TEXT) - comma separated or JSON
+     - application (VARCHAR 50)
+     - deliveryTimeframe (VARCHAR 50)
+     - isReplacement (TINYINT) - 0/1
+     - existingPumpMake (VARCHAR 100)
+     - existingPumpPower (VARCHAR 50)
+     - existingPumpCapacity (VARCHAR 50)
+     - existingPumpHead (VARCHAR 50)
+     - existingPumpAge (VARCHAR 50)
+     - existingPumpIssues (TEXT)
+     - specialRequirements (TEXT)
+     - attachmentFile (VARCHAR 255)
+     - quantity (INT)
+     - otherSpecifications (TEXT)
+     - offerPreference (TEXT) - comma separated
+     - gRecaptchaResponse (TEXT) - for logging
+     - createdDate (TIMESTAMP)
+     - status (TINYINT)
+
+  2. Create directory for file uploads:
+     /uploads/pump-inquiry/
+
+FRONTEND FILES TO CREATE/MODIFY:
+  1. x-pump-inquiry.php
+     - Add reCAPTCHA configuration constants
+     - Create dropdown arrays for all select fields
+     - Create form field arrays (using mxForm class)
+     - Organize fields into sections/columns
+     - Add file upload input
+     - Add conditional fields logic (replacement details)
+     - Add reCAPTCHA hidden field
+     - Load reCAPTCHA API script
+
+  2. x-pump-inquiry-inc.php
+     - Add reCAPTCHA verification function
+     - Update savePumpInquiry() function to:
+       * Validate all new fields
+       * Handle file uploads
+       * Sanitize input data
+       * Insert into expanded database schema
+     - Add error handling and logging
+
+  3. inc/js/x-pump-inquiry.inc.js
+     - Update form initialization with reCAPTCHA callback
+     - Add handlePumpInquiryFormSubmit() function for token handling
+     - Add validation for new fields
+     - Add show/hide logic for conditional fields (replacement section)
+     - Add file size/type validation
+     - Update callback function
+
+ADMIN FILES TO CREATE/MODIFY:
+  1. x-pump-inquiry-list.php
+     - Add search fields for new columns
+     - Add table columns to display key information
+     - Add filters for status, date range, pump type, etc.
+
+  2. x-pump-inquiry.inc.php
+     - Update setModVars configuration
+     - (Optional: Create add-edit form if needed)
+
+================================================================================
+
+WORK BREAKDOWN & EFFORT ESTIMATE:
+==================================
+
+Phase 1: Database Changes (15 minutes)
+  - Write ALTER TABLE script
+  - Execute and verify
+
+Phase 2: Frontend Form (45 minutes)
+  - Update x-pump-inquiry.php with all new fields
+  - Add dropdown arrays
+  - Add file upload handling
+  - Add conditional field logic
+
+Phase 3: Backend Validation (30 minutes)
+  - Update x-pump-inquiry-inc.php
+  - Add reCAPTCHA verification
+  - Add validation for all new fields
+  - Add file upload handling
+
+Phase 4: JavaScript/Frontend Logic (20 minutes)
+  - Update x-pump-inquiry.inc.js
+  - Add reCAPTCHA handler
+  - Add conditional field show/hide
+  - Add file validation
+
+Phase 5: Admin Panel (15 minutes)
+  - Update x-pump-inquiry-list.php search and columns
+  - Update x-pump-inquiry.inc.php if needed
+
+Phase 6: Testing & Backups (10 minutes)
+  - Create backups of all modified files
+  - Test form submission
+  - Test file uploads
+  - Test reCAPTCHA
+
+TOTAL ESTIMATED TIME: ~2.5 hours
+
+================================================================================
+
+QUESTIONS FOR YOU:
+===================
+
+Before we proceed, please clarify:
+
+1. FIELD SELECTION:
+   - Should we include all the fields I proposed above?
+   - Are there any fields you want to ADD or REMOVE?
+   - Any other pump-specific fields you need?
+
+2. DROPDOWNS:
+   - For "Pump Type" - should the options be:
+     Centrifugal, Submersible, Reciprocating, Rotary, Turbine, Other?
+   - For "Power Rating" - should we use the exact values I listed?
+   - Same question for Capacity, Material, etc.
+
+3. FILE UPLOADS:
+   - Yes or No? If yes, max file size limit?
+   - Allowed file types?
+
+4. CONDITIONAL FIELDS:
+   - Show "existing pump details" only when replacement=Yes?
+   - Any other conditional logic needed?
+
+5. DATABASE:
+   - Should we keep the simple version for backward compatibility?
+   - Or completely replace it?
+
+6. ADMIN PANEL:
+   - Do you need admin edit capability?
+   - Or just view/search is fine?
+
+================================================================================

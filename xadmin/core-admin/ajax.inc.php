@@ -12,10 +12,18 @@ function changeStatus($status = 0)
     $MXRES["msg"] = "Sorry, Cannot perform this action..";
     $mod = htmlspecialchars(trim($_REQUEST["modName"]));
     $vals = trim($_REQUEST["id"]);
+
     if (isset($mod) && $mod != "" && isset($vals) && $vals != "") {
         global $MXSET;
         $table = trim($_SESSION[SITEURL][$mod]["TBL"]);
         $pk = trim($_SESSION[SITEURL][$mod]["PK"]);
+
+        // Check if this module uses custom table naming (without mx_ prefix)
+        $no_prefix = isset($_SESSION[SITEURL][$mod]["NO_PREFIX"]) && $_SESSION[SITEURL][$mod]["NO_PREFIX"] === true;
+        if (!$no_prefix) {
+            $table = $DB->pre . $table;  // Add mx_ prefix if not a custom table
+        }
+
         $wLang = '';
         $inWhere = implode(",", array_fill(0, count(explode(",", $vals)), "?"));
         if ($MXSET["MULTILINGUAL"] == 1 && $MXSET["LANGTYPE"] == 0) {
@@ -29,16 +37,16 @@ function changeStatus($status = 0)
 
         $valsL = $DB->vals;
         $typeL = $DB->types;
-        $DB->sql = "UPDATE `" . $DB->pre . "$table` SET status=? WHERE `$pk` IN(" . $inWhere . ")" . $wLang;
+        $DB->sql = "UPDATE `" . $table . "` SET status=? WHERE `$pk` IN(" . $inWhere . ")" . $wLang;
         if ($DB->dbQuery()) {
             $MXRES["err"] = 0;
         }
 
         if ($MXSET["LANGTYPE"] == 1 && $MXSET["MULTILINGUAL"] == 1) {
-            if ($DB->ifTableExists($DB->pre . $table . "_l")) {
+            if ($DB->ifTableExists($table . "_l")) {
                 $DB->vals = $valsL;
                 $DB->types = $typeL;
-                $DB->sql = "UPDATE `" . $DB->pre . $table . "_l` SET status=? WHERE `parentLID` IN(" . $inWhere . ")";
+                $DB->sql = "UPDATE `" . $table . "_l` SET status=? WHERE `parentLID` IN(" . $inWhere . ")";
                 if ($DB->dbQuery()) {
                     $MXRES["err"] = 0;
                 }

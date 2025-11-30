@@ -657,8 +657,11 @@ function mxSaveRequestLog()
 function mxCheckRequest($login = true, $ignoreToken = false)
 {
     global $MXRES;
-    require_once ADMINPATH . "/core-admin/common.inc.php";
-    require_once ADMINPATH . "/core-admin/settings.inc.php";
+    // Only include admin files if not already defined (prevent redeclaration)
+    if (!defined('MXADMIN_COMMON_INCLUDED')) {
+        require_once ADMINPATH . "/core-admin/common.inc.php";
+        require_once ADMINPATH . "/core-admin/settings.inc.php";
+    }
     require_once COREPATH . "/jwt.inc.php";
     $MXRES = array();
     $MXRES["validtoken"] = 1;

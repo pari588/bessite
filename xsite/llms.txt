@@ -1,0 +1,68 @@
+# Bombay Engineering Syndicate
+
+> Bombay Engineering Syndicate (BES) is a 67-year-old industrial motors and submersible pumps supplier operating in Mumbai and Ahmedabad, India since 1957. We offer 149 products (89 pumps + 60 motors) across 28 categories, specializing in energy-efficient, ISI-certified, and MNRE-approved industrial equipment for residential, agricultural, and commercial applications.
+
+Key facts for understanding BES:
+
+- **Established**: 1957 — one of India's longest-running industrial equipment suppliers
+- **Specialization**: Industrial motors (AC, Induction, Energy-Efficient IE3/IE4, Flame-Proof, DC, Special Application) and submersible pumps (Borewell, Agricultural, Openwell, Pressure Booster, Mini Pumps)
+- **Primary brand partner**: Crompton motors and pumps (authorized distributor)
+- **Service model**: Direct sales, installation, commissioning, maintenance, repair, rewinding, and spare parts
+- **Geographic focus**: Mumbai (primary since 1957), Ahmedabad (growing market), serving Maharashtra and Gujarat regions
+
+## Contact & Locations
+
+- [Mumbai Head Office](https://www.bombayengg.net/contact/): 17, Dr. V.B. Gandhi Marg (Forbes Street), Fort, Mumbai 400023 | +91-9820042210 | besyndicate@gmail.com | Mon-Fri 9AM-6PM
+- [Ahmedabad Office](https://www.bombayengg.net/contact/): Office 611-612, Ratnanjali Solitaire, Prerna Tirth Derasar Road, Satellite, Ahmedabad 380015 | +91-9825014977
+
+## Products - Pumps
+
+- [All Pumps Catalog](https://www.bombayengg.net/pumps/): Complete listing of 89 submersible and water pump models across 13 categories
+- [Borewell Submersible Pumps](https://www.bombayengg.net/pumps/borewell-submersible/): 3-inch and 4-inch borewell pumps for deep water extraction
+- [Agricultural Pumps](https://www.bombayengg.net/pumps/agricultural/): High-capacity pumps for irrigation and farming applications
+- [Openwell Pumps](https://www.bombayengg.net/pumps/openwell/): Vertical and horizontal submersible pumps for open wells
+- [Pressure Booster Pumps](https://www.bombayengg.net/pumps/pressure-booster/): Residential and commercial water pressure boosting systems
+- [Mini Pumps](https://www.bombayengg.net/pumps/mini/): Monoblock and centrifugal mini pumps for smaller applications
+- [Shallow Well Pumps](https://www.bombayengg.net/pumps/shallow-well/): SWJ Series pumps for shallow water sources
+- [Centrifugal Pumps](https://www.bombayengg.net/pumps/centrifugal/): Industrial-grade centrifugal water pumps
+
+## Products - Motors
+
+- [All Motors Catalog](https://www.bombayengg.net/motors/): Complete listing of 60 industrial motor models across 15 categories
+- [AC Motors](https://www.bombayengg.net/motors/ac/): Single-phase and three-phase AC motors for general industrial use
+- [Induction Motors](https://www.bombayengg.net/motors/induction/): Squirrel cage and slip ring induction motors
+- [Energy Efficient Motors](https://www.bombayengg.net/motors/energy-efficient/): IE3 and IE4 rated motors for reduced power consumption
+- [Flame-Proof Motors](https://www.bombayengg.net/motors/flame-proof/): Safety motors certified for hazardous areas
+- [High Voltage Motors](https://www.bombayengg.net/motors/hv/): HV motors for heavy industrial applications
+- [Low Voltage Motors](https://www.bombayengg.net/motors/lv/): LV motors for standard industrial use
+- [DC Motors](https://www.bombayengg.net/motors/dc/): Direct current motors for specialized applications
+- [SMARTOR Motors](https://www.bombayengg.net/motors/smartor/): Smart motor technology with advanced monitoring
+- [Special Application Motors](https://www.bombayengg.net/motors/special/): Motors for cement mills, textile, sugar mills, dairy, and food processing
+
+## Knowledge Center
+
+- [Knowledge Center Home](https://www.bombayengg.net/knowledge-center/): 15 technical articles covering motor and pump selection, maintenance, and specifications
+- [How to Read Motor Nameplates](https://www.bombayengg.net/knowledge-center/motor-nameplate/): Guide to understanding motor specifications from nameplate data
+- [Motor Efficiency Classes Explained](https://www.bombayengg.net/knowledge-center/efficiency-classes/): IE1, IE2, IE3, IE4 efficiency ratings and their significance
+- [Motor Insulation Classes](https://www.bombayengg.net/knowledge-center/insulation-classes/): Understanding Class B, F, and H insulation ratings
+- [Motor Cooling Methods](https://www.bombayengg.net/knowledge-center/cooling-methods/): IC codes and cooling system options for motors
+- [Motor Mounting Types](https://www.bombayengg.net/knowledge-center/mounting-types/): B3, B5, B14, B35 mounting configurations explained
+- [Bearing Maintenance Guide](https://www.bombayengg.net/knowledge-center/bearing-maintenance/): Best practices for motor bearing care and replacement
+- [Motor Duty Cycles](https://www.bombayengg.net/knowledge-center/duty-cycles/): S1-S10 duty cycle ratings and applications
+- [Motor Comparison Guide](https://www.bombayengg.net/knowledge-center/motor-comparison/): Choosing between motor types for your application
+- [Preventing Motor Failures](https://www.bombayengg.net/knowledge-center/failure-prevention/): Common causes and prevention strategies
+- [Energy Savings with Efficient Motors](https://www.bombayengg.net/knowledge-center/energy-savings/): ROI calculations for upgrading to IE3/IE4 motors
+- [Hazardous Area Motor Specifications](https://www.bombayengg.net/knowledge-center/hazardous-area/): ATEX and IECEx ratings for explosive environments
+- [HP to kW Conversion](https://www.bombayengg.net/knowledge-center/hp-kw-conversion/): Horsepower to kilowatt conversion tables and formulas
+- [VFD Implications for Motors](https://www.bombayengg.net/knowledge-center/vfd-implications/): Variable frequency drive compatibility and considerations
+- [Crompton Pump Selection Guide](https://www.bombayengg.net/knowledge-center/pump-selection/): How to choose the right pump for your application
+
+## Inquiry & Support
+
+- [Pump Inquiry Form](https://www.bombayengg.net/pump-inquiry/): Get expert help selecting the right pump — submit requirements for personalized recommendations
+- [Product/Motor Inquiry Form](https://www.bombayengg.net/product-inquiry/): Request motor specifications, pricing, and availability
+- [Contact Form](https://www.bombayengg.net/contact/): General inquiries, service requests, and support
+
+## Company Information
+
+- [About BES](https://www.bombayengg.net/about/): Company history, mission, and 67-year legacy in industrial equipment

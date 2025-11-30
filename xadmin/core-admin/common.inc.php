@@ -1,4 +1,8 @@
 <?php
+// Guard to prevent double inclusion of function definitions
+if (!defined('MXADMIN_COMMON_INCLUDED')) {
+    define('MXADMIN_COMMON_INCLUDED', true);
+
 function mxSetLogIcon()
 {
     global $MXSET, $DB, $MXDBLOG, $TPL;
@@ -540,17 +544,20 @@ function mxgetFonts()
     return $str;
 }
 
-function mxGetMetaArray($metaKey = "", $metaValue = 0, $metaType = 0)
-{
-    $arr = array("metaTitle" => "", "metaKeyword" => "", "metaDesc" => "");
-    if ($metaKey) {
-        global $DB;
-        $DB->vals = array($metaKey, $metaValue, $metaType);
+if (!function_exists('mxGetMetaArray')) {
+    function mxGetMetaArray($metaKey = "", $metaValue = 0, $metaType = 0)
+    {
+        $arr = array("metaTitle" => "", "metaKeyword" => "", "metaDesc" => "");
+        if ($metaKey) {
+            global $DB;
+            $DB->vals = array($metaKey, $metaValue, $metaType);
         $DB->types = "sss";
         $DB->sql = "SELECT * FROM `" . $DB->pre . "x_meta` WHERE `metaKey` = ? AND `metaValue`=? AND metaType=?";
         $d = $DB->dbRow();
         if ($DB->numRows > 0)
             $arr = $d;
+        }
+        return $arr;
     }
-    return $arr;
-}
+} // End of if (!function_exists('mxGetMetaArray'))
+} // End of if (!defined('MXADMIN_COMMON_INCLUDED'))

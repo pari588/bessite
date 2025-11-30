@@ -22,6 +22,7 @@ function image($value) { return preg_match("/\.(jpg|jpeg|png|gif|bmp)$/i",$value
 function dateISO($value) { return preg_match("/^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$/",$value);	}						
 //function accept($value, $element, $param) { $param = typeof $param == "string" ? $param.replace(/,/g, '|') : "png|jpe?g|gif|bmp"; return $value.match(new RegExp(".(" + $param + ")$", "i")); }
 function url($value) { return preg_match("/^(http|https|ftp)\:\/\/[a-z\d\-\.]+\.[a-z]{2,3}(:[a-z\d]*)?\/?([a-z\d\-\._\?\,\'\/\\\+&amp;%\$#\=~])*$/i",$value); }
+function indianmobile($value) { return preg_match("/^[6-9]\d{9}$/",$value); }
 
 class mxValidate {
     var $arrV;
@@ -51,7 +52,8 @@ class mxValidate {
             'date' => '{TITLE} should be a valid date.',
             'dateISO' => '{TITLE} should be a valid date (ISO).',
             'time' => '{TITLE} is not a valid time',
-            'url' => '{TITLE} is not a valid url'
+            'url' => '{TITLE} is not a valid url',
+            'indianmobile' => '{TITLE} must be a valid 10-digit Indian mobile number'
         );
 
         if ($this->arrV) {

@@ -1,0 +1,70 @@
+[✓] MINI MASTERPLUS I - 1 detail records inserted
+[✓] MINI MASTER I - 1 detail records inserted
+[✓] MINI MASTER II - 1 detail records inserted
+[✓] MINI MASTERPLUS II - 1 detail records inserted
+[SKIP] MINI MASTERPLUS I - Details already exist
+[SKIP] MINI MASTERPLUS II - Details already exist
+[✓] Mini Force I - 2 detail records inserted
+[SKIP] MINI FORCE II - Details already exist
+[✓] MINI MARVEL I - 1 detail records inserted
+[✓] MINI MARVEL II - 1 detail records inserted
+[✓] MINI CREST I - 1 detail records inserted
+[✓] MINI CREST II - 1 detail records inserted
+[✓] MINI SUMO I - 1 detail records inserted
+[✓] CHAMP PLUS I - 1 detail records inserted
+[✓] CHAMP DURA I - 1 detail records inserted
+[✓] CHAMP PLUS II - 1 detail records inserted
+[✓] CHAMP DURA II - 1 detail records inserted
+[SKIP] CHAMP DURA I - Details already exist
+[SKIP] CHAMP DURA II - Details already exist
+[SKIP] CHAMP PLUS I - Details already exist
+[SKIP] CHAMP PLUS II - Details already exist
+[✓] FLOMAX PLUS I - 1 detail records inserted
+[✓] FLOMAX PLUS II - 1 detail records inserted
+[SKIP] FLOMAX PLUS I - Details already exist
+[SKIP] FLOMAX PLUS II - Details already exist
+[✓] GLIDE PLUS II - 1 detail records inserted
+[✓] GLIDE PLUS I - 1 detail records inserted
+[SKIP] GLIDE PLUS II - Details already exist
+[SKIP] GLIDE PLUS I - Details already exist
+[✓] GLORY PLUS I - 1 detail records inserted
+[SKIP] GLORY PLUS I - Details already exist
+[SKIP] MINI MASTERPLUS I - Details already exist
+[✓] MASTER PLUS I - 1 detail records inserted
+[✓] MASTER DURA I - 1 detail records inserted
+[SKIP] MINI MASTER I - Details already exist
+[SKIP] MINI MASTER II - Details already exist
+[SKIP] MINI MASTERPLUS II - Details already exist
+[✓] MASTER DURA II - 1 detail records inserted
+[✓] MASTER PLUS II - 1 detail records inserted
+[SKIP] MASTER DURA I - Details already exist
+[SKIP] MASTER DURA II - Details already exist
+[SKIP] MASTER PLUS I - Details already exist
+[SKIP] MASTER PLUS II - Details already exist
+[✓] NILE PLUS I - 1 detail records inserted
+[✓] NILE DURA I - 1 detail records inserted
+[SKIP] NILE DURA I - Details already exist
+[SKIP] NILE PLUS I - Details already exist
+[✓] PRIMO I - 1 detail records inserted
+[✓] STAR PLUS I - 1 detail records inserted
+[✓] STAR DURA I - 1 detail records inserted
+[✓] STAR PLUS II - 1 detail records inserted
+[SKIP] STAR DURA I - Details already exist
+[SKIP] STAR PLUS I - Details already exist
+[SKIP] STAR PLUS II - Details already exist
+[✓] ULTIMO II - 1 detail records inserted
+[✓] ULTIMO I - 1 detail records inserted
+[✓] WIN PLUS I - 1 detail records inserted
+[✓] Mini Everest Mini Pump - 1 detail records inserted
+[✓] DMB10D PLUS - 1 detail records inserted
+[✓] DMB10DCSL - 1 detail records inserted
+[SKIP] DMB10D PLUS - Details already exist
+[SKIP] DMB10DCSL - Details already exist
+[✓] CMB10NV PLUS - 2 detail records inserted
+[✓] CMB05NV PLUS - 2 detail records inserted
+[SKIP] CMB05NV PLUS - Details already exist
+[SKIP] CMB10NV PLUS - Details already exist
+[✓] AQUAGOLD DURA 150 - 3 detail records inserted
+[✓] AQUAGOLD 150 - 3 detail records inserted
+[✓] AQUAGOLD 50-30 - 3 detail records inserted
+[✓] AQUAGOLD 100-33 - 3 detail records inserted

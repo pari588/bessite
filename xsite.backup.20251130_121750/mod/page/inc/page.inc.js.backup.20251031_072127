@@ -1,0 +1,48 @@
+$(document).ready(function () {
+    //Start: To save contact us form.
+    var frm = $("form#contactUsForm");
+
+    // Add custom callback to handle reCAPTCHA before form submission
+    frm.mxinitform({
+        callback: callbackcontactUs,
+        pcallback: handleContactUsFormSubmit
+    });
+
+    localStorage.removeItem(SITEURL);
+    // End.
+});
+
+// Handle form submission with reCAPTCHA
+function handleContactUsFormSubmit(frm, fileEl, p) {
+    console.log('Form submit with reCAPTCHA');
+
+    // Execute reCAPTCHA v3
+    grecaptcha.ready(function() {
+        grecaptcha.execute('6LeVCf0rAAAAAG3JjibEriASu2AwVx8v-6pxZHlZ', {action: 'submit'}).then(function(token) {
+            console.log('reCAPTCHA token received:', token);
+
+            // Add token to form
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'g-recaptcha-response',
+                value: token
+            }).appendTo(frm);
+
+            // Submit form
+            mxSubmitForm(frm, fileEl, p);
+        });
+    });
+}
+
+// Start: Save contact us form callback.
+function callbackcontactUs(response) {
+    console.log(response);
+    hideMxLoader();
+    if (response.err == 0) {
+        $("form#contactUsForm")[0].reset();
+        $.mxalert({ msg: response.msg });
+    } else {
+        $.mxalert({ msg: response.msg });
+    }
+}
+// End

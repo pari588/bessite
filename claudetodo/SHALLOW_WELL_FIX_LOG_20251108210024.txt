@@ -1,0 +1,20 @@
+[✓ MAIN] SWJ1 - Main specs updated
+[✓ DETAIL] SWJ1 - Detail records reset with complete specs
+[✓ MAIN] SWJ100AT-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100AT-36 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ100AP-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100AP-36 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ100A-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100A-36 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ50A-30 PLUS - Main specs updated
+[✓ DETAIL] SWJ50A-30 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ50AP-30 PLUS - Main specs updated
+[✓ DETAIL] SWJ50AP-30 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ50AT-30 PLUS - Main specs updated
+[✓ DETAIL] SWJ50AT-30 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ100A-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100A-36 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ100AP-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100AP-36 PLUS - Detail records reset with complete specs
+[✓ MAIN] SWJ100AT-36 PLUS - Main specs updated
+[✓ DETAIL] SWJ100AT-36 PLUS - Detail records reset with complete specs

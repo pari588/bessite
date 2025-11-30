@@ -1,0 +1,24 @@
+Extracting CG Global Motor Products...
+======================================
+
+Processing: https://www.cgglobal.com/our_business/Industrial/high-low-voltage-ac-dc-motors/high-voltage-motors
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/high-low-voltage-ac-dc-motors/low-voltage-motors
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors/Energy-Efficient-Motors
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors/Motors-for-Hazardous-Area-LV
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors/DC-Motors
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors/Motors-for-Hazardous-Areas-HV
+---
+
+Processing: https://www.cgglobal.com/our_business/Industrial/High-Low-Voltage-AC-DC-Motors/Special-Application-Motors
+---
+

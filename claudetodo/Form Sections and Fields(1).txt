@@ -1,0 +1,39 @@
+Form Sections and Fields:
+
+1. Customer Details:
+   - Full Name (text, required)
+   - Company / Organization Name (text)
+   - Email Address (email, required)
+   - Mobile Number (tel, required, +91 prefix hint)
+   - Address / Location of Installation (textarea)
+   - City (dropdown: Mumbai, Pune, Ahmedabad, Other)
+   - Pin Code (number)
+   - Preferred Contact Time (dropdown: Morning, Afternoon, Evening)
+
+2. Application Details:
+   - Type of Application (dropdown: Domestic, Industrial, Agricultural, Commercial, Sewage, HVAC, Firefighting, Other)
+   - Purpose of Pump (text)
+   - Installation Type (dropdown: Surface, Submersible, Booster, Dewatering, Openwell, Borewell)
+   - Operating Medium (dropdown: Clean water, Muddy water, Sewage, Chemical, Hot water, Other)
+   - Water Source (dropdown: Overhead tank, Underground tank, Borewell, River, Sump, Other)
+   - Required Head (meters)
+   - Required Discharge (LPM or m³/hr)
+   - Total Pumping Distance (m)
+   - Height Difference (m)
+   - Pipe Size (inches)
+   - Power Supply Available (dropdown: Single Phase, Three Phase)
+   - Operating Hours per Day (number)
+   - Automation Needed (dropdown: Yes, No)
+   - Existing Pump Model (text)
+   - Upload Photos/Documents (file input, accept .jpg, .png, .pdf)
+
+3. Product Preferences:
+   - Preferred Brand (dropdown: Crompton, CG Power, Kirloskar, Open to suggestion)
+   - Pump Type Interested In (multi-select or checkboxes: Centrifugal, Jet, Submersible, Monoblock, Borewell, Booster, Self-Priming, Others)
+   - Material Preference (dropdown: Cast Iron, Stainless Steel, Bronze, Plastic, Open to suggestion)
+   - Motor HP/kW (number)
+   - Quantity Required (number)
+
+4. Submission:
+   - Consent Checkbox ('I authorize Bombay Engineering Syndicate to contact me regarding this inquiry.')
+   - Submit Button labeled 'Submit Inquiry'

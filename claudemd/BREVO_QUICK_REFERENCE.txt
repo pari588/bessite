@@ -1,0 +1,213 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    BREVO EMAIL INTEGRATION - QUICK REFERENCE                ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📋 CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /config.inc.php (Lines 125-131)
+
+  API Key:              xkeysib-6a91250f51af83f421394839e02c833568eeefff...
+  Sender Email:         info@bombayengg.net
+  Sender Name:          Bombay Engineering Syndicate
+  Admin Email:          manish.besyndicate@gmail.com
+  API URL:              https://api.brevo.com/v3
+
+
+📁 FILES MODIFIED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ /config.inc.php
+  → Added BREVO_API_KEY, BREVO_SENDER_EMAIL, ADMIN_NOTIFICATION_EMAIL
+
+✓ /core/brevo.inc.php (NEW - 670 lines)
+  → BrevoEmailService class
+  → Email sending functions
+  → Template builders
+
+✓ /xsite/mod/pump-inquiry/x-pump-inquiry-inc.php (Lines 413-426)
+  → Pump inquiry email integration
+
+✓ /xsite/mod/product-inquiry/x-product-inquiry.inc.php (Lines 121-133)
+  → Product inquiry email integration
+
+✓ /xsite/mod/page/x-page.inc.php (Lines 12-24)
+  → Contact form email integration
+
+
+🎯 FORMS WITH EMAIL NOTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. PUMP INQUIRY FORM
+   URL:     /pump-inquiry
+   Emails:  Customer confirmation + Admin notification
+   Handler: x-pump-inquiry-inc.php
+
+2. PRODUCT (MOTOR) INQUIRY FORM
+   URL:     /page/enquiry-form
+   Emails:  Customer confirmation + Admin notification
+   Handler: x-product-inquiry.inc.php
+
+3. CONTACT US FORM
+   URL:     /page/contact-us
+   Emails:  Customer confirmation + Admin notification
+   Handler: x-page.inc.php
+
+
+📧 EMAIL TEMPLATES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Located in: /core/brevo.inc.php
+
+Pump Inquiry:
+  • buildPumpInquiryConfirmationEmail()    → Customer email
+  • buildPumpInquiryAdminEmail()           → Admin email
+
+Product Inquiry:
+  • buildProductInquiryConfirmationEmail() → Customer email
+  • buildProductInquiryAdminEmail()        → Admin email
+
+Contact Form:
+  • buildContactUsConfirmationEmail()      → Customer email
+  • buildContactUsAdminEmail()             → Admin email
+
+
+🔧 KEY FUNCTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Service:
+  getBrevoService()                        → Get Brevo service instance
+  $brevo->isConfigured()                   → Check if API key is set
+  $brevo->sendEmail($params)               → Send email
+
+Pump Inquiry:
+  sendPumpInquiryEmail($data)              → Send pump confirmation + admin
+  sendPumpInquiryAdminEmail($data)         → Send admin notification only
+
+Product Inquiry:
+  sendProductInquiryEmail($data)           → Send product confirmation + admin
+  sendProductInquiryAdminEmail($data)      → Send admin notification only
+
+Contact Form:
+  sendContactUsEmail($data)                → Send contact confirmation + admin
+  sendContactUsAdminEmail($data)           → Send admin notification only
+
+
+⚡ QUICK TEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Open: https://www.bombayengg.net/pump-inquiry
+2. Fill form with test data
+3. Submit
+4. Check email inbox for confirmation
+5. Check manish.besyndicate@gmail.com for admin notification
+
+
+🔍 MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Brevo Dashboard:
+  → https://app.brevo.com
+  → Email Logs → Transactional Emails
+  → View delivery status, open rates, bounces
+
+Server Logs:
+  → Check PHP error_log for "Brevo" entries
+  → error_log("Brevo: ...")
+
+
+⚠️ TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: API not configured
+  → Check config.inc.php line 127
+  → Verify BREVO_API_KEY is not empty
+
+Problem: Invalid sender email
+  → Verify info@bombayengg.net in Brevo dashboard
+  → Go to Senders & Lists → Add Sender
+
+Problem: Authentication failed
+  → Copy full API key (including prefix xkeysib-)
+  → Re-paste into config.inc.php
+
+Problem: No emails received
+  → Check spam folder
+  → Check recipient email is valid
+  → Verify in Brevo dashboard for bounce/error
+
+Problem: Form submits but no email
+  → Check PHP error_log for errors
+  → API key might be invalid
+  → Verify Brevo account is active
+
+
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. BREVO_QUICK_START.md
+   → 5-minute setup guide
+   → Basic configuration
+   → Quick troubleshooting
+
+2. BREVO_SETUP_GUIDE.md
+   → Complete setup instructions
+   → Step-by-step configuration
+   → Email customization
+   → Production checklist
+
+3. BREVO_TECHNICAL_REFERENCE.md
+   → Architecture & API details
+   → Class & function reference
+   → Developer guide
+   → Testing procedures
+
+4. BREVO_IMPLEMENTATION_COMPLETE.md
+   → Implementation summary
+   → What was changed
+   → Testing guide
+   → Final status
+
+
+🌐 LINKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Brevo Dashboard:       https://app.brevo.com
+Brevo API Docs:        https://developers.brevo.com
+Brevo Support:         https://app.brevo.com/support
+API Status Page:       https://status.brevo.com
+
+
+✅ STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Implementation:        ✓ COMPLETE
+Configuration:         ✓ ACTIVE
+Testing:               ✓ READY
+Production:            ✓ LIVE
+
+All systems operational - Ready to send emails!
+
+
+💡 TIPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Email failures do NOT block form submissions
+• All email activities are logged
+• Check Brevo dashboard regularly for delivery status
+• Customize templates in /core/brevo.inc.php
+• Use error_log() to debug issues
+• Monitor Brevo rate limits (check plan)
+
+
+📞 SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Admin Email:           manish.besyndicate@gmail.com
+Brevo Support:         https://app.brevo.com/support
+Documentation:         See files above
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║  Last Updated: November 19, 2024 | Version: 1.0 | Status: Production Ready ║
+╚════════════════════════════════════════════════════════════════════════════╝

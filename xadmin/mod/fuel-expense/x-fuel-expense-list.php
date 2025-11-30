@@ -93,8 +93,16 @@ echo $strSearch;
                 </thead>
                 <tbody>
                     <?php
+                    $totalPaid = 0;
+                    $totalUnpaid = 0;
                     foreach ($DB->rows as $expense) {
                         $isPaid = $expense["paymentStatus"] === "Paid";
+                        if ($isPaid) {
+                            $totalPaid += $expense["expenseAmount"];
+                        } else {
+                            $totalUnpaid += $expense["expenseAmount"];
+                        }
+
                         $statusBadge = $isPaid ?
                             '<span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="updatePaymentStatus(' . $expense["fuelExpenseID"] . ', \'Unpaid\')">PAID</span>' :
                             '<span style="background-color: #ffc107; color: black; padding: 3px 8px; border-radius: 3px; cursor: pointer;" onclick="updatePaymentStatus(' . $expense["fuelExpenseID"] . ', \'Paid\')">UNPAID</span>';
@@ -125,6 +133,16 @@ echo $strSearch;
                         </tr>
                     <?php } ?>
                 </tbody>
+                <tfoot>
+                    <tr style='text-align:right;' class='trcolspan'>
+                        <th colspan='2'>&nbsp;</th>
+                        <th>Total Unpaid:</th>
+                        <th style="color: black;">₹ <?php echo number_format($totalUnpaid, 2); ?></th>
+                        <th>Total Paid:</th>
+                        <th style="color: black;">₹ <?php echo number_format($totalPaid, 2); ?></th>
+                        <th colspan='3'>&nbsp;</th>
+                    </tr>
+                </tfoot>
             </table>
 
         <?php } else { ?>

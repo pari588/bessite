@@ -1,0 +1,625 @@
+{
+  "Mini Pumps": [
+    {
+      "Product Name": "Mini Everest Mini Pump",
+      "Description": "Compact pump for gardening, lawn sprinkling",
+      "HP": "-",
+      "kW": "1.1",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "25mm x 25mm",
+      "No. of Stages": "-",
+      "ISI": "B.I.S. Compliant",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "AQUAGOLD DURA 150",
+      "Description": "Durable aquagold pump for household use",
+      "HP": "1.5",
+      "kW": "1.1",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "AQUAGOLD 150",
+      "Description": "Standard aquagold pump",
+      "HP": "1.5",
+      "kW": "1.1",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "WIN PLUS I",
+      "Description": "Window pump series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "25mm x 25mm",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "ULTIMO II",
+      "Description": "Entry-level pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "ULTIMO I",
+      "Description": "Basic pump model",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "STAR PLUS I",
+      "Description": "Star series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "STAR DURA I",
+      "Description": "Durable star series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "PRIMO I",
+      "Description": "Premium pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "NILE PLUS I",
+      "Description": "Nile series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "NILE DURA I",
+      "Description": "Durable nile series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MINI SUMO I",
+      "Description": "Compact sumo pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MINI MASTERPLUS I",
+      "Description": "Mini master series plus",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "25mm x 25mm",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MINI MASTER I",
+      "Description": "Mini master pump with self-priming up to 7.5m",
+      "HP": "1.0",
+      "kW": "0.74",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "25mm x 25mm",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MINI MARVEL I",
+      "Description": "Marvel series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "GLORY PLUS I",
+      "Description": "Glory series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MINI CREST I",
+      "Description": "Crest series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "CHAMP PLUS I",
+      "Description": "Champion series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MASTER PLUS I",
+      "Description": "Master series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "MASTER DURA I",
+      "Description": "Durable master series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "GLIDE PLUS II",
+      "Description": "Glide series pump version 2",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "GLIDE PLUS I",
+      "Description": "Glide series pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "FLOMAX PLUS I",
+      "Description": "Flomax pump series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "CHAMP DURA I",
+      "Description": "Durable champion series",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "DMB-CMB Pumps": [
+    {
+      "Product Name": "CMB10NV PLUS",
+      "Description": "Centrifugal monoblock pump, 0.5 HP",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "B.I.S. Compliant",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "DMB10D PLUS",
+      "Description": "Centrifugal monoblock pump, 1.0 HP, max head 54m",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "B.I.S. Compliant",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "DMB10DCSL",
+      "Description": "Centrifugal monoblock pump, 1440 RPM",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "B.I.S. Compliant",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "CMB05NV PLUS",
+      "Description": "Centrifugal monoblock pump with brass impeller",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "B.I.S. Compliant",
+      "MNRE": "-"
+    }
+  ],
+  "Shallow Well Pumps": [
+    {
+      "Product Name": "SWJ1",
+      "Description": "Shallow well jet pump with 8m suction",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ100AP-36 PLUS",
+      "Description": "Shallow well jet pump",
+      "HP": "-",
+      "kW": "-",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ100AT-36 PLUS",
+      "Description": "Shallow well jet pump with tank",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ100A-36 PLUS",
+      "Description": "Shallow well jet pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ50AT-30 PLUS",
+      "Description": "Shallow well pump with tank, 0.5 HP",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ50AP-30 PLUS",
+      "Description": "Shallow well pump, 0.5 HP",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "SWJ50A-30 PLUS",
+      "Description": "Shallow well pump",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "3-Inch Borewell Submersibles": [
+    {
+      "Product Name": "3W12AP1D",
+      "Description": "3-inch water-filled submersible pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "3 inch (75mm)",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "3W10AP1D",
+      "Description": "3-inch water-filled submersible pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "3 inch (75mm)",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "3W10AK1A",
+      "Description": "3-inch water-filled submersible pump",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "3 inch (75mm)",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "4-Inch Borewell Submersibles": [
+    {
+      "Product Name": "4W7BU1AU",
+      "Description": "4-inch water-filled submersible, 7 stages",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "7",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4W14BU2EU",
+      "Description": "4-inch water-filled submersible, 14 stages, 301ft head",
+      "HP": "2.0",
+      "kW": "1.5",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "14",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4W10BU1AU",
+      "Description": "4-inch water-filled submersible, 10 stages",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "10",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4W14BF1.5E",
+      "Description": "4-inch water-filled submersible, 14 stages",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "14",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4W12BF1.5E",
+      "Description": "4-inch water-filled submersible, 12 stages",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "12",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4W10RA2C-50",
+      "Description": "4-inch water-filled submersible, 10 stages, 2.0 HP",
+      "HP": "2.0",
+      "kW": "1.5",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "10",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "4VO10BU1EU",
+      "Description": "4-inch oil-filled submersible, 10 stages",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "4 inch (100mm)",
+      "No. of Stages": "10",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "Residential Openwell Pumps": [
+    {
+      "Product Name": "OWE12(1PH)Z-28",
+      "Description": "Centrifugal openwell pump with anti-rust coating",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "OWE052(1PH)Z-21FS",
+      "Description": "Centrifugal openwell submersible pump",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "Pressure Booster Pumps": [
+    {
+      "Product Name": "Mini Force I",
+      "Description": "Automatic pressure booster pump with dry run protection",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "CFMSMB5D1.00-V24",
+      "Description": "Centrifugal booster pump, single stage",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "1",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "CFMSMB3D0.50-V24",
+      "Description": "Compact centrifugal booster pump",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "1",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "Mini Force II",
+      "Description": "Energy-efficient booster pump",
+      "HP": "0.5",
+      "kW": "0.37",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "AB-15",
+      "Description": "Automatic booster controller",
+      "HP": "Up to 1 HP",
+      "kW": "-",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "Control Panels": [
+    {
+      "Product Name": "ARMOR1.5-DSU",
+      "Description": "Control panel with settable OFF-timers, 1.5 HP",
+      "HP": "1.5",
+      "kW": "1.1",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    },
+    {
+      "Product Name": "ARMOR1.0-CQU",
+      "Description": "Control panel compatible with submersible pumps, 1.0 HP",
+      "HP": "1.0",
+      "kW": "0.75",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ],
+  "Circulatory In-line Pumps": [
+    {
+      "Product Name": "CIL120-9",
+      "Description": "In-line pump for hot water circulation, handles up to 90°C",
+      "HP": "0.16",
+      "kW": "0.12",
+      "Supply Phase": "Single Phase",
+      "Delivery Pipe": "-",
+      "No. of Stages": "-",
+      "ISI": "-",
+      "MNRE": "-"
+    }
+  ]
+}

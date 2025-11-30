@@ -1,0 +1,10 @@
+[✓ INSERT] SWJ1 - Detail record inserted with MRP ₹16,200.00
+[✓ INSERT] SWJ100AT-36 PLUS - Detail record inserted with MRP ₹16,200.00
+[✓ UPDATE] SWJ100AP-36 PLUS - MRP updated to ₹16,200.00
+[✓ UPDATE] SWJ100A-36 PLUS - MRP updated to ₹16,200.00
+[✓ UPDATE] SWJ50A-30 PLUS - MRP updated to ₹11,050.00
+[✓ UPDATE] SWJ50AP-30 PLUS - MRP updated to ₹10,225.00
+[✓ INSERT] SWJ50AT-30 PLUS - Detail record inserted with MRP ₹10,850.00
+[✓ UPDATE] SWJ100A-36 PLUS - MRP updated to ₹13,125.00
+[✓ UPDATE] SWJ100AP-36 PLUS - MRP updated to ₹12,025.00
+[✓ UPDATE] SWJ100AT-36 PLUS - MRP updated to ₹12,875.00

@@ -1,0 +1,22 @@
+# Robots.txt for Bombay Engineering Syndicate
+# Allow all bots to crawl the site
+
+User-agent: *
+Allow: /
+Disallow: /xadmin/
+Disallow: /admin/
+Disallow: /config/
+Disallow: /core/
+Disallow: /lib/
+Disallow: /uploads/temp/
+Disallow: /?offset=
+
+# Specific rules for search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Primary sitemaps
+Sitemap: https://www.bombayengg.net/sitemap.xml

@@ -238,6 +238,7 @@ ul {
   overflow: hidden;
   letter-spacing: 0.2em;
   z-index: 1;
+  border-radius: 25px;
 
   text-align: center;
 }
@@ -277,7 +278,7 @@ ul {
   font-size: 18px;
   color: var(--mellis-white);
   background-color: var(--mellis-base);
-  border-radius: 3px;
+  border-radius: 25px;
   padding: 17px 61px 16px;
   -webkit-transition: all 0.5s linear;
   transition: all 0.5s linear;
@@ -331,7 +332,7 @@ ul {
   font-weight: 400;
   background-color: var(--mellis-base);
   padding: 11.5px 35px 11.5px;
-  border-radius: 2px;
+  border-radius: 25px;
   overflow: hidden;
   -webkit-transition: all 0.5s linear;
   transition: all 0.5s linear;
@@ -1012,7 +1013,7 @@ ul {
   -ms-flex-align: center;
   align-items: center;
   color: var(--mellis-gray);
-  font-weight: 600;
+  font-weight: 600 !important;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   position: relative;
@@ -1109,7 +1110,7 @@ ul {
   font-size: 18px;
   line-height: 30px;
   color: var(--mellis-black);
-  font-weight: 500;
+  font-weight: 600 !important;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4259,6 +4260,21 @@ ul {
 
 .about-one__right .section-title {
   margin-bottom: 32px;
+}
+
+/* Change grey tick circles to blue in About Us page */
+.about-one li span,
+.about-one ul span,
+.about-one ol span {
+  background-color: #157bba !important;
+  color: white !important;
+}
+
+.about-one__right h1,
+.about-one__right h2,
+.about-one__right h3 {
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .about-one__points {

@@ -1,0 +1,41 @@
+[✓] MINI MASTER I - Updated to ₹12,025.00
+[✓] MINI MASTER II - Updated to ₹12,025.00
+[✓] MINI MASTERPLUS I - Updated to ₹13,050.00
+[✓] MINI MASTERPLUS II - Updated to ₹13,050.00
+[✓] MINI MARVEL I - Updated to ₹7,950.00
+[✓] MINI MARVEL II - Updated to ₹7,950.00
+[✓] MINI CREST I - Updated to ₹6,375.00
+[✓] MINI CREST II - Updated to ₹6,375.00
+[✓] MINI SUMO I - Updated to ₹6,025.00
+[✓] CHAMP PLUS I - Updated to ₹6,025.00
+[✓] CHAMP PLUS II - Updated to ₹6,025.00
+[✓] CHAMP DURA I - Updated to ₹6,375.00
+[✓] CHAMP DURA II - Updated to ₹6,375.00
+[✓] FLOMAX PLUS I - Updated to ₹12,900.00
+[✓] FLOMAX PLUS II - Updated to ₹12,900.00
+[✓] GLIDE PLUS II - Updated to ₹5,850.00
+[✓] GLIDE PLUS I - Updated to ₹5,850.00
+[✓] GLIDE PLUS II - Updated to ₹4,525.00
+[✓] MASTER PLUS I - Updated to ₹12,350.00
+[✓] MASTER PLUS II - Updated to ₹12,350.00
+[✓] MASTER DURA I - Updated to ₹12,700.00
+[✓] MASTER DURA II - Updated to ₹12,700.00
+[✓] NILE PLUS I - Updated to ₹5,850.00
+[✓] NILE DURA I - Updated to ₹6,700.00
+[✓] PRIMO I - Updated to ₹5,400.00
+[✓] STAR PLUS I - Updated to ₹8,950.00
+[✓] STAR PLUS II - Updated to ₹8,950.00
+[✓] STAR DURA I - Updated to ₹9,525.00
+[✓] ULTIMO II - Updated to ₹5,675.00
+[✓] ULTIMO I - Updated to ₹5,675.00
+[✓] ULTIMO II - Updated to ₹4,400.00
+[✓] WIN PLUS I - Updated to ₹5,400.00
+[✓] Mini Everest Mini Pump - Updated to ₹22,775.00
+[✓] AQUAGOLD 150 - Updated to ₹15,550.00
+[✓] AQUAGOLD DURA 150 - Updated to ₹15,550.00
+[✓] AQUAGOLD 50-30 - Updated to ₹8,575.00
+[✓] AQUAGOLD 100-33 - Updated to ₹10,525.00
+[✓] DMB10D PLUS - Updated to ₹17,925.00
+[✓] DMB10DCSL - Updated to ₹17,850.00
+[✓] CMB05NV PLUS - Updated to ₹12,575.00
+[✓] CMB10NV PLUS - Updated to ₹16,150.00

@@ -96,6 +96,7 @@ CREATE TABLE `mx_fuel_expense` (
 
 **Key Features:**
 - Displays all active fuel expenses in a table
+- Displays a summary of total paid and unpaid amounts in the table footer
 - Search/filter by:
   - Vehicle
   - Payment status (Paid/Unpaid)
@@ -259,6 +260,10 @@ CREATE TABLE `mx_fuel_expense` (
 - Shows 20 records per page (configurable)
 - Navigation at top and bottom
 - "Offset" parameter for page number
+
+### 9. Totals Summary ✅
+- Shows total paid and unpaid amounts in the table footer
+- Updates based on search filters
 
 ---
 

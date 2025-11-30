@@ -1,0 +1,44 @@
+# Robots.txt for Bombay Engineering Syndicate
+# Last Updated: 2025-11-09
+
+User-agent: *
+Allow: /
+
+# Allow all indexable content
+Allow: /pump/
+Allow: /motor/
+Allow: /knowledge-center/
+Allow: /contact/
+
+# Disallow administrative and backend paths
+Disallow: /xadmin/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /cgi-bin/
+
+# Disallow temporary or test pages
+Disallow: /temp/
+Disallow: /test/
+Disallow: /debug/
+Disallow: /phpmyadmin/
+
+# Disallow PHP files that shouldn't be crawled directly
+Disallow: /core/
+Disallow: /lib/
+Disallow: /config/
+
+# Google Bot specific rules for faster crawling
+User-agent: Googlebot
+Allow: /
+
+# Bing Bot specific rules
+User-agent: Bingbot
+Allow: /
+
+# Allow crawl delay for other bots
+User-agent: *
+Crawl-delay: 1
+
+# Sitemap locations
+Sitemap: https://www.bombayengg.net/sitemap.xml
+Sitemap: https://www.bombayengg.net/sitemap_index.xml
