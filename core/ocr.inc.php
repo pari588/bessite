@@ -1,0 +1,454 @@
+<?php
+/**
+ * OCR Integration Module - Tesseract
+ * Handles bill image processing, text extraction, and field parsing
+ *
+ * Date: November 2025
+ * Project: Fuel Expenses Management System
+ */
+
+/**
+ * Process fuel bill image using Tesseract OCR
+ *
+ * @param string $imagePath - Full path to bill image file
+ * @param int $vehicleID - Optional vehicle ID for context
+ * @return array - Array with status, raw text, extracted fields, and confidence scores
+ */
+function processBillOCR($imagePath = "", $vehicleID = 0) {
+    $response = array(
+        "status" => "error",
+        "message" => "",
+        "rawText" => "",
+        "extractedData" => array(
+            "date" => "",
+            "amount" => "",
+            "dateConfidence" => 0,
+            "amountConfidence" => 0
+        ),
+        "overallConfidence" => 0,
+        "debug" => array()
+    );
+
+    // Validate image path
+    if (!file_exists($imagePath)) {
+        $response["message"] = "Image file not found: " . $imagePath;
+        return $response;
+    }
+
+    // Check file size (limit to 5MB)
+    if (filesize($imagePath) > 5242880) {
+        $response["message"] = "File size exceeds 5MB limit";
+        return $response;
+    }
+
+    // Get Tesseract path from config
+    $tesseractPath = defined('TESSERACT_PATH') ? TESSERACT_PATH : '/usr/bin/tesseract';
+    $tesseractLang = defined('TESSERACT_LANG') ? TESSERACT_LANG : 'eng';
+
+    // Check if Tesseract is installed
+    if (!file_exists($tesseractPath)) {
+        $response["message"] = "Tesseract OCR not found at: " . $tesseractPath;
+        return $response;
+    }
+
+    // Handle PDF files by converting to image first
+    $tempDir = sys_get_temp_dir();
+    $fileExt = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+    $processPath = $imagePath;
+    $tempImageFile = null;
+
+    // Detect actual file type (not just extension)
+    $fileType = mime_content_type($imagePath);
+    $isPDF = ($fileExt === 'pdf' || strpos($fileType, 'pdf') !== false);
+
+    if ($isPDF) {
+        // Try multiple PDF conversion methods
+
+        // Method 1: Try pdftoppm (first choice)
+        $pdftoppmPath = trim(shell_exec("which pdftoppm 2>/dev/null"));
+        if (!empty($pdftoppmPath)) {
+            $tempImageFile = $tempDir . '/pdf_' . uniqid() . '.png';
+            // pdftoppm creates files with extension appended to output prefix
+            // IMPORTANT: Use -png flag for PNG output (more reliable)
+            $outputPrefix = substr($tempImageFile, 0, -4);
+            $pdfCommand = escapeshellcmd($pdftoppmPath) . ' -singlefile -png ' . escapeshellarg($imagePath) . ' ' . escapeshellarg($outputPrefix) . ' 2>&1';
+            $pdfOutput = array();
+            $pdfReturnCode = 0;
+            exec($pdfCommand, $pdfOutput, $pdfReturnCode);
+
+            // Check if file was created (success)
+            if (file_exists($tempImageFile) && $pdfReturnCode === 0) {
+                $processPath = $tempImageFile;
+            } else {
+                // pdftoppm failed, try next method
+                $tempImageFile = null;
+                error_log("[OCR] pdftoppm conversion failed with code: " . $pdfReturnCode . ", expected file: " . $tempImageFile . ", output: " . implode(" ", $pdfOutput));
+            }
+        }
+
+        // Method 2: Try ImageMagick convert (fallback)
+        if (empty($tempImageFile)) {
+            $tempImageFile = $tempDir . '/pdf_' . uniqid() . '.png';
+            // Convert PDF to PNG at 150 DPI for better OCR quality
+            $convertPath = trim(shell_exec("which convert 2>/dev/null"));
+            if (!empty($convertPath)) {
+                $pdfCommand = escapeshellcmd($convertPath) . ' -density 150 ' . escapeshellarg($imagePath) . ' ' . escapeshellarg($tempImageFile) . ' 2>&1';
+                $pdfOutput = array();
+                $pdfReturnCode = 0;
+                exec($pdfCommand, $pdfOutput, $pdfReturnCode);
+
+                if ($pdfReturnCode === 0 && file_exists($tempImageFile)) {
+                    $processPath = $tempImageFile;
+                } else {
+                    // convert also failed
+                    $tempImageFile = null;
+                    error_log("[OCR] ImageMagick convert failed with code: " . $pdfReturnCode . ", output: " . implode(" ", $pdfOutput));
+                }
+            }
+        }
+
+        // If conversion failed, log warning but try direct Tesseract processing anyway
+        if (empty($tempImageFile)) {
+            error_log("[OCR] PDF conversion failed, attempting direct Tesseract processing on: " . $imagePath);
+        }
+    }
+
+    // Create temporary output file
+    $tempOutputFile = $tempDir . '/' . 'ocr_' . uniqid();
+
+    // Run Tesseract command
+    // Format: tesseract input.png output -l eng
+    $command = escapeshellcmd($tesseractPath) . ' ' .
+               escapeshellarg($processPath) . ' ' .
+               escapeshellarg($tempOutputFile) . ' ' .
+               '-l ' . escapeshellarg($tesseractLang) .
+               ' 2>&1';
+
+    error_log("[OCR] Running Tesseract: " . $command);
+    error_log("[OCR] Input file: " . $processPath . " (exists: " . (file_exists($processPath) ? "yes" : "NO") . ")");
+
+    $output = array();
+    $returnCode = 0;
+    exec($command, $output, $returnCode);
+
+    error_log("[OCR] Tesseract return code: " . $returnCode);
+    if (!empty($output)) {
+        error_log("[OCR] Tesseract output: " . implode(" | ", $output));
+    }
+
+    // Check if Tesseract succeeded
+    if ($returnCode !== 0) {
+        $response["message"] = "Tesseract processing failed with code: " . $returnCode;
+        $response["debug"]["command"] = $command;
+        $response["debug"]["output"] = implode(" | ", $output);
+        $response["debug"]["inputFile"] = $processPath;
+        $response["debug"]["fileExists"] = file_exists($processPath);
+        // Clean up temp PDF image if created
+        if (!empty($tempImageFile) && file_exists($tempImageFile)) {
+            @unlink($tempImageFile);
+        }
+        error_log("[OCR] OCR failed, debug: " . json_encode($response["debug"]));
+        return $response;
+    }
+
+    // Read OCR output
+    $outputFile = $tempOutputFile . '.txt';
+    if (!file_exists($outputFile)) {
+        $response["message"] = "Tesseract output file not created";
+        // Clean up temp PDF image if created
+        if (!empty($tempImageFile) && file_exists($tempImageFile)) {
+            @unlink($tempImageFile);
+        }
+        return $response;
+    }
+
+    $ocrText = file_get_contents($outputFile);
+    $response["rawText"] = trim($ocrText);
+
+    // Clean up temporary files
+    @unlink($outputFile);
+    @unlink($tempOutputFile);
+    // Clean up temp PDF image if created
+    if (!empty($tempImageFile) && file_exists($tempImageFile)) {
+        @unlink($tempImageFile);
+    }
+
+    // Extract fields from OCR text
+    $extracted = extractBillFields($ocrText);
+    $response["extractedData"] = $extracted["fields"];
+    $response["overallConfidence"] = $extracted["overallConfidence"];
+    $response["status"] = "success";
+    $response["message"] = "OCR processing completed successfully";
+
+    return $response;
+}
+
+/**
+ * Extract bill fields (date and amount) from OCR text
+ *
+ * @param string $ocrText - Raw OCR extracted text
+ * @return array - Extracted fields with confidence scores
+ */
+function extractBillFields($ocrText = "") {
+    $result = array(
+        "fields" => array(
+            "date" => "",
+            "amount" => "",
+            "dateConfidence" => 0,
+            "amountConfidence" => 0
+        ),
+        "overallConfidence" => 0
+    );
+
+    if (empty($ocrText)) {
+        return $result;
+    }
+
+    $lines = explode("\n", strtolower($ocrText));
+
+    // Extract DATE
+    $dateConfidence = extractDate($lines, $result["fields"]);
+    $result["fields"]["dateConfidence"] = $dateConfidence;
+
+    // Extract AMOUNT
+    $amountConfidence = extractAmount($lines, $result["fields"]);
+    $result["fields"]["amountConfidence"] = $amountConfidence;
+
+    // Calculate overall confidence (average of both fields)
+    $result["overallConfidence"] = intval(($dateConfidence + $amountConfidence) / 2);
+
+    return $result;
+}
+
+/**
+ * Extract date from OCR text
+ * Looks for common date patterns and formats
+ *
+ * @param array $lines - Array of text lines from OCR
+ * @param array $fields - Reference to fields array to store result
+ * @return int - Confidence score (0-100)
+ */
+function extractDate(&$lines, &$fields) {
+    $confidence = 0;
+
+    // Common date patterns (most Indian bills use DD/MM/YYYY or DD-MM-YYYY)
+    // Added word boundaries and optional non-numeric prefix to handle OCR artifacts like {7-11-2026
+    $datePatterns = array(
+        '/(?:^|[^\d])(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/', // DD/MM/YYYY or DD-MM-YYYY (with optional prefix)
+        '/(?:^|[^\d])(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/', // YYYY/MM/DD (with optional prefix)
+        '/(0[1-9]|[12]\d|3[01])\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{4})/', // DD Mon YYYY
+        '/(\d{1,2})\s+(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{4})/' // DD Month YYYY
+    );
+
+    // Search through lines for date matches
+    foreach ($lines as $line) {
+        // Skip very short lines
+        if (strlen($line) < 5) continue;
+
+        // Try each pattern
+        foreach ($datePatterns as $pattern) {
+            if (preg_match($pattern, $line, $matches)) {
+                // Validate and format date
+                if (isset($matches[3])) {
+                    // Check if it looks like a valid year
+                    // Allow up to 2 years in the future to handle system clock issues
+                    $year = intval($matches[3]);
+                    $currentYear = intval(date('Y'));
+                    if ($year >= 2000 && $year <= ($currentYear + 2)) {
+                        // Extract month and day
+                        if (is_numeric($matches[1]) && is_numeric($matches[2])) {
+                            $day = intval($matches[1]);
+                            $month = intval($matches[2]);
+
+                            // Validate day and month
+                            if ($day >= 1 && $day <= 31 && $month >= 1 && $month <= 12) {
+                                // Format as YYYY-MM-DD
+                                $dateStr = sprintf("%04d-%02d-%02d", $year, $month, $day);
+
+                                // Verify it's a valid date
+                                if (strtotime($dateStr) !== false) {
+                                    $fields["date"] = $dateStr;
+                                    return 95; // High confidence for clear date match
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // If no clear match, try to find any number that looks like a date
+    foreach ($lines as $line) {
+        if (preg_match_all('/\d{1,4}/', $line, $numbers)) {
+            $nums = $numbers[0];
+            if (count($nums) >= 3) {
+                // Try to interpret as date
+                $possibleDate = interpretAsDate($nums);
+                if ($possibleDate !== false) {
+                    $fields["date"] = $possibleDate;
+                    return 60; // Lower confidence for guessed date
+                }
+            }
+        }
+    }
+
+    return $confidence;
+}
+
+/**
+ * Try to interpret an array of numbers as a date
+ *
+ * @param array $numbers - Array of numbers extracted from text
+ * @return string|false - YYYY-MM-DD format or false if not valid
+ */
+function interpretAsDate($numbers = array()) {
+    if (empty($numbers)) return false;
+
+    foreach ($numbers as $k => $num) {
+        // Look for 4-digit year
+        if (strlen($num) === 4 && intval($num) >= 2000 && intval($num) <= date('Y')) {
+            $year = intval($num);
+
+            // Look for two more 1-2 digit numbers as month/day
+            if ($k >= 2) {
+                $month = intval($numbers[$k - 2]);
+                $day = intval($numbers[$k - 1]);
+
+                if ($month >= 1 && $month <= 12 && $day >= 1 && $day <= 31) {
+                    $dateStr = sprintf("%04d-%02d-%02d", $year, $month, $day);
+                    if (strtotime($dateStr) !== false) {
+                        return $dateStr;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ * Extract amount from OCR text
+ * Looks for currency amounts (Indian Rupees)
+ *
+ * @param array $lines - Array of text lines from OCR
+ * @param array $fields - Reference to fields array to store result
+ * @return int - Confidence score (0-100)
+ */
+function extractAmount(&$lines, &$fields) {
+    $confidence = 0;
+    $foundAmounts = array();
+
+    // Patterns for currency amounts
+    $amountPatterns = array(
+        '/(?:rs|रु|₹)\s*\.?\s*(\d+(?:[,.\s]\d{2})?)/i', // Rs. 500, रु 500, ₹500
+        '/(\d+(?:[,.\s]\d{2})?)\s*(?:rs|रु|₹)/i', // 500 Rs, 500 रु
+        '/total\s*[\:\=\s]*(?:rs|₹)?\s*(\d+(?:[,.\s]\d{2})?)/i', // Total: 500
+        '/amount\s*[\:\=\s]*(?:rs|₹)?\s*(\d+(?:[,.\s]\d{2})?)/i', // Amount: 500
+        '/paid\s*[\:\=\s]*(?:rs|₹)?\s*(\d+(?:[,.\s]\d{2})?)/i', // Paid: 500
+    );
+
+    // Search through lines
+    foreach ($lines as $line) {
+        foreach ($amountPatterns as $pattern) {
+            if (preg_match($pattern, $line, $matches)) {
+                if (isset($matches[1])) {
+                    // Clean up the amount (remove commas, spaces)
+                    $amountStr = $matches[1];
+                    $amountStr = str_replace(array(',', ' '), '', $amountStr);
+
+                    // Replace dots with decimal if needed
+                    if (preg_match('/\.(\d{2})$/', $amountStr)) {
+                        // Valid decimal format
+                        $amount = floatval($amountStr);
+                    } else {
+                        // Try to parse
+                        $amount = floatval($amountStr);
+                    }
+
+                    // Validate amount (should be > 0 and < 100000 for fuel)
+                    if ($amount > 0 && $amount < 100000) {
+                        $foundAmounts[] = array(
+                            "amount" => $amount,
+                            "confidence" => 90
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    // If we found amounts with currency symbols, use highest confidence one
+    if (!empty($foundAmounts)) {
+        usort($foundAmounts, function($a, $b) {
+            return $b['confidence'] - $a['confidence'];
+        });
+
+        $fields["amount"] = number_format($foundAmounts[0]["amount"], 2, '.', '');
+        return $foundAmounts[0]["confidence"];
+    }
+
+    // Fallback: look for large numbers that might be amounts
+    $allNumbers = array();
+    foreach ($lines as $line) {
+        if (preg_match_all('/(\d+(?:[.,]\d{2})?)/', $line, $matches)) {
+            foreach ($matches[1] as $num) {
+                $num = str_replace(',', '.', $num);
+                $amount = floatval($num);
+                if ($amount > 100 && $amount < 100000) {
+                    $allNumbers[] = $amount;
+                }
+            }
+        }
+    }
+
+    // Use the most common amount
+    if (!empty($allNumbers)) {
+        $counts = array_count_values(array_map('intval', $allNumbers));
+        arsort($counts);
+        $mostCommon = key($counts);
+        $fields["amount"] = number_format($mostCommon, 2, '.', '');
+        return 50; // Lower confidence for guessed amount
+    }
+
+    return $confidence;
+}
+
+/**
+ * Validate extracted bill data
+ *
+ * @param array $extractedData - Extracted fields from OCR
+ * @return array - Validation result with errors
+ */
+function validateBillData($extractedData = array()) {
+    $errors = array();
+
+    // Validate date
+    if (empty($extractedData["date"])) {
+        $errors["date"] = "Date not found in bill";
+    } else {
+        if (strtotime($extractedData["date"]) === false) {
+            $errors["date"] = "Invalid date format";
+        }
+    }
+
+    // Validate amount
+    if (empty($extractedData["amount"])) {
+        $errors["amount"] = "Amount not found in bill";
+    } else {
+        $amount = floatval($extractedData["amount"]);
+        if ($amount <= 0) {
+            $errors["amount"] = "Amount must be greater than 0";
+        }
+        if ($amount > 100000) {
+            $errors["amount"] = "Amount seems too high for fuel purchase";
+        }
+    }
+
+    return array(
+        "valid" => empty($errors),
+        "errors" => $errors
+    );
+}
+
+?>
