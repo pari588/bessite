@@ -74,7 +74,7 @@ $siteSettingInfo = getSiteInfo();
                     ?>
                     <?php echo $userName; ?>
                 </strong></span>
-                <a href="javascript:void(0)" class="thm-btn user-Logout">Logout</a>
+                <button type="button" class="thm-btn user-Logout">Logout</button>
             </div>
             <?php } ?>
         </header>

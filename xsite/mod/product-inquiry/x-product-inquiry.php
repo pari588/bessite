@@ -149,7 +149,7 @@ $MXFRM->xAction = "saveProductInquiry";
 			</div>
 			<?php echo $MXFRM->closeForm(); ?>
 			<input type="hidden" name="pageType" id="pageType" value="add" />
-			<a href="javascript:void(0)" class="fa-save button thm-btn" rel="productInquiryForm"> save </a>
+			<button type="button" class="fa-save button thm-btn" rel="productInquiryForm"> save </button>
 		</form>
 	</div>
 </section>

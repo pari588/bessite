@@ -257,6 +257,11 @@ ul {
   z-index: -1;
 }
 
+/* Boxed style for Enquiry buttons */
+.btn-enquiry-boxed {
+  border-radius: 0 !important;
+}
+
 .thm-btn:hover:before {
   transform: translateY(0);
   width: 100%;

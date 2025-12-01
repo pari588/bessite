@@ -63,7 +63,7 @@
                 </ul>
                 <?php echo $MXFRM->closeForm(); ?>
                 <input type="hidden" name="pageType" id="pageType" value="add" />
-                <a href="javascript:void(0)" class="fa-save thm-btn" rel="leaveUserFrm"> Save </a>
+                <button type="button" class="fa-save thm-btn" rel="leaveUserFrm"> Save </button>
             </form>
         </div>
 </div>

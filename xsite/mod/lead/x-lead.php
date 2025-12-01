@@ -50,7 +50,7 @@ $MXFRM = new mxForm();
                 </ul>
                 <?php echo $MXFRM->closeForm(); ?>
                 <input type="hidden" name="pageType" id="pageType" value="add" />
-                <a href="javascript:void(0)" class="fa-save thm-btn" rel="leadUserFrm"> Save </a>
+                <button type="button" class="fa-save thm-btn" rel="leadUserFrm"> Save </button>
             </form>
         </div>
     <?php } else {
@@ -65,7 +65,7 @@ $MXFRM = new mxForm();
                 </ul>
                 <?php echo $MXFRM->closeForm(); ?>
                 <p class="e" id="leadPinErr"></p>
-                <a href="javascript:void(0)" class="fa-save thm-btn" rel="verifyPinFrm"> Login </a>
+                <button type="button" class="fa-save thm-btn" rel="verifyPinFrm"> Login </button>
             </form>
         </div>
         <!-- Login form end. -->

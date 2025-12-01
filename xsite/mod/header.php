@@ -233,6 +233,8 @@ $siteSettingInfo = getSiteInfo();
     </script>
 
     <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="shortcut icon" type="image/x-icon" />
+    <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="icon" type="image/x-icon" />
+    <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="apple-touch-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -352,8 +354,8 @@ $siteSettingInfo = getSiteInfo();
                                 <?php } ?>
                             </div>
                             <div class="main-header__btn-box">
-                                <a href="<?php echo SITEURL . '/product-inquiry/' ?>" class="thm-btn main-header__btn">Motor Enquiry form</a>
-                                <a href="<?php echo SITEURL . '/pump-inquiry/' ?>" class="thm-btn main-header__btn">Pump Enquiry form</a>
+                                <a href="<?php echo SITEURL . '/product-inquiry/' ?>" class="thm-btn main-header__btn btn-enquiry-boxed">Motor Enquiry form</a>
+                                <a href="<?php echo SITEURL . '/pump-inquiry/' ?>" class="thm-btn main-header__btn btn-enquiry-boxed">Pump Enquiry form</a>
                             </div>
                         </div>
                     </div>
@@ -417,10 +419,10 @@ $siteSettingInfo = getSiteInfo();
                             </div>
                         </div>
                         <div class="main-header__btn-box">
-                            <a href="<?php echo SITEURL . '/product-inquiry/' ?>" class="thm-btn main-header__btn">Motor Enquiry form</a>
+                            <a href="<?php echo SITEURL . '/product-inquiry/' ?>" class="thm-btn main-header__btn btn-enquiry-boxed">Motor Enquiry form</a>
                         </div>
                         <div class="main-header__btn-box">
-                            <a href="<?php echo SITEURL . '/pump-inquiry/' ?>" class="thm-btn main-header__btn">Pump Enquiry form</a>
+                            <a href="<?php echo SITEURL . '/pump-inquiry/' ?>" class="thm-btn main-header__btn btn-enquiry-boxed">Pump Enquiry form</a>
                         </div>
                     </div>
                 </div>

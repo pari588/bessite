@@ -21,7 +21,7 @@ $MXFRM->xAction = "verifyUserPin";
                 </ul>
                 <?php echo $MXFRM->closeForm(); ?>
                 <p class="e" id="leavePinErr"></p>
-                <a href="javascript:void(0)" class="fa-save thm-btn" rel="verifyPinFrm"> Login </a>
+                <button type="button" class="fa-save thm-btn" rel="verifyPinFrm"> Login </button>
             </form>
         </div>
 </div>
