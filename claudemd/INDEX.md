@@ -7,12 +7,21 @@
 
 ## 📚 Quick Navigation
 
+### ⚠️ MANDATORY: Deployment & Backup Policy
+👉 **[DEPLOYMENT_AND_BACKUP_POLICY.md](DEPLOYMENT_AND_BACKUP_POLICY.md)** - READ FIRST
+- Mandatory workflow for ANY code changes
+- Backup procedures (files and database)
+- GitHub commit requirements
+- Emergency restore procedures
+- Best for: Understanding how to safely make changes
+
 ### For Understanding the Site Architecture
 👉 **[SITE_STRUCTURE_OVERVIEW.md](SITE_STRUCTURE_OVERVIEW.md)**
 - Complete site structure and organization
 - Database schema and relationships
 - Frontend (xsite) and Backend (xadmin) architecture
 - Configuration and core files
+- GitHub authentication and backup policy
 - Best for: Learning how the system works
 
 ### For Image Optimization Details
@@ -72,12 +81,13 @@
 
 | Document | Sections | Words | Purpose |
 |----------|----------|-------|---------|
-| SITE_STRUCTURE_OVERVIEW.md | 13 | 4000+ | Architecture |
+| DEPLOYMENT_AND_BACKUP_POLICY.md | 12 | 3500+ | Mandatory Policy |
+| SITE_STRUCTURE_OVERVIEW.md | 15 | 4500+ | Architecture |
 | KNOWLEDGE_CENTER_IMAGE_OPTIMIZATION.md | 15 | 3500+ | Technical Report |
 | SESSION_SUMMARY_NOV21_2025.md | 15 | 3000+ | Session Overview |
 | QUICK_REFERENCE_GUIDE.md | 10 | 2000+ | Quick Access |
 | SEO_CRAWLABILITY_FIXES.md | 14 | 3000+ | SEO Solutions |
-| **TOTAL** | **56** | **15,500+** | **Complete KB** |
+| **TOTAL** | **81** | **19,500+** | **Complete KB** |
 
 ---
 

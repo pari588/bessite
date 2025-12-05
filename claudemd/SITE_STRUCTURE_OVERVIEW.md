@@ -645,6 +645,46 @@ mysql -u bombayengg -p'oCFCrCMwKyy5jzg' bombayengg < database_backups/bombayengg
 
 ---
 
+## 15. DEPLOYMENT AND BACKUP POLICY (MANDATORY)
+
+### Required Reading
+📖 **[DEPLOYMENT_AND_BACKUP_POLICY.md](DEPLOYMENT_AND_BACKUP_POLICY.md)** - MANDATORY for all developers
+
+### Key Points
+- **Every change requires:** File backup + Database backup + GitHub commit
+- **Deployment sequence:** Backup → Change → GitHub commit → Deploy → Test
+- **Restore capability:** Can revert to any previous version via GitHub or file backups
+- **Emergency restore:** Complete procedures documented for instant recovery
+
+### Quick Backup Commands
+
+**Before making any changes:**
+```bash
+# Website backup
+tar -czf backups/website_backup_$(date +%Y%m%d_%H%M%S).tar.gz \
+  --exclude=uploads/fuel-expense --exclude=uploads/voucher --exclude=.git \
+  /home/bombayengg/public_html/
+
+# Database backup
+mysqldump -u bombayengg -p'oCFCrCMwKyy5jzg' bombayengg > \
+  database_backups/bombayengg_$(date +%Y%m%d_%H%M%S).sql
+```
+
+**After making changes:**
+```bash
+# Commit to GitHub
+git add {files}
+git commit -m "Description of changes"
+git push origin main
+```
+
+### Restore Procedures
+- **Git revert:** `git revert {commit-hash}`
+- **File restore:** `tar -xzf backups/website_backup_*.tar.gz`
+- **Database restore:** `mysql ... < database_backups/bombayengg_*.sql`
+
+---
+
 **End of Site Structure Overview**
 
 *This document provides complete understanding of the Bombay Engineering Syndicate website architecture as of December 5, 2025.*
