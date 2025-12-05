@@ -370,7 +370,7 @@ $siteSettingInfo = getSiteInfo();
                             </div>
                         </div>
                         <div class="menu-wrap">
-                            <a href="#" class="mobile-nav__toggler"><i class="fa fa-bars"></i></a>
+                            <a href="#" class="mobile-nav__toggler" aria-label="Toggle navigation menu"><i class="fa fa-bars"></i></a>
                             <ul class="menu-list">
                                 <?php echo getMenu("Header"); ?>
                             </ul>
@@ -382,7 +382,7 @@ $siteSettingInfo = getSiteInfo();
             <div class="mobile-nav__wrapper">
                 <div class="mobile-nav__overlay mobile-nav__toggler"></div>
                 <div class="mobile-nav__content">
-                    <span class="mobile-nav__close mobile-nav__toggler"><i class="fa fa-times"></i></span>
+                    <span class="mobile-nav__close mobile-nav__toggler" aria-label="Close navigation menu"><i class="fa fa-times"></i></span>
                     <div class="logo-box">
                         <a href="<?php echo SITEURL . '/' ?>"><img src="<?php echo SITEURL . '/images/logo.png' ?>" alt="Bombay Engineering Syndicate"></a>
                     </div>
@@ -431,5 +431,6 @@ $siteSettingInfo = getSiteInfo();
             <div class="sticky-header__content"></div>
         </div>
 
+        <main>
         <div class="mx-container">
             <!-- Content from includes like x-product-inquiry.inc.php goes here -->

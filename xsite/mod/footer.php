@@ -42,6 +42,7 @@ if (isset($TPL->uriArr[0]) && $TPL->uriArr[0] == "driver") {
 }
 
 ?>
+        </main>
 <!-- Contact Us form End. -->
 <footer class="site-footer" <?php echo $footerStyle; ?>>
     <div class="site-footer__shape-1 float-bob-x">
@@ -54,7 +55,7 @@ if (isset($TPL->uriArr[0]) && $TPL->uriArr[0] == "driver") {
         <?php echo $siteSettingInfo["siteFooterInfo"]; ?>
     </div>
 </footer>
-<a href="#" data-target="html" class="scroll-to-target scroll-to-top"><i class="fa fa-angle-up"></i></a>
+<a href="#" data-target="html" class="scroll-to-target scroll-to-top" aria-label="Scroll to top"><i class="fa fa-angle-up"></i></a>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/jarallax/jarallax.min.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js'); ?>"></script>

@@ -29,7 +29,6 @@ $arrForm = array(
     array("type" => "select", "name" => "vehicleID", "value" => $vehicleDD, "title" => "Vehicle", "validate" => "required", "attrp" => ' width="30%"'),
     array("type" => "date", "name" => "billDate", "value" => $D["billDate"] ?? "", "title" => "Bill Date", "validate" => "required", "attrp" => ' width="30%"', "params" => array("changeMonth" => true, "changeYear" => true, "yearRange" => "-100y:+1", "maxDate" => "0d")),
     array("type" => "text", "name" => "expenseAmount", "value" => $D["expenseAmount"] ?? "", "title" => "Amount (₹)", "validate" => "required,number", "attrp" => ' width="30%"'),
-    array("type" => "text", "name" => "fuelQuantity", "value" => $D["fuelQuantity"] ?? "", "title" => "Quantity (Liters)", "validate" => "number", "attrp" => ' width="30%"'),
     array("type" => "textarea", "name" => "remarks", "value" => $D["remarks"] ?? "", "title" => "Remarks", "attrp" => ' width="30%"'),
 );
 

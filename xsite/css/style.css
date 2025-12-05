@@ -233,7 +233,7 @@ div.mxdialog div.select-box:after {
     padding-right: 25px;
     outline: none;
     font-size: 14px;
-    color: var(--mellis-gray);
+    color: var(--mellis-black);
     display: block;
 }
 
@@ -642,7 +642,7 @@ div.mxdialog div.left h4 {
     left: 0;
     top: 5px;
     font-size: 18px;
-    color: var(--mellis-extra);
+    color: var(--mellis-base);
 }
 
 .footer-widget__links {
@@ -2452,7 +2452,16 @@ div.select-box:after {
     text-align: center;
 }
 
-.blog-details .img-box img{width: 100%;}
+.blog-details .img-box {
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+.blog-details .img-box img{
+    width: 100%;
+    height: auto;
+    display: block;
+}
 .blog-details > .container{padding-top: 140px;}
 
 

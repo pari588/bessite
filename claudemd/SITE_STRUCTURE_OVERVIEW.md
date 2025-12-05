@@ -217,6 +217,24 @@ $result = $DB->dbRow();
 
 ## 4. FRONTEND (XSITE) ARCHITECTURE
 
+### 4.0 IMPORTANT: XSITE IS THE ROOT
+
+**The `xsite/` folder serves as the public website root.** When users visit `https://www.bombayengg.com/`, they are accessing the files in the `xsite/` directory. This is configured via the web server (Apache/Nginx) to serve `xsite/` as the document root for the public domain.
+
+**Key Points:**
+- Users never see `/xsite/` in URLs - it's transparent
+- `xsite/index.php` is the main entry point for all public-facing requests
+- All relative paths within xsite use `../` to access parent directory files (core/, lib/, vendor/, etc.)
+- `/xadmin/` is a separate administrative interface accessed via `https://www.bombayengg.com/xadmin/`
+
+**Directory Serving:**
+```
+Web Root (https://www.bombayengg.com/) → /xsite/
+Admin Panel (https://www.bombayengg.com/xadmin/) → /xadmin/
+```
+
+---
+
 ### 4.1 xsite/index.php - Main Router
 
 ```
@@ -568,6 +586,8 @@ echo ADMINURL;           // https://www.bombayengg.com/xadmin
 5. Update navigation logic in site.inc.php if needed
 
 ### Creating an Admin Module:
+> **Detailed Guide:** [XAdmin Module Creation Guide](XADMIN_MODULE_CREATION.md)
+
 1. Create directory: `xadmin/mod/{module-name}/`
 2. Create files:
    - `x-{module-name}-list.php` (listing)

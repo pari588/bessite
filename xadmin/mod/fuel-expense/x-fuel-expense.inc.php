@@ -1,4 +1,7 @@
 <?php
+// ABSOLUTE FIRST LINE - Log immediately to detect any issues
+@file_put_contents(sys_get_temp_dir() . '/ocr_handler_entry.log', "[" . date('Y-m-d H:i:s') . "] === FILE LOADED === xAction=" . (isset($_POST["xAction"]) ? $_POST["xAction"] : "NOT SET") . "\n", FILE_APPEND);
+
 /**
  * Fuel Expense Management Module
  * Handles fuel expense CRUD operations with OCR bill processing
@@ -28,6 +31,10 @@ if (isset($_POST["xAction"])) {
     // SECOND: Turn off error display and log errors instead
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
+
+    // VERY FIRST THING - Log that handler was called
+    $handlerStartLog = sys_get_temp_dir() . '/ocr_handler_start.log';
+    @file_put_contents($handlerStartLog, "[" . date('Y-m-d H:i:s') . "] Handler called with xAction=" . $_POST["xAction"] . ", POST size=" . count($_POST) . ", FILES size=" . count($_FILES) . "\n", FILE_APPEND);
 
     // Initialize response
     $MXRES = array("err" => 1, "msg" => "Unknown error");
@@ -121,7 +128,7 @@ function addFuelExpense() {
     $_POST["vehicleID"] = intval($_POST["vehicleID"]);
     $_POST["billDate"] = $_POST["billDate"];
     $_POST["expenseAmount"] = floatval($_POST["expenseAmount"]);
-    $_POST["fuelQuantity"] = !empty($_POST["fuelQuantity"]) ? floatval($_POST["fuelQuantity"]) : NULL;
+    // Fuel quantity removed as per request
     $_POST["paymentStatus"] = "Unpaid"; // Default to Unpaid
     $_POST["paidDate"] = NULL;
     $_POST["remarks"] = isset($_POST["remarks"]) ? trim(htmlspecialchars($_POST["remarks"])) : "";
@@ -182,7 +189,7 @@ function updateFuelExpense() {
     $_POST["vehicleID"] = intval($_POST["vehicleID"]);
     $_POST["billDate"] = $_POST["billDate"];
     $_POST["expenseAmount"] = floatval($_POST["expenseAmount"]);
-    $_POST["fuelQuantity"] = !empty($_POST["fuelQuantity"]) ? floatval($_POST["fuelQuantity"]) : NULL;
+    // Fuel quantity removed as per request
     $_POST["remarks"] = isset($_POST["remarks"]) ? trim(htmlspecialchars($_POST["remarks"])) : "";
 
     // Handle bill image update using mxForm file handling
@@ -193,7 +200,6 @@ function updateFuelExpense() {
         "vehicleID" => $_POST["vehicleID"],
         "billDate" => $_POST["billDate"],
         "expenseAmount" => $_POST["expenseAmount"],
-        "fuelQuantity" => $_POST["fuelQuantity"],
         "remarks" => $_POST["remarks"]
     );
 

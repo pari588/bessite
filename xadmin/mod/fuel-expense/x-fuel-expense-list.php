@@ -1,3 +1,4 @@
+<div style="position:fixed;top:0;left:0;width:10px;height:10px;background:red;z-index:99999;" title="LIST FILE"></div>
 <?php
 /**
  * Fuel Expense List & Report Page
@@ -58,19 +59,22 @@ if (!$MXFRM->where && $MXTOTREC < 1)
     $strSearch = "";
 
 echo $strSearch;
+
+// Build the Mark as Paid button for bulk actions
+$moreRButtons = '<button id="bulkMarkPaidBtn" class="btn fa-check" onclick="bulkMarkAsPaid()" title="Mark Selected as Paid"> Mark Paid</button>';
 ?>
 
 <div class="wrap-right">
-    <?php echo getPageNav('', '', array("add")); ?>
+    <?php echo getPageNav('', $moreRButtons, array("add")); ?>
 
     <div class="wrap-data">
         <?php
         if ($MXTOTREC > 0) {
             $MXCOLS = array(
+                array('<input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"/>', "", ' width="5%" align="center"'),
                 array("Date", "billDate", ' width="11%" align="center"'),
                 array("Vehicle", "vehicleName", ' width="20%" align="left"'),
                 array("Amount", "expenseAmount", ' width="12%" align="right"'),
-                array("Qty (L)", "fuelQuantity", ' width="10%" align="center"'),
                 array("Status", "paymentStatus", ' width="10%" align="center"'),
                 array("Paid Date", "paidDate", ' width="11%" align="center"'),
                 array("Bill Image", "billImage", ' width="10%" align="center"'),
@@ -81,7 +85,7 @@ echo $strSearch;
             array_unshift($DB->vals, $MXSTATUS);
             $DB->types = "i" . $MXFRM->types;
 
-            $DB->sql = "SELECT fe.fuelExpenseID, fe.billDate, fe.expenseAmount, fe.fuelQuantity, fe.paymentStatus, fe.paidDate, fe.remarks, fe.billImage, v.vehicleName
+            $DB->sql = "SELECT fe.fuelExpenseID, fe.billDate, fe.expenseAmount, fe.paymentStatus, fe.paidDate, fe.remarks, fe.billImage, v.vehicleName
                         FROM `" . $DB->pre . "fuel_expense` fe
                         LEFT JOIN `" . $DB->pre . "vehicle` v ON fe.vehicleID = v.vehicleID
                         WHERE fe.status=?" . $MXFRM->where . mxOrderBy("fe.billDate DESC ") . mxQryLimit();
@@ -117,15 +121,18 @@ echo $strSearch;
                         } else {
                             $billImageLink = '<span style="color: #999;">No file</span>';
                         }
+
+                        // Show checkbox for all expenses (both paid and unpaid)
+                        $checkboxCell = '<input type="checkbox" class="expense-checkbox" value="' . $expense["fuelExpenseID"] . '" data-status="' . $expense["paymentStatus"] . '" />';
                     ?>
                         <tr>
+                            <td width="5%" align="center"><?php echo $checkboxCell; ?></td>
                             <?php echo getMAction("mid", $expense["fuelExpenseID"]); ?>
                             <td width="11%" align="center" title="Date"><?php echo date('d-M-Y', strtotime($expense["billDate"])); ?></td>
                             <td width="20%" align="left" title="Vehicle">
                                 <?php echo getViewEditUrl("id=" . $expense["fuelExpenseID"], $expense["vehicleName"] ?? "Unknown"); ?>
                             </td>
                             <td width="12%" align="right" title="Amount">₹ <?php echo number_format($expense["expenseAmount"], 2); ?></td>
-                            <td width="10%" align="center" title="Qty (L)"><?php echo number_format($expense["fuelQuantity"], 2) ?? "-"; ?></td>
                             <td width="10%" align="center" title="Status"><?php echo $statusBadge; ?></td>
                             <td width="11%" align="center" title="Paid Date"><?php echo $expense["paidDate"] ? date('d-M-Y', strtotime($expense["paidDate"])) : "-"; ?></td>
                             <td width="10%" align="center" title="Bill Image"><?php echo $billImageLink; ?></td>
@@ -135,7 +142,7 @@ echo $strSearch;
                 </tbody>
                 <tfoot>
                     <tr style='text-align:right;' class='trcolspan'>
-                        <th colspan='2'>&nbsp;</th>
+                        <th colspan='3'>&nbsp;</th>
                         <th>Total Unpaid:</th>
                         <th style="color: black;">₹ <?php echo number_format($totalUnpaid, 2); ?></th>
                         <th>Total Paid:</th>
@@ -152,7 +159,136 @@ echo $strSearch;
 </div>
 
 <script type="text/javascript">
-// Update payment status directly via database
+
+// Toggle select all checkboxes
+function toggleSelectAll(checkbox) {
+    var checkboxes = document.querySelectorAll('.expense-checkbox');
+    checkboxes.forEach(function(cb) {
+        cb.checked = checkbox.checked;
+    });
+    updateBulkButtonState();
+}
+
+// Update checkbox listeners and button state
+function initializeCheckboxes() {
+    var checkboxes = document.querySelectorAll('.expense-checkbox');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateBulkButtonState);
+    });
+}
+
+// Update bulk action button state (just check if any selected)
+function updateBulkButtonState() {
+    // Button stays visible - just validates on click
+}
+
+// Bulk mark selected expenses as paid or unpaid
+function bulkMarkAsPaid() {
+    var checkboxes = document.querySelectorAll('.expense-checkbox:checked');
+
+    if (checkboxes.length === 0) {
+        alert('Please select at least one expense');
+        return;
+    }
+
+    // Separate paid and unpaid expenses
+    var unpaidIDs = [];
+    var paidIDs = [];
+
+    checkboxes.forEach(function(cb) {
+        var status = cb.getAttribute('data-status');
+        if (status === 'Paid') {
+            paidIDs.push(cb.value);
+        } else {
+            unpaidIDs.push(cb.value);
+        }
+    });
+
+    // Determine action based on selection
+    var actionText = '';
+    var allIDs = [];
+    var action = '';
+
+    if (unpaidIDs.length > 0 && paidIDs.length === 0) {
+        // All selected are unpaid - mark as paid
+        actionText = 'Mark ' + unpaidIDs.length + ' selected expense(s) as PAID?';
+        allIDs = unpaidIDs;
+        action = 'MARK_PAID';
+    } else if (paidIDs.length > 0 && unpaidIDs.length === 0) {
+        // All selected are paid - mark as unpaid
+        actionText = 'Mark ' + paidIDs.length + ' selected expense(s) as UNPAID?';
+        allIDs = paidIDs;
+        action = 'MARK_UNPAID';
+    } else {
+        // Mixed selection
+        alert('Please select expenses with the same status (all Paid or all Unpaid)');
+        return;
+    }
+
+    if (!confirm(actionText)) {
+        return;
+    }
+
+    // Show progress
+    var bulkBtn = document.getElementById('bulkMarkPaidBtn');
+    var originalText = bulkBtn.textContent;
+    bulkBtn.textContent = 'Processing...';
+    bulkBtn.disabled = true;
+
+    // Process each expense
+    var successCount = 0;
+    var failureCount = 0;
+    var processed = 0;
+
+    function processNext() {
+        if (processed >= allIDs.length) {
+            // All done
+            bulkBtn.textContent = originalText;
+            bulkBtn.disabled = false;
+
+            var message = 'Completed: ' + successCount + ' updated';
+            if (failureCount > 0) {
+                message += ', ' + failureCount + ' failed';
+            }
+            alert(message);
+
+            // Reload page after a short delay
+            setTimeout(function() {
+                location.reload();
+            }, 500);
+            return;
+        }
+
+        var expenseID = allIDs[processed];
+        var formData = new FormData();
+        formData.append('xAction', action);
+        formData.append('fuelExpenseID', expenseID);
+
+        fetch('<?php echo ADMINURL . "/mod/fuel-expense/x-fuel-expense.inc.php"; ?>', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.err === 0) {
+                successCount++;
+            } else {
+                failureCount++;
+            }
+            processed++;
+            processNext();
+        })
+        .catch(error => {
+            failureCount++;
+            processed++;
+            processNext();
+        });
+    }
+
+    processNext();
+}
+
+// Update payment status directly via database (single item)
 function updatePaymentStatus(fuelExpenseID, newStatus) {
     if (!confirm('Mark this expense as ' + newStatus + '?')) {
         return;
@@ -182,5 +318,11 @@ function updatePaymentStatus(fuelExpenseID, newStatus) {
         alert('Error: ' + error.message);
     });
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCheckboxes();
+});
+
 </script>
 

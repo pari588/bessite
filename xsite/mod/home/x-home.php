@@ -59,6 +59,7 @@
       <div class="container">
           <div class="process-one__inner">
               <div class="process-one__shape-1"></div>
+              <h2 class="sr-only">Our Key Features</h2>
               <div class="row">
                   <!--Process One Single Start-->
                   <div class="col-xl-4 col-lg-4">
@@ -120,7 +121,7 @@
                   <div class="spa-center__img">
                       <img src="<?php echo SITEURL . '/images/icons/water-pump.png' ?>" alt="Water pump icon - submersible pump solutions" />
                   </div>
-                  <h3 class="spa-center__title"><?php echo $homeInfoDataArr["otherTitleFour"]; ?></h3>
+                  <h2 class="spa-center__title"><?php echo $homeInfoDataArr["otherTitleFour"]; ?></h2>
                   <p class="sub-title"><?php echo $homeInfoDataArr["otherDescFour"]; ?></p>
               </div>
           </div>

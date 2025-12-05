@@ -47,7 +47,7 @@
 
 body {
   font-family: var(--mellis-font);
-  color: var(--mellis-black);
+  color: var(--mellis-gray);
   font-size: 16px;
   line-height: 30px;
   font-weight: 500;
@@ -814,7 +814,7 @@ ul {
 }
 
 .main-header__contact-list li .text p a {
-  color: var(--mellis-black);
+  color: var(--mellis-gray);
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
 }
@@ -4669,10 +4669,6 @@ ul {
   z-index: 1;
 }
 
-.why-choose-one .section-title__tagline {
-  color: var(--mellis-black);
-}
-
 .why-choose-one__shape-1 {
   position: absolute;
   bottom: 0;
@@ -4824,7 +4820,6 @@ ul {
   border-bottom: 1px solid transparent;
 }
 
-.why-choose-one__faq .faq-one-accrodion .accrodion-title h3,
 .why-choose-one__faq .faq-one-accrodion .accrodion-title h4 {
   margin: 0;
   font-size: 16px;
@@ -4840,12 +4835,10 @@ ul {
   margin-top: 0px;
 }
 
-.why-choose-one__faq .faq-one-accrodion .accrodion.active .accrodion-title h3,
 .why-choose-one__faq .faq-one-accrodion .accrodion.active .accrodion-title h4 {
   color: var(--mellis-black);
 }
 
-.why-choose-one__faq .faq-one-accrodion .accrodion-title h3::before,
 .why-choose-one__faq .faq-one-accrodion .accrodion-title h4::before {
   content: "\f067";
   font-family: "Font Awesome 5 Free";
@@ -4867,7 +4860,6 @@ ul {
   text-align: center;
 }
 
-.why-choose-one__faq .faq-one-accrodion .accrodion.active .accrodion-title h3::before,
 .why-choose-one__faq .faq-one-accrodion .accrodion.active .accrodion-title h4::before {
   content: "\f068";
   color: var(--mellis-base);
@@ -7263,7 +7255,6 @@ ul {
   background-color: transparent;
 }
 
-.services-details-two__faq .faq-one-accrodion .accrodion-title h3,
 .services-details-two__faq .faq-one-accrodion .accrodion-title h4 {
   margin: 0;
   font-size: 18px;
@@ -7278,12 +7269,10 @@ ul {
   margin-top: 12px;
 }
 
-.services-details-two__faq .faq-one-accrodion .accrodion.active .accrodion-title h3,
 .services-details-two__faq .faq-one-accrodion .accrodion.active .accrodion-title h4 {
   color: var(--mellis-black);
 }
 
-.services-details-two__faq .faq-one-accrodion .accrodion-title h3::before,
 .services-details-two__faq .faq-one-accrodion .accrodion-title h4::before {
   content: "\f067";
   font-family: "Font Awesome 5 Free";
@@ -7299,7 +7288,6 @@ ul {
   transition: all 500ms ease;
 }
 
-.services-details-two__faq .faq-one-accrodion .accrodion.active .accrodion-title h3::before,
 .services-details-two__faq .faq-one-accrodion .accrodion.active .accrodion-title h4::before {
   content: "\f068";
   color: var(--mellis-black);
