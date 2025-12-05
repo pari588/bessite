@@ -598,6 +598,53 @@ echo ADMINURL;           // https://www.bombayengg.com/xadmin
 
 ---
 
+## 14. GITHUB & DEPLOYMENT
+
+### GitHub Repository
+- **URL:** https://github.com/pari588/bessite
+- **Main Branch:** main
+- **Remote:** origin (https://github.com/pari588/bessite.git)
+
+### GitHub Authentication
+**Setup:**
+- Username: `pari588`
+- Personal Access Token: Stored securely (see credentials file)
+- Scope: repo, write:packages
+
+**Git Configuration:**
+```bash
+# Set credential helper
+git config --global credential.helper store
+
+# Git user (for commits)
+git config --global user.name "Claude Code"
+git config --global user.email "noreply@anthropic.com"
+```
+
+**Push Command Format:**
+```bash
+git push https://{username}:{PAT}@github.com/pari588/bessite.git main
+```
+
+**Store Credentials:**
+After first push with PAT, git stores credentials locally. Use credential helper:
+```bash
+git config --global credential.helper store
+```
+
+### Database Backups
+- **Location:** `/home/bombayengg/public_html/database_backups/`
+- **Format:** SQL dump files with timestamp
+- **Latest Backup:** `bombayengg_20251205_174319.sql` (1.2 MB)
+- **Include:** Complete schema, all tables, and data
+
+**Restore Command:**
+```bash
+mysql -u bombayengg -p'oCFCrCMwKyy5jzg' bombayengg < database_backups/bombayengg_YYYYMMDD_HHMMSS.sql
+```
+
+---
+
 **End of Site Structure Overview**
 
-*This document provides complete understanding of the Bombay Engineering Syndicate website architecture as of November 21, 2025.*
+*This document provides complete understanding of the Bombay Engineering Syndicate website architecture as of December 5, 2025.*
