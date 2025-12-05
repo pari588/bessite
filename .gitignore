@@ -17,3 +17,4 @@ backup/
 info.php
 phpinfo.php
 info.txt
+.git-credentials-info.txt
