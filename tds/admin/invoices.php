@@ -1,9 +1,19 @@
 <?php
 require_once __DIR__.'/../lib/auth.php'; auth_require();
-require_once __DIR__.'/../lib/db.php'; require_once __DIR__.'/../lib/helpers.php';
-$page_title='Invoices'; include __DIR__.'/_layout_top.php';
+require_once __DIR__.'/../lib/db.php';
+require_once __DIR__.'/../lib/helpers.php';
+require_once __DIR__.'/../lib/CalculatorAPI.php';
+
+$page_title='Invoices';
+include __DIR__.'/_layout_top.php';
+
 $sections = get_tds_sections($pdo);
-$rows = $pdo->query('SELECT i.*,v.name vname FROM invoices i JOIN vendors v ON v.id=i.vendor_id ORDER BY i.id DESC LIMIT 50')->fetchAll();
+$calculator = new CalculatorAPI($pdo);
+
+// Prepare statement to avoid SQL parameter binding errors
+$stmt = $pdo->prepare('SELECT i.*,v.name vname FROM invoices i JOIN vendors v ON v.id=i.vendor_id ORDER BY i.id DESC LIMIT 50');
+$stmt->execute();
+$rows = $stmt->fetchAll();
 ?>
 <link rel="stylesheet" href="/tds/public/assets/styles_extra_dates.css" />
 <link rel="stylesheet" href="/tds/public/assets/inputs_no_spinners.css" />
@@ -15,27 +25,58 @@ $rows = $pdo->query('SELECT i.*,v.name vname FROM invoices i JOIN vendors v ON v
   <form id="singleInvForm" method="post" class="form-grid">
     <input type="hidden" name="single" value="1" />
     <md-outlined-text-field label="Vendor Name" name="vendor_name" class="span-2" required></md-outlined-text-field>
-    <md-outlined-text-field label="Vendor PAN" name="vendor_pan" required></md-outlined-text-field>
+    <md-outlined-text-field label="Vendor PAN" name="vendor_pan" placeholder="XXXXX9999X" required></md-outlined-text-field>
     <md-outlined-text-field label="Invoice No" name="invoice_no" required></md-outlined-text-field>
     <div>
       <label style="display:block;font-size:12px;color:var(--m3-muted)">Invoice Date</label>
       <input class="m3-date" id="inv_date_create" name="invoice_date" type="date" required />
     </div>
-    <md-outlined-text-field label="Base Amount" name="base_amount" type="number" step="0.01" required></md-outlined-text-field>
+    <md-outlined-text-field label="Base Amount (₹)" name="base_amount" id="base_amt_create" type="number" step="0.01" required onchange="calculateTDS('create')"></md-outlined-text-field>
     <div>
       <label style="display:block;font-size:12px;color:var(--m3-muted)">TDS Section</label>
-      <md-outlined-select name="section_code" id="inv_section_create" required>
+      <md-outlined-select name="section_code" id="inv_section_create" required onchange="calculateTDS('create')">
+        <md-select-option value="">-- Select Section --</md-select-option>
         <?php foreach($sections as $s): ?>
-          <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'])?></div></md-select-option>
+          <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
         <?php endforeach; ?>
       </md-outlined-select>
     </div>
-    <md-outlined-text-field label="TDS Rate (%)" name="tds_rate" id="inv_rate_create" type="number" step="0.001" placeholder="Auto from section"></md-outlined-text-field>
+    <md-outlined-text-field label="TDS Rate (%)" name="tds_rate" id="inv_rate_create" type="number" step="0.001" placeholder="Auto-calculated" readonly></md-outlined-text-field>
+    <md-outlined-text-field label="TDS Amount (₹)" name="total_tds" id="inv_tds_create" type="number" step="0.01" placeholder="Auto-calculated" readonly style="background: #f5f5f5;" class="span-2"></md-outlined-text-field>
     <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
       <md-filled-button type="submit"><span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span> Add Invoice</md-filled-button>
     </div>
   </form>
 </div>
+
+<script>
+function calculateTDS(mode) {
+  const baseAmt = parseFloat(document.getElementById('base_amt_' + mode).value) || 0;
+  const section = document.getElementById('inv_section_' + mode).value;
+
+  if (baseAmt <= 0 || !section) {
+    document.getElementById('inv_rate_' + mode).value = '';
+    document.getElementById('inv_tds_' + mode).value = '';
+    return;
+  }
+
+  // Get rate from section dropdown
+  const option = document.getElementById('inv_section_' + mode).querySelector('md-select-option[value="' + section + '"]');
+  const text = option ? option.textContent : '';
+  const rateMatch = text.match(/\(([0-9.]+)%\)/);
+  const rate = rateMatch ? parseFloat(rateMatch[1]) : 0;
+
+  document.getElementById('inv_rate_' + mode).value = rate.toFixed(3);
+
+  const tds = (baseAmt * rate / 100);
+  document.getElementById('inv_tds_' + mode).value = tds.toFixed(2);
+}
+
+// Call on page load to populate any existing data
+document.addEventListener('DOMContentLoaded', function() {
+  calculateTDS('create');
+});
+</script>
 
 <div style="height:12px"></div>
 <div class="card fade-in">
@@ -75,16 +116,17 @@ $rows = $pdo->query('SELECT i.*,v.name vname FROM invoices i JOIN vendors v ON v
         <label style="display:block;font-size:12px;color:var(--m3-muted)">Date</label>
         <input class="m3-date" id="inv_date" name="invoice_date" type="date" required />
       </div>
-      <md-outlined-text-field name="base_amount" id="inv_amt" type="number" step="0.01" label="Base Amount" required></md-outlined-text-field>
+      <md-outlined-text-field name="base_amount" id="inv_amt" type="number" step="0.01" label="Base Amount" required onchange="calculateTDS('edit')"></md-outlined-text-field>
       <div>
         <label style="display:block;font-size:12px;color:var(--m3-muted)">Section</label>
-        <md-outlined-select name="section_code" id="inv_sec" required>
+        <md-outlined-select name="section_code" id="inv_sec" required onchange="calculateTDS('edit')">
           <?php foreach($sections as $s): ?>
-            <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'])?></div></md-select-option>
+            <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
           <?php endforeach; ?>
         </md-outlined-select>
       </div>
-      <md-outlined-text-field name="tds_rate" id="inv_rate" type="number" step="0.001" label="TDS Rate (%)"></md-outlined-text-field>
+      <md-outlined-text-field name="tds_rate" id="inv_rate" type="number" step="0.001" label="TDS Rate (%)" placeholder="Auto-calculated" readonly></md-outlined-text-field>
+      <md-outlined-text-field name="total_tds" id="inv_tds" type="number" step="0.01" label="TDS Amount (₹)" placeholder="Auto-calculated" readonly style="background: #f5f5f5;"></md-outlined-text-field>
       <md-outlined-text-field id="inv_vendor" label="Vendor" value="" readonly class="span-3"></md-outlined-text-field>
       <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
         <md-filled-button type="submit">Save</md-filled-button>

@@ -48,9 +48,16 @@ $firm = $pdo->query('SELECT display_name, tan, pan FROM firms LIMIT 1')->fetch()
         <a href="dashboard.php" class="<?= $curr==='dashboard.php'?'active':'' ?>"><span class="material-symbols-rounded">home</span><span>Dashboard</span></a>
         <a href="invoices.php" class="<?= $curr==='invoices.php'?'active':'' ?>"><span class="material-symbols-rounded">receipt_long</span><span>Invoices</span></a>
         <a href="challans.php" class="<?= $curr==='challans.php'?'active':'' ?>"><span class="material-symbols-rounded">account_balance</span><span>Challans</span></a>
-        <a href="reconcile.php" class="<?= $curr==='reconcile.php'?'active':'' ?>"><span class="material-symbols-rounded">sync</span><span>Reconcile</span></a>
-        <a href="returns.php" class="<?= $curr==='returns.php'?'active':'' ?>"><span class="material-symbols-rounded">archive</span><span>Returns</span></a>
+        <a href="reconcile.php" class="<?= $curr==='reconcile.php'?'active':'' ?>"><span class="material-symbols-rounded">sync</span><span>Reconcile TDS</span></a>
+        <a href="filing-status.php" class="<?= $curr==='filing-status.php'?'active':'' ?>"><span class="material-symbols-rounded">check_circle</span><span>Filing Status</span></a>
         <hr/>
+        <a href="analytics.php" class="<?= $curr==='analytics.php'?'active':'' ?>"><span class="material-symbols-rounded">analytics</span><span>Analytics</span></a>
+        <a href="calculator.php" class="<?= $curr==='calculator.php'?'active':'' ?>"><span class="material-symbols-rounded">calculate</span><span>Calculator</span></a>
+        <a href="reports.php" class="<?= $curr==='reports.php'?'active':'' ?>"><span class="material-symbols-rounded">description</span><span>Reports</span></a>
+        <a href="compliance.php" class="<?= $curr==='compliance.php'?'active':'' ?>"><span class="material-symbols-rounded">verified_user</span><span>Compliance</span></a>
+        <hr/>
+        <a href="forms.php" class="<?= $curr==='forms.php'?'active':'' ?>"><span class="material-symbols-rounded">description</span><span>Forms (24Q/16)</span></a>
+        <a href="firms.php" class="<?= $curr==='firms.php'?'active':'' ?>"><span class="material-symbols-rounded">apartment</span><span>Firms</span></a>
         <a href="settings.php" class="<?= $curr==='settings.php'?'active':'' ?>"><span class="material-symbols-rounded">settings</span><span>Settings</span></a>
       </nav>
     </aside>

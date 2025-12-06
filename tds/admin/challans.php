@@ -1,7 +1,19 @@
 <?php
-require_once __DIR__.'/../lib/auth.php'; auth_require(); require_once __DIR__.'/../lib/db.php';
-$page_title='Challans'; include __DIR__.'/_layout_top.php';
-$rows = $pdo->query('SELECT * FROM challans ORDER BY id DESC LIMIT 50')->fetchAll();
+require_once __DIR__.'/../lib/auth.php'; auth_require();
+require_once __DIR__.'/../lib/db.php';
+
+$page_title='Challans';
+include __DIR__.'/_layout_top.php';
+
+// Use prepared statement to avoid SQL errors
+$stmt = $pdo->prepare('SELECT * FROM challans ORDER BY id DESC LIMIT 50');
+$stmt->execute();
+$rows = $stmt->fetchAll();
+
+// Get summary statistics
+$summaryStmt = $pdo->prepare('SELECT COUNT(*) as count, COALESCE(SUM(amount_tds), 0) as total_tds FROM challans');
+$summaryStmt->execute();
+$summary = $summaryStmt->fetch();
 ?>
 <link rel="stylesheet" href="/tds/public/assets/styles_extra_dates.css" />
 <link rel="stylesheet" href="/tds/public/assets/inputs_no_spinners.css" />
@@ -22,6 +34,20 @@ $rows = $pdo->query('SELECT * FROM challans ORDER BY id DESC LIMIT 50')->fetchAl
       <md-filled-button type="submit">Add Challan</md-filled-button>
     </div>
   </form>
+</div>
+
+<div style="height:12px"></div>
+
+<!-- SUMMARY CARD -->
+<div class="card fade-in" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px;">
+  <div style="padding: 12px; background: #f5f5f5; border-radius: 4px; border-left: 4px solid #2196f3;">
+    <div style="font-size: 12px; color: #666; margin-bottom: 6px;">Total Challans</div>
+    <div style="font-size: 24px; font-weight: 600; color: #1976d2;"><?=$summary['count']?></div>
+  </div>
+  <div style="padding: 12px; background: #f5f5f5; border-radius: 4px; border-left: 4px solid #4caf50;">
+    <div style="font-size: 12px; color: #666; margin-bottom: 6px;">Total TDS Paid</div>
+    <div style="font-size: 20px; font-weight: 600; color: #4caf50;">₹ <?=number_format($summary['total_tds'], 2)?></div>
+  </div>
 </div>
 
 <div style="height:12px"></div>
