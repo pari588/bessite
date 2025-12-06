@@ -127,10 +127,27 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
 </style>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-  <h2 style="margin: 0;">Fetch Data from Sandbox API</h2>
-  <md-filled-button onclick="location.href='dashboard.php'">
-    <span class="material-symbols-rounded" style="margin-right: 6px;">arrow_back</span>
-    Back to Dashboard
+  <h2 style="margin: 0;">Import Data from Sandbox</h2>
+  <div style="display: flex; gap: 8px;">
+    <md-filled-tonal-button onclick="location.href='/tds/SANDBOX_API_SETUP_GUIDE.md'" target="_blank">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">help</span>
+      Setup Guide
+    </md-filled-tonal-button>
+    <md-filled-button onclick="location.href='dashboard.php'">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">arrow_back</span>
+      Back to Dashboard
+    </md-filled-button>
+  </div>
+</div>
+
+<div style="background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+  <h3 style="margin: 0 0 8px 0; color: #e65100;">ℹ️ API Integration Status</h3>
+  <p style="margin: 0 0 12px 0; color: #666;">
+    Sandbox.co.in uses AWS Signature V4 authentication. For now, you can import data using manual entry or CSV uploads.
+  </p>
+  <md-filled-button onclick="location.href='/tds/SANDBOX_API_SETUP_GUIDE.md'" target="_blank" style="font-size: 12px;">
+    <span class="material-symbols-rounded" style="margin-right: 6px;">open_in_new</span>
+    Read Full Setup Guide
   </md-filled-button>
 </div>
 
@@ -192,25 +209,24 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
   <div class="fetch-card">
     <h3>
       <span class="material-symbols-rounded">receipt_long</span>
-      Fetch Invoices
+      Manual Invoice Import
     </h3>
     <p>
-      Fetch all invoices from Sandbox API for the selected period. This will import them into your local database with TDS calculations.
+      Import invoices from your accounting system or Sandbox portal. Use CSV format or manual entry.
     </p>
 
     <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #666;">
-      <strong>What gets imported:</strong>
+      <strong>Options:</strong>
       <ul style="margin: 6px 0 0 0; padding-left: 20px;">
-        <li>Invoice number and date</li>
-        <li>Vendor name and PAN</li>
-        <li>Base amount and TDS section</li>
-        <li>Calculated TDS amount</li>
+        <li>Upload CSV with invoice data</li>
+        <li>Manual entry via Invoices page</li>
+        <li>Auto-calculated TDS amounts</li>
       </ul>
     </div>
 
-    <md-filled-button onclick="fetchData('invoices')" style="width: 100%;">
-      <span class="material-symbols-rounded" style="margin-right: 6px;">download</span>
-      Fetch Invoices
+    <md-filled-button onclick="location.href='invoices.php'" style="width: 100%;">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">receipt_long</span>
+      Go to Invoices Page
     </md-filled-button>
 
     <div id="invoicesStatus" class="fetch-progress">
@@ -228,24 +244,24 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
   <div class="fetch-card">
     <h3>
       <span class="material-symbols-rounded">account_balance</span>
-      Fetch Challans
+      Manual Challan Import
     </h3>
     <p>
-      Fetch all TDS payment challans from Sandbox API for the selected period. These will be matched with invoices during reconciliation.
+      Import TDS payment challans from your bank portal. These will be matched with invoices during reconciliation.
     </p>
 
     <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #666;">
-      <strong>What gets imported:</strong>
+      <strong>Options:</strong>
       <ul style="margin: 6px 0 0 0; padding-left: 20px;">
-        <li>BSR code and serial number</li>
-        <li>Challan date and bank code</li>
-        <li>TDS amount paid</li>
+        <li>Upload CSV with challan data</li>
+        <li>Manual entry via Challans page</li>
+        <li>Auto-matched to invoices</li>
       </ul>
     </div>
 
-    <md-filled-button onclick="fetchData('challans')" style="width: 100%;">
-      <span class="material-symbols-rounded" style="margin-right: 6px;">download</span>
-      Fetch Challans
+    <md-filled-button onclick="location.href='challans.php'" style="width: 100%;">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">account_balance</span>
+      Go to Challans Page
     </md-filled-button>
 
     <div id="challansStatus" class="fetch-progress">
@@ -260,30 +276,44 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
   </div>
 </div>
 
-<!-- FETCH ALL -->
+<!-- IMPORT WORKFLOW -->
 <div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 24px;">
   <h3 style="margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 8px;">
-    <span class="material-symbols-rounded">sync</span>
-    Fetch All Data at Once
+    <span class="material-symbols-rounded">workflow</span>
+    Recommended Import Workflow
   </h3>
-  <p style="font-size: 13px; color: #666; margin: 0 0 16px 0;">
-    Fetch and import both invoices and challans in a single operation. This is the fastest way to get all your data into the system.
-  </p>
 
-  <md-filled-button onclick="fetchData('all')" style="width: 100%;">
-    <span class="material-symbols-rounded" style="margin-right: 6px;">download_2</span>
-    Fetch Invoices & Challans
-  </md-filled-button>
-
-  <div id="allStatus" class="fetch-progress">
-    <div class="progress-bar">
-      <div class="progress-fill" style="animation: progress 2s ease-in-out infinite;"></div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+    <div style="background: #e3f2fd; padding: 12px; border-radius: 4px; border-left: 4px solid #2196f3;">
+      <div style="font-weight: 600; color: #1976d2; margin-bottom: 4px;">Step 1</div>
+      <div style="font-size: 12px; color: #555;">Go to Invoices page</div>
     </div>
-    <div style="font-size: 12px; color: #666; text-align: center;">
-      Fetching all data... Please wait
+
+    <div style="background: #f3e5f5; padding: 12px; border-radius: 4px; border-left: 4px solid #9c27b0;">
+      <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 4px;">Step 2</div>
+      <div style="font-size: 12px; color: #555;">Add invoices (CSV or manual)</div>
+    </div>
+
+    <div style="background: #fce4ec; padding: 12px; border-radius: 4px; border-left: 4px solid #e91e63;">
+      <div style="font-weight: 600; color: #ad1457; margin-bottom: 4px;">Step 3</div>
+      <div style="font-size: 12px; color: #555;">Go to Challans page</div>
+    </div>
+
+    <div style="background: #fff3e0; padding: 12px; border-radius: 4px; border-left: 4px solid #ff9800;">
+      <div style="font-weight: 600; color: #e65100; margin-bottom: 4px;">Step 4</div>
+      <div style="font-size: 12px; color: #555;">Add challans (CSV or manual)</div>
     </div>
   </div>
-  <div id="allResult"></div>
+
+  <div style="background: #f5f5f5; padding: 16px; border-radius: 4px; border-left: 4px solid #666;">
+    <strong style="display: block; margin-bottom: 8px;">After importing data:</strong>
+    <ul style="margin: 0; padding-left: 20px; font-size: 13px;">
+      <li>Go to <strong>Reconcile</strong> page to match invoices with challans</li>
+      <li>Go to <strong>Analytics</strong> page to check compliance status</li>
+      <li>Go to <strong>Reports</strong> page to generate forms</li>
+      <li>Go to <strong>Compliance</strong> page for e-filing</li>
+    </ul>
+  </div>
 </div>
 
 <script>
