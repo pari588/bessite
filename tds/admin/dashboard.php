@@ -116,7 +116,15 @@ $unallocated = (int)$stmt->fetchColumn();
 <div class="card fade-in">
   <h3 style="margin-top:0">📝 E-Filing Actions & New Tools</h3>
   <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Access the complete TDS & TCS filing suite:</p>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin: 15px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 10px; margin: 15px 0;">
+    <div style="padding: 12px; border: 1px solid #2196f3; border-radius: 4px; text-align: center; background: #e3f2fd;">
+      <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px;">⬇️ Fetch Data</div>
+      <p style="font-size: 12px; color: #1976d2; margin: 0 0 8px 0;">From Sandbox</p>
+      <md-filled-button onclick="location.href='fetch_sandbox_data.php'" style="width: 100%; font-size: 12px;">
+        <span class="material-symbols-rounded" style="font-size: 16px;">download</span>
+      </md-filled-button>
+    </div>
+
     <div style="padding: 12px; border: 1px solid #ddd; border-radius: 4px; text-align: center;">
       <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px;">🧮 Calculator</div>
       <p style="font-size: 12px; color: #666; margin: 0 0 8px 0;">TDS/TCS Calculation</p>
@@ -150,7 +158,7 @@ $unallocated = (int)$stmt->fetchColumn();
     </div>
   </div>
   <p style="margin: 15px 0 0 0; font-size: 12px; color: #666;">
-    <strong>Complete E-Filing Workflow:</strong> Invoice Entry → Reconcile → Compliance Check → Generate Forms → Submit FVU → E-File → Download Certificates
+    <strong>Complete E-Filing Workflow:</strong> Fetch Data → Invoice Entry → Reconcile → Compliance Check → Generate Forms → Submit FVU → E-File → Download Certificates
   </p>
 </div>
 
