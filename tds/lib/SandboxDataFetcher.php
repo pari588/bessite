@@ -11,7 +11,7 @@ class SandboxDataFetcher {
     private $apiKey;
     private $apiSecret;
     private $accessToken;
-    private $apiBaseUrl = 'https://developer.sandbox.co.in/api';
+    private $apiBaseUrl = 'https://api.sandbox.co.in/v1';
 
     public function __construct(PDO $pdo, $firmId) {
         $this->pdo = $pdo;
@@ -63,18 +63,20 @@ class SandboxDataFetcher {
      */
     private function generateAccessToken() {
         try {
-            $url = $this->apiBaseUrl . '/v1/auth/token';
+            $url = 'https://api.sandbox.co.in/oauth/token';
 
             $postData = [
                 'grant_type' => 'client_credentials',
                 'client_id' => $this->apiKey,
-                'client_secret' => $this->apiSecret
+                'client_secret' => $this->apiSecret,
+                'scope' => 'tds'
             ];
 
-            $response = $this->makeRequest('POST', $url, $postData);
+            // Use form-encoded data for token endpoint (not JSON)
+            $response = $this->makeTokenRequest($url, $postData);
 
             if (empty($response['access_token'])) {
-                throw new Exception("Failed to generate access token");
+                throw new Exception("Failed to generate access token: " . json_encode($response));
             }
 
             $this->accessToken = $response['access_token'];
@@ -90,6 +92,52 @@ class SandboxDataFetcher {
 
         } catch (Exception $e) {
             throw new Exception("Token generation failed: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Make token request with form encoding (OAuth2 standard)
+     */
+    private function makeTokenRequest($url, $postData) {
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_POST, true);
+
+            // Send as form-encoded (application/x-www-form-urlencoded)
+            $postString = http_build_query($postData);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
+
+            $headers = [
+                'Content-Type: application/x-www-form-urlencoded',
+                'Accept: application/json'
+            ];
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            if ($error) {
+                throw new Exception("cURL error: $error");
+            }
+
+            if ($httpCode >= 400) {
+                throw new Exception("Token API error ($httpCode): $response");
+            }
+
+            $data = json_decode($response, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Invalid JSON response: " . json_last_error_msg());
+            }
+
+            return $data ?? [];
+
+        } catch (Exception $e) {
+            throw new Exception("Token request failed: " . $e->getMessage());
         }
     }
 
@@ -117,7 +165,7 @@ class SandboxDataFetcher {
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
             // Prepare API request
-            $url = $this->apiBaseUrl . '/v1/tds/invoices';
+            $url = $this->apiBaseUrl . '/tds/invoices';
             $params = [
                 'tan' => $tan,
                 'from_date' => $dates['start'],
@@ -128,11 +176,11 @@ class SandboxDataFetcher {
 
             $response = $this->makeRequest('GET', $url, [], $params);
 
-            if (empty($response['data'])) {
+            if (empty($response['invoices'])) {
                 return [];
             }
 
-            return $this->transformInvoices($response['data']);
+            return $this->transformInvoices($response['invoices']);
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch invoices: " . $e->getMessage());
@@ -163,7 +211,7 @@ class SandboxDataFetcher {
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
             // Prepare API request
-            $url = $this->apiBaseUrl . '/v1/tds/challans';
+            $url = $this->apiBaseUrl . '/tds/challans';
             $params = [
                 'tan' => $tan,
                 'from_date' => $dates['start'],
@@ -174,11 +222,11 @@ class SandboxDataFetcher {
 
             $response = $this->makeRequest('GET', $url, [], $params);
 
-            if (empty($response['data'])) {
+            if (empty($response['challans'])) {
                 return [];
             }
 
-            return $this->transformChallans($response['data']);
+            return $this->transformChallans($response['challans']);
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch challans: " . $e->getMessage());
@@ -209,7 +257,7 @@ class SandboxDataFetcher {
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
             // Prepare API request
-            $url = $this->apiBaseUrl . '/v1/tds/deductees';
+            $url = $this->apiBaseUrl . '/tds/deductees';
             $params = [
                 'tan' => $tan,
                 'from_date' => $dates['start'],
@@ -220,11 +268,11 @@ class SandboxDataFetcher {
 
             $response = $this->makeRequest('GET', $url, [], $params);
 
-            if (empty($response['data'])) {
+            if (empty($response['deductees'])) {
                 return [];
             }
 
-            return $this->transformDeductees($response['data']);
+            return $this->transformDeductees($response['deductees']);
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch deductees: " . $e->getMessage());
