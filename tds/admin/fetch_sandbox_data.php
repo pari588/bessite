@@ -141,12 +141,20 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
 </div>
 
 <div style="background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-  <h3 style="margin: 0 0 8px 0; color: #e65100;">ℹ️ API Integration Status</h3>
+  <h3 style="margin: 0 0 8px 0; color: #e65100;">ℹ️ How to Import Data</h3>
   <p style="margin: 0 0 12px 0; color: #666;">
-    Sandbox.co.in API has been integrated with AWS Signature V4 authentication. Invoice and challan data import is working for manual entry and CSV uploads. Real-time API sync is available but limited by Sandbox API permissions.
+    Sandbox.co.in manages invoices and challans through their web interface. To bring this data into your TDS system, use one of these methods:
   </p>
-  <div style="background: white; padding: 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #333;">
-    <strong>Current Status:</strong> ✅ Authentication working | CSV Import enabled | Manual entry available
+  <div style="background: white; padding: 12px; border-radius: 4px; margin-top: 8px;">
+    <div style="font-size: 12px; color: #333; margin-bottom: 12px;">
+      <strong>Recommended Method:</strong>
+      <ol style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Export data from Sandbox.co.in web portal to CSV</li>
+        <li>Use "Manual Invoice Import" → "Go to Invoices Page"</li>
+        <li>Upload the CSV file in the form</li>
+        <li>System automatically calculates TDS</li>
+      </ol>
+    </div>
   </div>
 </div>
 
@@ -214,12 +222,13 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
       Pull invoices and challans directly from your Sandbox.co.in account for the selected period.
     </p>
 
-    <div style="background: #e8f5e9; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #2e7d32;">
-      <strong>✓ API Connected:</strong>
+    <div style="background: #e3f2fd; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #1565c0;">
+      <strong>ℹ️ API Status:</strong>
       <ul style="margin: 6px 0 0 0; padding-left: 20px;">
-        <li>Real-time data sync enabled</li>
-        <li>AWS Signature V4 authentication</li>
-        <li>Auto-import to database</li>
+        <li>✓ Authentication: Working</li>
+        <li>✓ API Connection: Established</li>
+        <li>⏳ Data Endpoints: Not Available</li>
+        <li>→ Use CSV import or manual entry below</li>
       </ul>
     </div>
 
