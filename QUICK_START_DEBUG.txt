@@ -1,0 +1,156 @@
+═════════════════════════════════════════════════════════════════════════════════
+  OCR DEBUGGING - QUICK START GUIDE
+═════════════════════════════════════════════════════════════════════════════════
+
+✅ TOOLS ARE NOW ACCESSIBLE
+─────────────────────────────
+
+🔍 Live Log Checker (RECOMMENDED)
+   https://www.bombayengg.net/check_handler_logs_now.php
+   → Real-time log monitoring with auto-refresh
+   → Shows which logs are created as you upload files
+
+🧪 Handler Endpoint Tester
+   https://www.bombayengg.net/test_handler_endpoint.php
+   → Tests handler connectivity
+   → Tests file uploads
+   → Detailed diagnostics
+
+📊 Complete Diagnostic Dashboard
+   https://www.bombayengg.net/diagnose_ocr_handler.php
+   → Full system diagnostics
+   → All log file status
+   → Configuration information
+
+🔧 OCR Debug Hub (Central Control)
+   https://www.bombayengg.net/ocr-debug.php
+   → Links to all tools
+   → Quick start guide
+   → Instructions
+
+═════════════════════════════════════════════════════════════════════════════════
+
+SIMPLE 3-STEP TEST
+───────────────────
+
+STEP 1: Open the Live Log Checker
+──────────────────────────────────
+Go to: https://www.bombayengg.net/check_handler_logs_now.php
+
+This page shows all OCR logs in real-time and auto-refreshes every 5 seconds.
+
+
+STEP 2: Clear the Logs
+──────────────────────
+Click the red button: "🗑️ Clear All Logs"
+
+This gives us a clean slate.
+
+
+STEP 3: Upload a PDF
+────────────────────
+1. Go to Admin Panel → Fuel Expenses
+2. Click "Add New"
+3. Upload a PDF file (any PDF, such as the one you tried before)
+4. Watch the log page - logs should appear!
+
+═════════════════════════════════════════════════════════════════════════════════
+
+WHAT TO EXPECT
+───────────────
+
+When you upload a PDF, you should see one or more of these logs appear:
+
+✅ /tmp/ocr_handler_entry.log
+   Shows the handler file is being executed
+   Content: [timestamp] === FILE LOADED === xAction=OCR
+
+✅ /tmp/ocr_handler_start.log
+   Shows the handler is processing the request
+   Content: [timestamp] Handler called with xAction=OCR, POST size=2...
+
+✅ /tmp/ocr_handler.log
+   Shows the OCR function is running
+   Content: File upload processing details
+
+✅ /tmp/ocr_debug.log
+   Shows Tesseract/pdftoppm processing
+   Content: OCR extraction details with confidence scores
+
+═════════════════════════════════════════════════════════════════════════════════
+
+WHAT DIFFERENT RESULTS MEAN
+─────────────────────────────
+
+RESULT A: Entry Log Appears + Other Logs
+─────────────────────────────────────────
+✅ GOOD! The handler IS being called.
+→ Look at the log contents to see what's happening
+→ If logs show errors, we know where to fix
+
+
+RESULT B: Entry Log Appears But No Other Logs
+──────────────────────────────────────────────
+⚠️ PARTIAL - Handler loads but something fails right after
+→ Check the Entry Log for xAction=OCR
+→ Problem is in includes or file processing
+
+
+RESULT C: No Logs Appear At All
+───────────────────────────────
+❌ BAD - Handler is NOT being called
+→ Even though error appears in browser
+→ Need to check browser Network tab (F12)
+→ May be wrong URL or different handler
+
+═════════════════════════════════════════════════════════════════════════════════
+
+IF YOU SEE LOGS
+────────────────
+
+Perfect! This tells us:
+1. Handler IS being called
+2. Files ARE being processed
+3. We can see exactly where it fails from log contents
+
+Next: Share the log contents with us for debugging
+
+
+IF NO LOGS APPEAR
+──────────────────
+
+Check browser Console (F12 → Console tab):
+1. Upload a PDF
+2. Look for [OCR] prefixed messages
+3. Check for any red error messages
+4. Share what you see
+
+This will show us if JavaScript is sending the request correctly
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+KEY LOCATIONS
+──────────────
+
+Live Log Checker:    https://www.bombayengg.net/check_handler_logs_now.php
+Log Files:           /tmp/ocr_handler_entry.log
+                     /tmp/ocr_handler_start.log
+                     /tmp/ocr_handler.log
+                     /tmp/ocr_debug.log
+Handler File:        /home/bombayengg/public_html/xadmin/mod/fuel-expense/x-fuel-expense.inc.php
+
+═════════════════════════════════════════════════════════════════════════════════
+
+SUMMARY
+────────
+
+1. Go to: https://www.bombayengg.net/check_handler_logs_now.php
+2. Click: "🗑️ Clear All Logs"
+3. Upload: A PDF through Fuel Expenses form
+4. Watch: Do logs appear on the page?
+5. Share: Screenshot + log contents
+
+The logs will tell us exactly what's happening! 🎯
+
+═════════════════════════════════════════════════════════════════════════════════

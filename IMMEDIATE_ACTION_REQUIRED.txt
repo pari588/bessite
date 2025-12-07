@@ -1,0 +1,171 @@
+═════════════════════════════════════════════════════════════════════════════════
+  OCR HANDLER DEBUGGING - IMMEDIATE ACTION NEEDED
+═════════════════════════════════════════════════════════════════════════════════
+
+CRITICAL DISCOVERY:
+───────────────────
+The handler IS returning the error "Tesseract processing failed with code: 1" to the
+browser, but NO logs are being created. This means the handler file IS being called,
+but it's crashing BEFORE the logging statements can execute.
+
+KEY FINDING:
+────────────
+- ✅ PDF files ARE being uploaded to /uploads/fuel-expense/
+- ✅ Handler is receiving the request (error message appears in browser)
+- ❌ But NO log files are created
+- ❌ This means handler crashes before logging happens
+
+This suggests one of these problems:
+1. A PHP error/exception occurs before logging statement
+2. The includes (core.inc.php, site.inc.php) are failing silently
+3. The mxCheckRequest() function is causing an error
+
+═════════════════════════════════════════════════════════════════════════════════
+IMMEDIATE TEST - DO THIS NOW
+═════════════════════════════════════════════════════════════════════════════════
+
+STEP 1: Clear all logs
+────────────────────
+Run in terminal:
+  rm -f /tmp/ocr_handler_entry.log /tmp/ocr_handler_start.log /tmp/ocr_handler.log /tmp/ocr_debug.log
+
+STEP 2: Upload a PDF through the form
+──────────────────────────────────────
+1. Go to Admin → Fuel Expenses
+2. Click "Add New"
+3. Upload any PDF (the one you just used is fine)
+4. You should see the error: "✗ OCR: Tesseract processing failed with code: 1"
+
+STEP 3: Check the NEW ultra-early log file
+──────────────────────────────────────────
+Run in terminal:
+  cat /tmp/ocr_handler_entry.log
+
+IMPORTANT: Look for this log file specifically!
+  - File: /tmp/ocr_handler_entry.log
+  - This file logs the ABSOLUTE FIRST LINE of the handler
+  - If it exists, the handler file WAS executed
+  - If it's empty, something crashed before the first line
+
+
+STEP 4: Send me the output
+──────────────────────────
+Share the result of:
+
+  echo "=== Handler Entry Log ===" && cat /tmp/ocr_handler_entry.log
+  echo "=== Handler Start Log ===" && cat /tmp/ocr_handler_start.log
+  echo "=== Handler Function Log ===" && cat /tmp/ocr_handler.log
+  echo "=== OCR Debug Log ===" && cat /tmp/ocr_debug.log
+
+═════════════════════════════════════════════════════════════════════════════════
+WHAT THE LOGS WILL TELL US
+═════════════════════════════════════════════════════════════════════════════════
+
+Scenario A: Handler Entry Log EXISTS
+─────────────────────────────────────
+✅ This proves the handler file is being executed
+✅ Then we look at the others to find where it fails
+Check: Is xAction=OCR in the log?
+
+Scenario B: Handler Entry Log DOESN'T EXIST
+────────────────────────────────────────────
+❌ This means the handler file is NOT being executed at all
+❌ Even though the error message appears in the browser
+This means the error is coming from somewhere else (maybe a different handler)
+
+═════════════════════════════════════════════════════════════════════════════════
+LOG FILES CREATED
+═════════════════════════════════════════════════════════════════════════════════
+
+Added ultra-early logging to track where the crash happens:
+
+File: /home/bombayengg/public_html/xadmin/mod/fuel-expense/x-fuel-expense.inc.php
+
+Added at line 2-3:
+  @file_put_contents(sys_get_temp_dir() . '/ocr_handler_entry.log',
+    "[" . date('Y-m-d H:i:s') . "] === FILE LOADED === xAction=" .
+    (isset($_POST["xAction"]) ? $_POST["xAction"] : "NOT SET") . "\n",
+    FILE_APPEND);
+
+This logs BEFORE ANY OTHER CODE in the file.
+
+═════════════════════════════════════════════════════════════════════════════════
+QUICK DIAGNOSIS BASED ON LOGS
+═════════════════════════════════════════════════════════════════════════════════
+
+1. IF /tmp/ocr_handler_entry.log EXISTS:
+
+   ✅ Handler file IS being loaded
+   Check the content:
+
+   a) If it shows "xAction=OCR":
+      → The file IS loaded with correct POST parameter
+      → Problem is after line 3 (in includes or setup code)
+      → Check handler.start.log to see if it gets that far
+
+   b) If it shows "xAction=NOT SET":
+      → POST data is not being received
+      → Problem in form submission or JavaScript
+
+2. IF /tmp/ocr_handler_entry.log DOESN'T EXIST:
+
+   ❌ Handler file is NOT being loaded at all
+   → The error is coming from a different place
+   → Need to check:
+     a) Is the AJAX URL correct in JavaScript?
+     b) Is the request reaching the server?
+     c) Is there a different handler being called?
+     d) Is there a router/redirect?
+
+═════════════════════════════════════════════════════════════════════════════════
+NEXT DIAGNOSTIC TOOLS
+═════════════════════════════════════════════════════════════════════════════════
+
+If basic logs don't help, use these tools:
+
+1. Endpoint Tester
+   http://your-domain/test_handler_endpoint.php
+
+2. Comprehensive Diagnostic Dashboard
+   http://your-domain/diagnose_ocr_handler.php
+
+3. Check browser developer tools (F12)
+   - Go to Network tab
+   - Upload a PDF
+   - Look for the POST request to x-fuel-expense.inc.php
+   - Check the response (should be JSON)
+
+═════════════════════════════════════════════════════════════════════════════════
+CRITICAL FILES INVOLVED
+═════════════════════════════════════════════════════════════════════════════════
+
+Handler:
+  /home/bombayengg/public_html/xadmin/mod/fuel-expense/x-fuel-expense.inc.php
+
+JavaScript:
+  /home/bombayengg/public_html/xadmin/mod/fuel-expense/inc/js/x-fuel-expense.inc.js
+
+Form:
+  /home/bombayengg/public_html/xadmin/mod/fuel-expense/x-fuel-expense-add-edit.php
+
+OCR Library:
+  /home/bombayengg/public_html/core/ocr.inc.php
+
+═════════════════════════════════════════════════════════════════════════════════
+SUMMARY
+═════════════════════════════════════════════════════════════════════════════════
+
+We've identified that:
+1. The handler returns an error to the browser
+2. But NO logs are created
+3. This suggests handler crashes before logging statements
+
+Solution:
+1. Clear logs
+2. Upload a PDF
+3. Check /tmp/ocr_handler_entry.log (the new ultra-early log)
+4. Share the results
+
+This will tell us if the handler file is even being executed!
+
+═════════════════════════════════════════════════════════════════════════════════

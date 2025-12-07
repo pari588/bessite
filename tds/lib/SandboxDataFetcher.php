@@ -4,6 +4,7 @@
  *
  * This class handles fetching invoices, challans, and other data
  * from the Sandbox.co.in API for the currently selected firm.
+ * Uses JWT token authentication (compatible with SandboxTDSAPI)
  */
 class SandboxDataFetcher {
     private $pdo;
@@ -11,7 +12,9 @@ class SandboxDataFetcher {
     private $apiKey;
     private $apiSecret;
     private $accessToken;
-    private $apiBaseUrl = 'https://api.sandbox.co.in/v1';
+    private $tokenExpiresAt;
+    private $environment;
+    private $baseUrl;
 
     public function __construct(PDO $pdo, $firmId) {
         $this->pdo = $pdo;
@@ -27,7 +30,7 @@ class SandboxDataFetcher {
     private function loadCredentials() {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT api_key, api_secret, access_token, token_expires_at
+                SELECT api_key, api_secret, access_token, token_expires_at, environment
                 FROM api_credentials
                 WHERE firm_id = ? AND is_active = 1
                 LIMIT 1
@@ -41,17 +44,25 @@ class SandboxDataFetcher {
 
             $this->apiKey = $cred['api_key'];
             $this->apiSecret = $cred['api_secret'];
+            $this->environment = $cred['environment'] ?? 'sandbox';
+
+            // Set API base URL
+            $this->baseUrl = ($this->environment === 'production')
+                ? 'https://api.sandbox.co.in'
+                : 'https://test-api.sandbox.co.in';
 
             // Check if token is still valid
             if (!empty($cred['access_token']) && !empty($cred['token_expires_at'])) {
-                if (strtotime($cred['token_expires_at']) > time()) {
+                $tokenExpires = strtotime($cred['token_expires_at']);
+                if ($tokenExpires > time() + 300) { // 5 min buffer
                     $this->accessToken = $cred['access_token'];
+                    $this->tokenExpiresAt = $tokenExpires;
                 }
             }
 
             // Generate new token if needed
             if (empty($this->accessToken)) {
-                $this->generateAccessToken();
+                $this->authenticate();
             }
         } catch (Exception $e) {
             throw new Exception("Failed to load credentials: " . $e->getMessage());
@@ -59,30 +70,28 @@ class SandboxDataFetcher {
     }
 
     /**
-     * Generate OAuth2 access token
+     * Authenticate with Sandbox API and get JWT token
      */
-    private function generateAccessToken() {
+    private function authenticate() {
         try {
-            $url = 'https://api.sandbox.co.in/oauth/token';
-
-            $postData = [
-                'grant_type' => 'client_credentials',
-                'client_id' => $this->apiKey,
-                'client_secret' => $this->apiSecret,
-                'scope' => 'tds'
+            $headers = [
+                'x-api-key' => $this->apiKey,
+                'x-api-secret' => $this->apiSecret,
+                'x-api-version' => '1.0',
+                'Content-Type' => 'application/json'
             ];
 
-            // Use form-encoded data for token endpoint (not JSON)
-            $response = $this->makeTokenRequest($url, $postData);
+            $response = $this->makeRequest('POST', '/authenticate', [], $headers);
 
-            if (empty($response['access_token'])) {
-                throw new Exception("Failed to generate access token: " . json_encode($response));
+            if (empty($response['data']['access_token'])) {
+                throw new Exception("Failed to get access token: " . json_encode($response));
             }
 
-            $this->accessToken = $response['access_token'];
+            $this->accessToken = $response['data']['access_token'];
+            $this->tokenExpiresAt = time() + 86400; // 24 hours
 
             // Save token to database
-            $expiresAt = date('Y-m-d H:i:s', time() + ($response['expires_in'] ?? 3600));
+            $expiresAt = date('Y-m-d H:i:s', $this->tokenExpiresAt);
             $stmt = $this->pdo->prepare("
                 UPDATE api_credentials
                 SET access_token = ?, token_generated_at = NOW(), token_expires_at = ?
@@ -91,53 +100,7 @@ class SandboxDataFetcher {
             $stmt->execute([$this->accessToken, $expiresAt, $this->firmId]);
 
         } catch (Exception $e) {
-            throw new Exception("Token generation failed: " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Make token request with form encoding (OAuth2 standard)
-     */
-    private function makeTokenRequest($url, $postData) {
-        try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_POST, true);
-
-            // Send as form-encoded (application/x-www-form-urlencoded)
-            $postString = http_build_query($postData);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
-
-            $headers = [
-                'Content-Type: application/x-www-form-urlencoded',
-                'Accept: application/json'
-            ];
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $error = curl_error($ch);
-            curl_close($ch);
-
-            if ($error) {
-                throw new Exception("cURL error: $error");
-            }
-
-            if ($httpCode >= 400) {
-                throw new Exception("Token API error ($httpCode): $response");
-            }
-
-            $data = json_decode($response, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON response: " . json_last_error_msg());
-            }
-
-            return $data ?? [];
-
-        } catch (Exception $e) {
-            throw new Exception("Token request failed: " . $e->getMessage());
+            throw new Exception("Authentication failed: " . $e->getMessage());
         }
     }
 
@@ -150,6 +113,9 @@ class SandboxDataFetcher {
      */
     public function fetchInvoices($fy, $quarter) {
         try {
+            // Ensure valid token
+            $this->ensureValidToken();
+
             // Get firm's TAN from database
             $stmt = $this->pdo->prepare("SELECT tan FROM firms WHERE id = ?");
             $stmt->execute([$this->firmId]);
@@ -164,8 +130,7 @@ class SandboxDataFetcher {
             // Calculate date range for quarter
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
-            // Prepare API request
-            $url = $this->apiBaseUrl . '/tds/invoices';
+            // Use AWS Signature V4 for data endpoints
             $params = [
                 'tan' => $tan,
                 'from_date' => $dates['start'],
@@ -174,13 +139,46 @@ class SandboxDataFetcher {
                 'offset' => 0
             ];
 
-            $response = $this->makeRequest('GET', $url, [], $params);
+            // Try multiple possible endpoints
+            $endpoints = [
+                '/v1/tds/invoices',
+                '/tds/invoices',
+                '/data/invoices'
+            ];
 
-            if (empty($response['invoices'])) {
-                return [];
+            $lastError = null;
+
+            foreach ($endpoints as $baseEndpoint) {
+                try {
+                    // Build full URL with query params
+                    $queryString = http_build_query($params);
+                    $fullUrl = $this->baseUrl . $baseEndpoint . '?' . $queryString;
+
+                    // Sign request with AWS SigV4
+                    $response = $this->makeAuthenticatedRequest('GET', $baseEndpoint, $params);
+
+                    // Handle both possible response formats
+                    $invoices = $response['invoices'] ?? $response['data']['invoices'] ?? $response['data'] ?? [];
+
+                    // If we got data, return it
+                    if (!empty($invoices)) {
+                        return $this->transformInvoices($invoices);
+                    }
+
+                } catch (Exception $e) {
+                    // Try next endpoint
+                    $lastError = $e->getMessage();
+                    continue;
+                }
             }
 
-            return $this->transformInvoices($response['invoices']);
+            // If we got here, no endpoint worked but didn't have errors
+            if ($lastError) {
+                throw new Exception("All endpoints failed: $lastError");
+            }
+
+            // No data found (HTTP 200 but empty)
+            return [];
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch invoices: " . $e->getMessage());
@@ -196,6 +194,9 @@ class SandboxDataFetcher {
      */
     public function fetchChallans($fy, $quarter) {
         try {
+            // Ensure valid token
+            $this->ensureValidToken();
+
             // Get firm's TAN from database
             $stmt = $this->pdo->prepare("SELECT tan FROM firms WHERE id = ?");
             $stmt->execute([$this->firmId]);
@@ -210,23 +211,53 @@ class SandboxDataFetcher {
             // Calculate date range for quarter
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
-            // Prepare API request
-            $url = $this->apiBaseUrl . '/tds/challans';
-            $params = [
-                'tan' => $tan,
-                'from_date' => $dates['start'],
-                'to_date' => $dates['end'],
-                'limit' => 100,
-                'offset' => 0
+            // Try multiple possible endpoints
+            $endpoints = [
+                '/v1/tds/challans',
+                '/tds/challans',
+                '/data/challans'
             ];
 
-            $response = $this->makeRequest('GET', $url, [], $params);
+            $challans = [];
+            $lastError = null;
 
-            if (empty($response['challans'])) {
-                return [];
+            foreach ($endpoints as $baseEndpoint) {
+                try {
+                    $params = [
+                        'tan' => $tan,
+                        'from_date' => $dates['start'],
+                        'to_date' => $dates['end'],
+                        'limit' => 100,
+                        'offset' => 0
+                    ];
+
+                    // Build query string
+                    $endpoint = $baseEndpoint . '?' . http_build_query($params);
+
+                    $response = $this->makeRequest('GET', $endpoint, []);
+
+                    // Handle both possible response formats
+                    $challans = $response['challans'] ?? $response['data']['challans'] ?? $response['data'] ?? [];
+
+                    // If we got data, return it
+                    if (!empty($challans)) {
+                        return $this->transformChallans($challans);
+                    }
+
+                } catch (Exception $e) {
+                    // Try next endpoint
+                    $lastError = $e->getMessage();
+                    continue;
+                }
             }
 
-            return $this->transformChallans($response['challans']);
+            // If we got here, no endpoint worked but didn't have errors
+            if ($lastError) {
+                throw new Exception("All endpoints failed: $lastError");
+            }
+
+            // No data found (HTTP 200 but empty)
+            return [];
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch challans: " . $e->getMessage());
@@ -379,52 +410,66 @@ class SandboxDataFetcher {
     }
 
     /**
-     * Make HTTP request to API
+     * Make HTTP request to API with JWT authentication
      */
-    private function makeRequest($method, $url, $postData = [], $params = []) {
+    private function makeRequest($method, $endpoint, $postData = [], $customHeaders = []) {
         try {
-            // Add query parameters
-            if (!empty($params)) {
-                $url .= '?' . http_build_query($params);
+            $ch = curl_init();
+
+            $url = $this->baseUrl . $endpoint;
+
+            // Add query params if GET request
+            if ($method === 'GET' && !empty($postData) && count($customHeaders) === 0) {
+                $url .= '?' . http_build_query($postData);
             }
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            // Build header array - convert associative array to string format
+            $headerArray = [];
 
-            // Set headers
-            $headers = [
-                'Authorization: Bearer ' . $this->accessToken,
-                'Content-Type: application/json',
-                'Accept: application/json'
-            ];
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            // Add custom headers first (like x-api-key, x-api-secret)
+            foreach ($customHeaders as $key => $value) {
+                $headerArray[] = "$key: $value";
+            }
 
-            // Set method
-            if ($method === 'POST') {
-                curl_setopt($ch, CURLOPT_POST, true);
+            // Add standard headers
+            $headerArray[] = 'Content-Type: application/json';
+            $headerArray[] = 'Accept: application/json';
+
+            // Add authorization header if token exists
+            if (!empty($this->accessToken)) {
+                $headerArray[] = "Authorization: {$this->accessToken}";
+            }
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => $method,
+                CURLOPT_HTTPHEADER => $headerArray,
+                CURLOPT_TIMEOUT => 60,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+
+            if (!empty($postData) && $method !== 'GET') {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-            } else {
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
             }
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $error = curl_error($ch);
+            $curlError = curl_error($ch);
             curl_close($ch);
 
-            if ($error) {
-                throw new Exception("cURL error: $error");
+            if (!empty($curlError)) {
+                throw new Exception("cURL Error: $curlError");
             }
 
             if ($httpCode >= 400) {
-                throw new Exception("API error ($httpCode): $response");
+                throw new Exception("API Error (HTTP $httpCode): $response");
             }
 
             $data = json_decode($response, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON response: " . json_last_error_msg());
+                throw new Exception("Invalid JSON response: " . json_last_error_msg() . " Response: $response");
             }
 
             return $data ?? [];
@@ -484,6 +529,113 @@ class SandboxDataFetcher {
             ];
         }
         return $transformed;
+    }
+
+    /**
+     * Ensure access token is valid, refresh if needed
+     */
+    private function ensureValidToken() {
+        if (!$this->accessToken || time() > $this->tokenExpiresAt - 300) {
+            // Token expires in less than 5 minutes, refresh
+            $this->authenticate();
+        }
+    }
+
+    /**
+     * Make AWS SigV4 authenticated request for data endpoints
+     */
+    private function makeAuthenticatedRequest($method, $endpoint, $params = []) {
+        try {
+            $timestamp = gmdate('Ymd\THis\Z');
+            $dateStamp = gmdate('Ymd');
+
+            // Build canonical request
+            $queryString = '';
+            if (!empty($params)) {
+                $queryString = http_build_query($params);
+            }
+
+            $payloadHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'; // SHA256("")
+            $canonicalHeaders = "host:" . parse_url($this->baseUrl, PHP_URL_HOST) . "\nx-amz-date:{$timestamp}\n";
+            $signedHeaders = "host;x-amz-date";
+
+            $canonicalRequest = "$method\n" .
+                               "$endpoint\n" .
+                               "$queryString\n" .
+                               $canonicalHeaders . "\n" .
+                               $signedHeaders . "\n" .
+                               $payloadHash;
+
+            // Create string to sign
+            $algorithm = 'AWS4-HMAC-SHA256';
+            $credentialScope = "{$dateStamp}/ap-south-1/execute-api/aws4_request";
+            $canonicalRequestHash = hash('sha256', $canonicalRequest);
+
+            $stringToSign = "{$algorithm}\n" .
+                           "{$timestamp}\n" .
+                           "{$credentialScope}\n" .
+                           $canonicalRequestHash;
+
+            // Calculate signature
+            $kSecret = 'AWS4' . $this->apiSecret;
+            $kDate = hash_hmac('sha256', $dateStamp, $kSecret, true);
+            $kRegion = hash_hmac('sha256', 'ap-south-1', $kDate, true);
+            $kService = hash_hmac('sha256', 'execute-api', $kRegion, true);
+            $kSigning = hash_hmac('sha256', 'aws4_request', $kService, true);
+            $signature = hash_hmac('sha256', $stringToSign, $kSigning);
+
+            // Build authorization header
+            $authorizationHeader = "{$algorithm} Credential={$this->apiKey}/{$credentialScope}, " .
+                                  "SignedHeaders={$signedHeaders}, " .
+                                  "Signature={$signature}";
+
+            // Make request with AWS SigV4 headers
+            $ch = curl_init();
+
+            $url = $this->baseUrl . $endpoint;
+            if (!empty($queryString)) {
+                $url .= '?' . $queryString;
+            }
+
+            $headers = [
+                'Authorization: ' . $authorizationHeader,
+                'X-Amz-Date: ' . $timestamp,
+                'Content-Type: application/json'
+            ];
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => $method,
+                CURLOPT_HTTPHEADER => $headers,
+                CURLOPT_TIMEOUT => 60,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            if (!empty($curlError)) {
+                throw new Exception("cURL Error: $curlError");
+            }
+
+            if ($httpCode >= 400) {
+                throw new Exception("API Error (HTTP $httpCode): $response");
+            }
+
+            $data = json_decode($response, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Invalid JSON: " . json_last_error_msg());
+            }
+
+            return $data ?? [];
+
+        } catch (Exception $e) {
+            throw new Exception("AWS request failed: " . $e->getMessage());
+        }
     }
 
     /**

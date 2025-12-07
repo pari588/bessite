@@ -1,0 +1,161 @@
+═════════════════════════════════════════════════════════════════════════════════
+  OCR DEBUGGING - START HERE
+═════════════════════════════════════════════════════════════════════════════════
+
+SIMPLE 3-STEP TEST
+─────────────────
+
+STEP 1: Open this page in your browser
+────────────────────────────────────────
+http://your-domain/check_handler_logs_now.php
+
+This page shows you the status of all OCR handler logs in real-time.
+It auto-refreshes every 5 seconds.
+
+
+STEP 2: Clear the logs
+──────────────────────
+Click the red "🗑️ Clear All Logs" button to start fresh.
+
+
+STEP 3: Upload a PDF
+────────────────────
+1. Go to Admin → Fuel Expenses
+2. Click "Add New"
+3. Upload ANY PDF file
+4. You'll see the error: "✗ OCR: Tesseract processing failed with code: 1"
+
+Keep watching the log page - logs should appear as you upload!
+
+
+WHAT YOU'RE LOOKING FOR
+─────────────────────────
+
+THREE POSSIBLE OUTCOMES:
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+OUTCOME 1: You see logs appear on the page
+─────────────────────────────────────────────
+
+✅ GOOD! This means the handler IS being called.
+
+Look at the log contents:
+  - Entry Log: Should show "xAction=OCR"
+  - Handler Log: Should show which stage it reaches
+  - Debug Log: Should show what happened
+
+Take a screenshot and share it for debugging.
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+OUTCOME 2: NO logs appear on the page
+─────────────────────────────────────────
+
+❌ BAD! This means the handler is NOT being called.
+
+But the error still appears in the browser, which is strange.
+
+Next step:
+  - Open your browser Developer Tools (Press F12)
+  - Go to the "Network" tab
+  - Upload a PDF
+  - Look for the request to "x-fuel-expense.inc.php"
+  - Check what Response it got back
+  - Take a screenshot and share
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+OUTCOME 3: Only the "Entry Log" appears
+──────────────────────────────────────────
+
+✅ PARTIAL! Handler file IS loading but something breaks right after.
+
+Check the Entry Log:
+  - If it says "xAction=OCR" → POST data is correct, problem later in code
+  - If it says "xAction=NOT SET" → POST data is not being received
+
+Continue looking at the page - if other logs appear, they'll show where it fails.
+
+
+═════════════════════════════════════════════════════════════════════════════════════
+
+LOG INTERPRETATION QUICK GUIDE
+─────────────────────────────────
+
+Entry Log (/tmp/ocr_handler_entry.log)
+─────────────────────────────────────────
+  Shows: Whether the handler file is being executed at all
+  Missing? Handler file is NOT being called
+  Empty? Handler is loading but no data processed
+  Contains "xAction=OCR"? Good, POST data is arriving
+  Contains "xAction=NOT SET"? Bad, POST data not being sent
+
+
+Handler Start Log (/tmp/ocr_handler_start.log)
+─────────────────────────────────────────────────
+  Shows: Whether the handler block detected the xAction parameter
+  Missing? Either entry log is missing OR it fails before this line
+  Contains "xAction=OCR"? Good, request is being processed
+
+
+Handler Function Log (/tmp/ocr_handler.log)
+──────────────────────────────────────────────
+  Shows: Detailed steps of the OCR function
+  Missing? processBillImageOCR() function not being called
+  Shows file upload steps, conversions, Tesseract execution
+
+
+OCR Debug Log (/tmp/ocr_debug.log)
+──────────────────────────────────
+  Shows: Detailed OCR processing with Tesseract
+  Missing? processBillOCR() function not being called
+  Shows pdftoppm output, Tesseract return codes, extracted text
+
+
+═════════════════════════════════════════════════════════════════════════════════════
+
+WHEN YOU HAVE RESULTS
+──────────────────────
+
+1. Screenshot the log page (showing which logs exist)
+2. Copy the content of each log file that exists
+3. Copy the browser Developer Tools Network tab request/response
+4. Share all this information
+
+This will tell us exactly where the process is failing!
+
+
+═════════════════════════════════════════════════════════════════════════════════════
+
+SUMMARY
+─────────
+
+1. Go to: http://your-domain/check_handler_logs_now.php
+2. Click: Clear All Logs
+3. Upload: A PDF through the Fuel Expenses form
+4. Watch: Do logs appear on the page?
+5. Share: Screenshot + log contents for debugging
+
+That's it! The logs will tell us exactly what's happening.
+
+
+═════════════════════════════════════════════════════════════════════════════════════
+
+ADDITIONAL TOOLS IF NEEDED
+───────────────────────────
+
+Quick Tests:
+  http://your-domain/test_handler_endpoint.php
+
+Complete Dashboard:
+  http://your-domain/diagnose_ocr_handler.php
+
+Documentation:
+  /home/bombayengg/public_html/IMMEDIATE_ACTION_REQUIRED.txt
+  /home/bombayengg/public_html/OCR_HANDLER_DEBUGGING_SUMMARY.md
+
+
+═════════════════════════════════════════════════════════════════════════════════════

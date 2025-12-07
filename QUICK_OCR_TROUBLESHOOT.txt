@@ -1,0 +1,108 @@
+═══════════════════════════════════════════════════════════════════════════════
+  OCR PDF UPLOAD TROUBLESHOOTING - QUICK START
+═══════════════════════════════════════════════════════════════════════════════
+
+ISSUE: "✗ OCR: Tesseract processing failed with code: 1"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: Open the Debug Log Viewer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open in your browser:
+   http://your-domain/check_ocr_logs.php
+
+This page shows live logs and auto-refreshes every 2 seconds.
+
+
+STEP 2: Upload a Test PDF
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option A - Use test page (recommended):
+   http://your-domain/test_ocr_web_simulation.php
+   (Select a PDF and click "Upload & Test OCR")
+
+Option B - Use admin panel:
+   Go to Fuel Expenses module → Upload a bill PDF
+
+
+STEP 3: Check the Logs
+━━━━━━━━━━━━━━━━━━━━━
+
+The /check_ocr_logs.php page will show:
+   ✓ Processing steps (pdftoppm, Tesseract)
+   ✓ Return codes (should be 0 for success)
+   ✓ File existence checks
+   ✓ Any error messages
+
+Or manually in terminal:
+   cat /tmp/ocr_debug.log | tail -50
+   cat /tmp/ocr_handler.log
+
+
+STEP 4: Identify the Problem
+━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Look for these key indicators:
+
+   ✗ "pdftoppm return code: 1" → PDF conversion failed
+   ✗ "Tesseract return code: 1" → OCR failed
+   ✗ "pdftoppm output file exists: NO" → PNG not created
+   ✗ "Input file: ... (exists: NO)" → File not found by Tesseract
+   ✗ NO log entries at all → Handler not being called
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK CHECKS
+═════════════════════════════════════════════════════════════════════════════
+
+1. File Upload Directory Writable?
+   ls -la /home/bombayengg/public_html/uploads/fuel-expense/
+   (Should show "drwxr-xr-x" or similar with write permissions)
+
+2. Temp Directory Writable?
+   ls -la /tmp | grep "^d"
+   (Should show "drwxrwxrwt" for /tmp)
+
+3. pdftoppm Installed?
+   which pdftoppm
+   (Should show /bin/pdftoppm or /usr/bin/pdftoppm)
+
+4. Tesseract Installed?
+   which tesseract
+   (Should show /bin/tesseract or /usr/bin/tesseract)
+
+5. Test pdftoppm Manually?
+   pdftoppm -singlefile -png /tmp/test.pdf /tmp/test
+   (If test.pdf exists, should create /tmp/test.png)
+
+6. Test Tesseract Manually?
+   tesseract /tmp/test.png /tmp/output
+   (Should create /tmp/output.txt with extracted text)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CLEARING LOGS
+═════════════════════════════════════════════════════════════════════════════
+
+To clear logs between tests:
+   rm /tmp/ocr_debug.log /tmp/ocr_handler.log
+
+Then upload again to get fresh logs without old entries.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEED HELP?
+═════════════════════════════════════════════════════════════════════════════
+
+1. Open /check_ocr_logs.php
+2. Upload a PDF
+3. Copy the full log output
+4. Share it along with:
+   - The error message from the browser
+   - The PDF filename
+   - The PDF file size
+
+This will help identify the exact issue.
+
+═══════════════════════════════════════════════════════════════════════════════

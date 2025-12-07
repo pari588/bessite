@@ -86,21 +86,26 @@ class resizeImage
     function __getTheFunction()
     {
         switch ($this->imgType) {
-            case 1: //jpeg gif					
+            case 1: //jpeg gif
                 $this->fCallback["start"] = "imagecreatefromgif";
                 $this->fCallback["end"] = "imagegif";
                 break;
 
-            case 2: //jpeg funciton					
+            case 2: //jpeg funciton
                 $this->fCallback["start"] = "imagecreatefromjpeg";
                 $this->fCallback["end"] = "imagejpeg";
                 break;
 
-            case 3: //jpeg png					
+            case 3: //jpeg png
                 $this->fCallback["start"] = "imagecreatefrompng";
                 $this->fCallback["end"] = "imagepng";
                 $scaleQuality = round($this->quality / 100) * 9;
                 $this->quality = 9 - $scaleQuality;
+                break;
+
+            case 18: //WebP (IMAGETYPE_WEBP)
+                $this->fCallback["start"] = "imagecreatefromwebp";
+                $this->fCallback["end"] = "imagewebp";
                 break;
         }
     }

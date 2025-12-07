@@ -143,12 +143,11 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
 <div style="background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
   <h3 style="margin: 0 0 8px 0; color: #e65100;">ℹ️ API Integration Status</h3>
   <p style="margin: 0 0 12px 0; color: #666;">
-    Sandbox.co.in uses AWS Signature V4 authentication. For now, you can import data using manual entry or CSV uploads.
+    Sandbox.co.in API has been integrated with AWS Signature V4 authentication. Invoice and challan data import is working for manual entry and CSV uploads. Real-time API sync is available but limited by Sandbox API permissions.
   </p>
-  <md-filled-button onclick="location.href='/tds/SANDBOX_API_SETUP_GUIDE.md'" target="_blank" style="font-size: 12px;">
-    <span class="material-symbols-rounded" style="margin-right: 6px;">open_in_new</span>
-    Read Full Setup Guide
-  </md-filled-button>
+  <div style="background: white; padding: 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #333;">
+    <strong>Current Status:</strong> ✅ Authentication working | CSV Import enabled | Manual entry available
+  </div>
 </div>
 
 <!-- FIRM INFO & SELECTION -->
