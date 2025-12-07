@@ -14,8 +14,18 @@ if($vendor_name==='' || $vendor_pan==='' || $invoice_no==='' || $invoice_date===
   json_err('Missing or invalid fields');
 }
 
-// Find or create vendor (firm_id=1 for MVP)
-$firm_id = 1;
+// Get firm ID from session
+$firm_id = $_SESSION['active_firm_id'] ?? 1;
+if (!$firm_id) {
+  json_err('No firm selected');
+}
+
+// Verify firm exists
+$checkFirm = $pdo->prepare('SELECT id FROM firms WHERE id = ?');
+$checkFirm->execute([$firm_id]);
+if (!$checkFirm->fetch()) {
+  json_err('Selected firm does not exist');
+}
 $vs = $pdo->prepare('SELECT id FROM vendors WHERE firm_id=? AND (pan=? OR name=?) ORDER BY id DESC LIMIT 1');
 $vs->execute([$firm_id,$vendor_pan,$vendor_name]);
 $vendor_id = $vs->fetchColumn();

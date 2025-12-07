@@ -2,7 +2,35 @@
 if(!isset($page_title)) $page_title='TDS AutoFile';
 if(session_status()===PHP_SESSION_NONE) session_start();
 require_once __DIR__.'/../lib/db.php';
-$firm = $pdo->query('SELECT display_name, tan, pan FROM firms LIMIT 1')->fetch();
+
+// Handle firm switching
+if (isset($_GET['switch_firm'])) {
+    $_SESSION['active_firm_id'] = (int)$_GET['switch_firm'];
+}
+
+// Get active firm ID from session or default to first firm
+$firmId = $_SESSION['active_firm_id'] ?? null;
+if (!$firmId) {
+    $stmt = $pdo->query('SELECT id FROM firms LIMIT 1');
+    $firstFirm = $stmt->fetch();
+    $firmId = $firstFirm['id'] ?? null;
+    if ($firmId) {
+        $_SESSION['active_firm_id'] = $firmId;
+    }
+}
+
+// Get current firm details
+$firm = null;
+$allFirms = [];
+if ($firmId) {
+    $stmt = $pdo->prepare('SELECT id, display_name, tan, pan FROM firms WHERE id = ?');
+    $stmt->execute([$firmId]);
+    $firm = $stmt->fetch();
+}
+
+// Get all firms for dropdown
+$stmt = $pdo->query('SELECT id, display_name, tan FROM firms ORDER BY display_name');
+$allFirms = $stmt->fetchAll();
 ?>
 <!doctype html>
 <html lang="en">
@@ -23,7 +51,9 @@ $firm = $pdo->query('SELECT display_name, tan, pan FROM firms LIMIT 1')->fetch()
   <div class="header">
     <md-icon-button class="nav-btn" onclick="window.toggleNav()"><span class="material-symbols-rounded">menu</span></md-icon-button>
     <h3 style="margin:0">TDS AutoFile</h3>
-    <div class="firm-chip">
+
+    <!-- Firm Selector -->
+    <div class="firm-chip" style="cursor: pointer; position: relative;" onclick="toggleFirmDropdown(event)">
       <?php if($firm): ?>
         <span class="material-symbols-rounded">apartment</span>
         <span><?=htmlspecialchars($firm['display_name']?:'Firm')?></span>
@@ -33,13 +63,52 @@ $firm = $pdo->query('SELECT display_name, tan, pan FROM firms LIMIT 1')->fetch()
         <span class="dot">•</span>
         <span class="material-symbols-rounded">id_card</span>
         <span>PAN: <?=htmlspecialchars($firm['pan']?:'—')?></span>
+        <span class="material-symbols-rounded" style="margin-left:6px;font-size:16px">expand_more</span>
+      <?php else: ?>
+        <span class="material-symbols-rounded">apartment</span>
+        <span>No Firm Selected</span>
+        <span class="material-symbols-rounded" style="margin-left:6px;font-size:16px">expand_more</span>
       <?php endif; ?>
+
+      <!-- Dropdown Menu -->
+      <div id="firmDropdown" style="display:none;position:absolute;top:100%;right:0;background:white;border:1px solid #ddd;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15);min-width:300px;z-index:1000;margin-top:4px">
+        <div style="padding:12px;border-bottom:1px solid #f0f0f0;font-weight:600;font-size:13px">Select Firm:</div>
+        <?php if (!empty($allFirms)): ?>
+          <?php foreach ($allFirms as $f): ?>
+            <a href="?switch_firm=<?=$f['id']?>" style="display:block;padding:12px;border-bottom:1px solid #f0f0f0;text-decoration:none;color:inherit;transition:background 0.2s;border-left:3px solid <?=$f['id']==$firmId?'#1976d2':'transparent'?>;padding-left:9px;background:<?=$f['id']==$firmId?'#f0f7ff':'transparent'?>" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='<?=$f['id']==$firmId?'#f0f7ff':'transparent'?>'">
+              <div style="font-weight:600;font-size:13px"><?=htmlspecialchars($f['display_name'])?></div>
+              <div style="font-size:11px;color:#666;margin-top:2px">TAN: <?=htmlspecialchars($f['tan'])?></div>
+            </a>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div style="padding:12px;color:#999;text-align:center">No firms available</div>
+        <?php endif; ?>
+        <a href="firms.php" style="display:block;padding:12px;border-top:1px solid #f0f0f0;text-decoration:none;color:#1976d2;font-weight:500;font-size:12px;text-align:center" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">
+          <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px;margin-right:4px">add</span>Manage Firms
+        </a>
+      </div>
     </div>
+
     <div class="spacer"></div>
     <?php if(isset($_SESSION['uid'])): ?>
       <md-filled-tonal-button onclick="location.href='logout.php'"><span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px;margin-right:6px">logout</span>Logout</md-filled-tonal-button>
     <?php endif; ?>
   </div>
+
+  <script>
+    function toggleFirmDropdown(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('firmDropdown');
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('firmDropdown');
+      if (dropdown && !event.target.closest('.firm-chip')) {
+        dropdown.style.display = 'none';
+      }
+    });
+  </script>
   <div class="shell">
     <?php if(isset($_SESSION['uid'])): ?>
     <aside class="sidebar" id="sidebar">
