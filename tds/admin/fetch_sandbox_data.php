@@ -232,32 +232,20 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
       </ul>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-      <md-filled-button onclick="fetchSandboxData('invoices')" style="width: 100%; font-size: 12px;">
-        <span class="material-symbols-rounded" style="margin-right: 4px;">receipt_long</span>
-        Fetch Invoices
-      </md-filled-button>
+    <p style="font-size: 11px; color: #666; margin: 0 0 12px 0; font-style: italic;">
+      Data endpoints are not available from Sandbox API. Use CSV export from Sandbox web portal instead.
+    </p>
 
-      <md-filled-button onclick="fetchSandboxData('challans')" style="width: 100%; font-size: 12px;">
-        <span class="material-symbols-rounded" style="margin-right: 4px;">account_balance</span>
-        Fetch Challans
-      </md-filled-button>
-    </div>
+    <md-filled-button onclick="location.href='invoices.php'" style="width: 100%; margin-bottom: 8px;">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">upload_file</span>
+      Import Invoices from CSV
+    </md-filled-button>
 
-    <md-outlined-button onclick="fetchSandboxData('all')" style="width: 100%;">
-      <span class="material-symbols-rounded" style="margin-right: 6px;">sync</span>
-      Fetch Both
-    </md-outlined-button>
+    <md-filled-button onclick="location.href='challans.php'" style="width: 100%;">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">upload_file</span>
+      Import Challans from CSV
+    </md-filled-button>
 
-    <div id="sandboxStatus" class="fetch-progress">
-      <div class="progress-bar">
-        <div class="progress-fill" style="animation: progress 2s ease-in-out infinite;"></div>
-      </div>
-      <div style="font-size: 12px; color: #666; text-align: center;">
-        Syncing with Sandbox API... Please wait
-      </div>
-    </div>
-    <div id="sandboxResult"></div>
   </div>
 
   <!-- MANUAL INVOICE IMPORT -->
