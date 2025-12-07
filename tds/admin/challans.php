@@ -41,37 +41,33 @@ $summary = $summaryStmt->fetch();
   <!-- BULK CSV IMPORT -->
   <div class="card fade-in">
     <h3>Bulk Import (CSV)</h3>
-    <form id="bulkChForm" method="post" enctype="multipart/form-data" class="form-grid">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:12px;color:#666;background:#f5f5f5;padding:12px;border-radius:4px;">
-          <strong>CSV Format:</strong>
-          <div style="margin-top:8px;font-family:monospace;font-size:11px">
-            bsr_code, challan_date, challan_serial_no, amount_tds, surcharge, health_and_education_cess
-          </div>
-          <div style="margin-top:8px;color:#999;font-size:11px">
-            • challan_date: YYYY-MM-DD<br>
-            • surcharge, cess, interest: optional (leave empty if zero)<br>
-            • <a href="#" onclick="downloadSampleChallanCSV(event)" style="color:#1976d2">Download Sample CSV</a>
-          </div>
-        </div>
-
-        <div style="position:relative">
-          <input type="file" id="csvChallanInput" name="csv_file" accept=".csv" style="display:none" onchange="handleChallanCsvUpload(event)" />
-          <md-filled-button type="button" onclick="document.getElementById('csvChallanInput').click()" style="width:100%">
-            <span class="material-symbols-rounded" style="margin-right:6px">upload_file</span>
-            Choose CSV File
-          </md-filled-button>
-          <div id="challanFileNameDisplay" style="font-size:12px;color:#666;margin-top:8px;text-align:center"></div>
-        </div>
-
-        <div id="challanImportProgress" style="display:none">
-          <md-linear-progress indeterminate></md-linear-progress>
-          <div style="font-size:12px;color:#666;margin-top:8px">Importing challans...</div>
-        </div>
-
-        <div id="challanImportResult" style="display:none;padding:12px;border-radius:4px;font-size:12px"></div>
+    <div style="font-size:12px;color:#666;background:#f5f5f5;padding:12px;border-radius:4px;margin-bottom:12px;">
+      <strong>CSV Format:</strong>
+      <div style="margin-top:8px;font-family:monospace;font-size:11px">
+        bsr_code, challan_date, challan_serial_no, amount_tds, surcharge, health_and_education_cess
       </div>
-    </form>
+      <div style="margin-top:8px;color:#999;font-size:11px">
+        • challan_date: YYYY-MM-DD<br>
+        • surcharge, cess, interest: optional (leave empty if zero)<br>
+        • <a href="#" onclick="downloadSampleChallanCSV(event)" style="color:#1976d2">Download Sample CSV</a>
+      </div>
+    </div>
+
+    <div style="position:relative;margin-bottom:12px">
+      <input type="file" id="csvChallanInput" name="csv_file" accept=".csv" style="display:none" onchange="handleChallanCsvUpload(event)" />
+      <md-filled-button type="button" onclick="document.getElementById('csvChallanInput').click()" style="width:100%">
+        <span class="material-symbols-rounded" style="margin-right:6px">upload_file</span>
+        Choose CSV File
+      </md-filled-button>
+      <div id="challanFileNameDisplay" style="font-size:12px;color:#666;margin-top:8px;text-align:center"></div>
+    </div>
+
+    <div id="challanImportProgress" style="display:none;margin-bottom:12px">
+      <md-linear-progress indeterminate></md-linear-progress>
+      <div style="font-size:12px;color:#666;margin-top:8px">Importing challans...</div>
+    </div>
+
+    <div id="challanImportResult" style="display:none;padding:12px;border-radius:4px;font-size:12px"></div>
   </div>
 </div>
 

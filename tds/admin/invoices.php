@@ -54,37 +54,33 @@ $rows = $stmt->fetchAll();
   <!-- BULK CSV IMPORT -->
   <div class="card fade-in">
     <h3>Bulk Import (CSV)</h3>
-    <form id="bulkInvForm" method="post" enctype="multipart/form-data" class="form-grid">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:12px;color:#666;background:#f5f5f5;padding:12px;border-radius:4px;">
-          <strong>CSV Format:</strong>
-          <div style="margin-top:8px;font-family:monospace;font-size:11px">
-            vendor_name, vendor_pan, invoice_no, invoice_date, base_amount, section_code, tds_rate
-          </div>
-          <div style="margin-top:8px;color:#999;font-size:11px">
-            • invoice_date: YYYY-MM-DD<br>
-            • tds_rate: optional (auto-calculated if not provided)<br>
-            • <a href="#" onclick="downloadSampleInvoiceCSV(event)" style="color:#1976d2">Download Sample CSV</a>
-          </div>
-        </div>
-
-        <div style="position:relative">
-          <input type="file" id="csvFileInput" name="csv_file" accept=".csv" style="display:none" onchange="handleCsvUpload(event)" />
-          <md-filled-button type="button" onclick="document.getElementById('csvFileInput').click()" style="width:100%">
-            <span class="material-symbols-rounded" style="margin-right:6px">upload_file</span>
-            Choose CSV File
-          </md-filled-button>
-          <div id="fileNameDisplay" style="font-size:12px;color:#666;margin-top:8px;text-align:center"></div>
-        </div>
-
-        <div id="importProgress" style="display:none">
-          <md-linear-progress indeterminate></md-linear-progress>
-          <div style="font-size:12px;color:#666;margin-top:8px">Importing invoices...</div>
-        </div>
-
-        <div id="importResult" style="display:none;padding:12px;border-radius:4px;font-size:12px"></div>
+    <div style="font-size:12px;color:#666;background:#f5f5f5;padding:12px;border-radius:4px;margin-bottom:12px;">
+      <strong>CSV Format:</strong>
+      <div style="margin-top:8px;font-family:monospace;font-size:11px">
+        vendor_name, vendor_pan, invoice_no, invoice_date, base_amount, section_code, tds_rate
       </div>
-    </form>
+      <div style="margin-top:8px;color:#999;font-size:11px">
+        • invoice_date: YYYY-MM-DD<br>
+        • tds_rate: optional (auto-calculated if not provided)<br>
+        • <a href="#" onclick="downloadSampleInvoiceCSV(event)" style="color:#1976d2">Download Sample CSV</a>
+      </div>
+    </div>
+
+    <div style="position:relative;margin-bottom:12px">
+      <input type="file" id="csvFileInput" name="csv_file" accept=".csv" style="display:none" onchange="handleCsvUpload(event)" />
+      <md-filled-button type="button" onclick="document.getElementById('csvFileInput').click()" style="width:100%">
+        <span class="material-symbols-rounded" style="margin-right:6px">upload_file</span>
+        Choose CSV File
+      </md-filled-button>
+      <div id="fileNameDisplay" style="font-size:12px;color:#666;margin-top:8px;text-align:center"></div>
+    </div>
+
+    <div id="importProgress" style="display:none;margin-bottom:12px">
+      <md-linear-progress indeterminate></md-linear-progress>
+      <div style="font-size:12px;color:#666;margin-top:8px">Importing invoices...</div>
+    </div>
+
+    <div id="importResult" style="display:none;padding:12px;border-radius:4px;font-size:12px"></div>
   </div>
 </div>
 
