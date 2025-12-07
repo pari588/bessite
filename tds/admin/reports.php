@@ -269,7 +269,7 @@ $fyList = fy_list(7); // Get 7 years span
 
 <script>
 function generateForm(formType) {
-  const fy = document.querySelector('input').value;
+  const fy = document.getElementById('fySelect').value;
   const quarter = document.getElementById('quarterSelect').value;
   const url = new URL(location.href);
   url.searchParams.set('form', formType);
