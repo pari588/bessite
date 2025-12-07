@@ -326,35 +326,43 @@ if ($action === 'generate_fvu' && $firm_id) {
     Submit your FVU and Form 27A (signed) to the Tax Authority for final e-filing.
   </p>
 
-  <?php if (!empty($filingJobs)): ?>
+  <?php
+    $showEfileForm = false;
+    $efileJob = null;
+
+    if (!empty($filingJobs)) {
+      $efileJob = $filingJobs[0];
+      if ($efileJob['fvu_status']==='succeeded'||$efileJob['fvu_status']==='ready'||$efileJob['fvu_status']==='READY') {
+        $showEfileForm = true;
+      }
+    }
+  ?>
+
+  <?php if ($showEfileForm && $efileJob): ?>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-      <?php foreach (array_slice($filingJobs, 0, 1) as $job): ?>
-        <?php if ($job['fvu_status']==='succeeded'||$job['fvu_status']==='ready'||$job['fvu_status']==='READY'): ?>
-          <div style="padding: 12px; background: #e8f5e9; border-radius: 4px; border: 1px solid #4caf50;">
-            <div style="font-weight: 600; color: #2e7d32; margin-bottom: 8px;">✓ FVU Ready</div>
-            <div style="font-size: 12px; color: #666;">
-              <strong><?=htmlspecialchars($job['fy'])?> <?=htmlspecialchars($job['quarter'])?></strong><br>
-              Generated: <?=date('d-m-Y H:i', strtotime($job['fvu_generated_at'] ?? 'now'))?>
-            </div>
-          </div>
-          <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
-            <input type="hidden" name="action" value="submit_efile">
-            <input type="hidden" name="job_uuid" value="<?=htmlspecialchars($job['fvu_job_id'] ?? '')?>">
-            <div>
-              <label style="font-size: 12px; color: #666; display: block; margin-bottom: 8px;">Form 27A Signature</label>
-              <input type="file" name="form27a_signature" accept=".p12,.pfx,.pem" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box;">
-              <div style="font-size: 11px; color: #999; margin-top: 4px;">Digital signature file (DSC .p12 or .pfx)</div>
-            </div>
-            <button type="submit" style="padding: 10px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;">
-              Submit for E-Filing
-            </button>
-          </form>
-        <?php else: ?>
-          <div style="padding: 16px; background: #fff3e0; border-radius: 4px; text-align: center; grid-column: 1/-1;">
-            <span style="color: #ff9800;">⏳ FVU not ready for submission yet. Current status: <strong><?=htmlspecialchars($job['fvu_status'])?></strong></span>
-          </div>
-        <?php endif; ?>
-      <?php endforeach; ?>
+      <div style="padding: 12px; background: #e8f5e9; border-radius: 4px; border: 1px solid #4caf50;">
+        <div style="font-weight: 600; color: #2e7d32; margin-bottom: 8px;">✓ FVU Ready</div>
+        <div style="font-size: 12px; color: #666;">
+          <strong><?=htmlspecialchars($efileJob['fy'] ?? '')?> <?=htmlspecialchars($efileJob['quarter'] ?? '')?></strong><br>
+          Generated: <?=date('d-m-Y H:i', strtotime($efileJob['fvu_generated_at'] ?? 'now'))?>
+        </div>
+      </div>
+      <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" name="action" value="submit_efile">
+        <input type="hidden" name="job_uuid" value="<?=htmlspecialchars($efileJob['fvu_job_id'] ?? '')?>">
+        <div>
+          <label style="font-size: 12px; color: #666; display: block; margin-bottom: 8px;">Form 27A Signature</label>
+          <input type="file" name="form27a_signature" accept=".p12,.pfx,.pem" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box;">
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">Digital signature file (DSC .p12 or .pfx)</div>
+        </div>
+        <button type="submit" style="padding: 10px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;">
+          Submit for E-Filing
+        </button>
+      </form>
+    </div>
+  <?php elseif (!empty($filingJobs)): ?>
+    <div style="padding: 16px; background: #fff3e0; border-radius: 4px; text-align: center;">
+      <span style="color: #ff9800;">⏳ FVU not ready for submission yet. Current status: <strong><?=htmlspecialchars($filingJobs[0]['fvu_status'] ?? 'UNKNOWN')?></strong></span>
     </div>
   <?php else: ?>
     <div style="padding: 16px; background: #f5f5f5; border-radius: 4px; text-align: center;">
