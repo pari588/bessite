@@ -24,13 +24,13 @@ $rows = $stmt->fetchAll();
   <!-- SINGLE INVOICE FORM -->
   <div class="card fade-in">
     <h3>Add Single Invoice</h3>
-    <form id="singleInvForm" method="post" class="form-grid">
+    <form id="singleInvForm" method="post" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <input type="hidden" name="single" value="1" />
-      <md-outlined-text-field label="Vendor Name" name="vendor_name" class="span-2" required></md-outlined-text-field>
+      <md-outlined-text-field label="Vendor Name" name="vendor_name" style="grid-column:1/3" required></md-outlined-text-field>
       <md-outlined-text-field label="Vendor PAN" name="vendor_pan" placeholder="XXXXX9999X" required></md-outlined-text-field>
       <md-outlined-text-field label="Invoice No" name="invoice_no" required></md-outlined-text-field>
-      <div>
-        <label style="display:block;font-size:12px;color:var(--m3-muted)">Invoice Date</label>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:12px;color:#666">Invoice Date</label>
         <input class="m3-date" id="inv_date_create" name="invoice_date" type="date" required />
       </div>
       <md-outlined-text-field label="Base Amount (₹)" name="base_amount" id="base_amt_create" type="number" step="0.01" required onchange="calculateTDS('create')"></md-outlined-text-field>
@@ -41,8 +41,8 @@ $rows = $stmt->fetchAll();
         <?php endforeach; ?>
       </md-outlined-select>
       <md-outlined-text-field label="TDS Rate (%)" name="tds_rate" id="inv_rate_create" type="number" step="0.001" placeholder="Auto-calculated" readonly></md-outlined-text-field>
-      <md-outlined-text-field label="TDS Amount (₹)" name="total_tds" id="inv_tds_create" type="number" step="0.01" placeholder="Auto-calculated" readonly style="background: #f5f5f5;" class="span-2"></md-outlined-text-field>
-      <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
+      <md-outlined-text-field label="TDS Amount (₹)" name="total_tds" id="inv_tds_create" type="number" step="0.01" placeholder="Auto-calculated" readonly style="background: #f5f5f5; grid-column:1/3"></md-outlined-text-field>
+      <div style="grid-column:1/3;display:flex;gap:10px;justify-content:flex-end">
         <md-filled-button type="submit"><span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span> Add Invoice</md-filled-button>
       </div>
     </form>
@@ -141,11 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="modal" class="modal" style="display:none">
   <div class="modal-card">
     <h3>Edit Invoice</h3>
-    <form id="invEditForm" class="form-grid">
+    <form id="invEditForm" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <input type="hidden" name="id" id="inv_id"/>
-      <md-outlined-text-field name="invoice_no" id="inv_no" label="Invoice No" class="span-2" required></md-outlined-text-field>
-      <div>
-        <label style="display:block;font-size:12px;color:var(--m3-muted)">Date</label>
+      <md-outlined-text-field name="invoice_no" id="inv_no" label="Invoice No" style="grid-column:1/3" required></md-outlined-text-field>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:12px;color:#666">Date</label>
         <input class="m3-date" id="inv_date" name="invoice_date" type="date" required />
       </div>
       <md-outlined-text-field name="base_amount" id="inv_amt" type="number" step="0.01" label="Base Amount" required onchange="calculateTDS('edit')"></md-outlined-text-field>
@@ -155,9 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <?php endforeach; ?>
       </md-outlined-select>
       <md-outlined-text-field name="tds_rate" id="inv_rate" type="number" step="0.001" label="TDS Rate (%)" placeholder="Auto-calculated" readonly></md-outlined-text-field>
-      <md-outlined-text-field name="total_tds" id="inv_tds" type="number" step="0.01" label="TDS Amount (₹)" placeholder="Auto-calculated" readonly style="background: #f5f5f5;" class="span-2"></md-outlined-text-field>
-      <md-outlined-text-field id="inv_vendor" label="Vendor" value="" readonly class="span-3"></md-outlined-text-field>
-      <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
+      <md-outlined-text-field name="total_tds" id="inv_tds" type="number" step="0.01" label="TDS Amount (₹)" placeholder="Auto-calculated" readonly style="background: #f5f5f5; grid-column:1/3"></md-outlined-text-field>
+      <md-outlined-text-field id="inv_vendor" label="Vendor" value="" readonly style="grid-column:1/3"></md-outlined-text-field>
+      <div style="grid-column:1/3;display:flex;gap:10px;justify-content:flex-end">
         <md-filled-button type="submit">Save</md-filled-button>
         <md-text-button type="button" onclick="closeModal()">Cancel</md-text-button>
       </div>
