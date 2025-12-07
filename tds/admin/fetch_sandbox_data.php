@@ -204,21 +204,68 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
 
 <!-- FETCH CARDS -->
 <div class="fetch-container">
-  <!-- FETCH INVOICES -->
+  <!-- FETCH FROM SANDBOX API -->
+  <div class="fetch-card">
+    <h3>
+      <span class="material-symbols-rounded">cloud_download</span>
+      Fetch from Sandbox API
+    </h3>
+    <p>
+      Pull invoices and challans directly from your Sandbox.co.in account for the selected period.
+    </p>
+
+    <div style="background: #e8f5e9; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #2e7d32;">
+      <strong>✓ API Connected:</strong>
+      <ul style="margin: 6px 0 0 0; padding-left: 20px;">
+        <li>Real-time data sync enabled</li>
+        <li>AWS Signature V4 authentication</li>
+        <li>Auto-import to database</li>
+      </ul>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+      <md-filled-button onclick="fetchSandboxData('invoices')" style="width: 100%; font-size: 12px;">
+        <span class="material-symbols-rounded" style="margin-right: 4px;">receipt_long</span>
+        Fetch Invoices
+      </md-filled-button>
+
+      <md-filled-button onclick="fetchSandboxData('challans')" style="width: 100%; font-size: 12px;">
+        <span class="material-symbols-rounded" style="margin-right: 4px;">account_balance</span>
+        Fetch Challans
+      </md-filled-button>
+    </div>
+
+    <md-outlined-button onclick="fetchSandboxData('all')" style="width: 100%;">
+      <span class="material-symbols-rounded" style="margin-right: 6px;">sync</span>
+      Fetch Both
+    </md-outlined-button>
+
+    <div id="sandboxStatus" class="fetch-progress">
+      <div class="progress-bar">
+        <div class="progress-fill" style="animation: progress 2s ease-in-out infinite;"></div>
+      </div>
+      <div style="font-size: 12px; color: #666; text-align: center;">
+        Syncing with Sandbox API... Please wait
+      </div>
+    </div>
+    <div id="sandboxResult"></div>
+  </div>
+
+  <!-- MANUAL INVOICE IMPORT -->
   <div class="fetch-card">
     <h3>
       <span class="material-symbols-rounded">receipt_long</span>
       Manual Invoice Import
     </h3>
     <p>
-      Import invoices from your accounting system or Sandbox portal. Use CSV format or manual entry.
+      Import invoices from CSV or manually enter them into the system.
     </p>
 
     <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #666;">
       <strong>Options:</strong>
       <ul style="margin: 6px 0 0 0; padding-left: 20px;">
         <li>Upload CSV with invoice data</li>
-        <li>Manual entry via Invoices page</li>
+        <li>Manual entry via form</li>
         <li>Auto-calculated TDS amounts</li>
       </ul>
     </div>
@@ -227,33 +274,23 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
       <span class="material-symbols-rounded" style="margin-right: 6px;">receipt_long</span>
       Go to Invoices Page
     </md-filled-button>
-
-    <div id="invoicesStatus" class="fetch-progress">
-      <div class="progress-bar">
-        <div class="progress-fill" style="animation: progress 2s ease-in-out infinite;"></div>
-      </div>
-      <div style="font-size: 12px; color: #666; text-align: center;">
-        Fetching invoices... Please wait
-      </div>
-    </div>
-    <div id="invoicesResult"></div>
   </div>
 
-  <!-- FETCH CHALLANS -->
+  <!-- MANUAL CHALLAN IMPORT -->
   <div class="fetch-card">
     <h3>
       <span class="material-symbols-rounded">account_balance</span>
       Manual Challan Import
     </h3>
     <p>
-      Import TDS payment challans from your bank portal. These will be matched with invoices during reconciliation.
+      Import TDS payment challans from CSV or manually enter them.
     </p>
 
     <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: #666;">
       <strong>Options:</strong>
       <ul style="margin: 6px 0 0 0; padding-left: 20px;">
         <li>Upload CSV with challan data</li>
-        <li>Manual entry via Challans page</li>
+        <li>Manual entry via form</li>
         <li>Auto-matched to invoices</li>
       </ul>
     </div>
@@ -262,16 +299,6 @@ $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
       <span class="material-symbols-rounded" style="margin-right: 6px;">account_balance</span>
       Go to Challans Page
     </md-filled-button>
-
-    <div id="challansStatus" class="fetch-progress">
-      <div class="progress-bar">
-        <div class="progress-fill" style="animation: progress 2s ease-in-out infinite;"></div>
-      </div>
-      <div style="font-size: 12px; color: #666; text-align: center;">
-        Fetching challans... Please wait
-      </div>
-    </div>
-    <div id="challansResult"></div>
   </div>
 </div>
 
@@ -325,56 +352,66 @@ function updateSelectedPeriod() {
   location.href = url.toString();
 }
 
-function fetchData(action) {
+function fetchSandboxData(action) {
   const fy = document.getElementById('fySelect').value;
   const quarter = document.getElementById('quarterSelect').value;
 
   // Show progress
-  const statusDiv = document.getElementById(action + 'Status');
-  const resultDiv = document.getElementById(action + 'Result');
+  const statusDiv = document.getElementById('sandboxStatus');
+  const resultDiv = document.getElementById('sandboxResult');
   statusDiv.style.display = 'block';
   resultDiv.innerHTML = '';
+
+  // Disable buttons while fetching
+  const buttons = document.querySelectorAll('[onclick*="fetchSandboxData"]');
+  buttons.forEach(btn => btn.disabled = true);
 
   // Make request
   fetch('/tds/api/fetch_from_sandbox.php?action=' + action + '&fy=' + fy + '&quarter=' + quarter)
     .then(response => response.json())
     .then(data => {
       statusDiv.style.display = 'none';
+      buttons.forEach(btn => btn.disabled = false);
 
       if (data.status === 'success') {
         let html = '<div style="margin-top: 12px; padding: 12px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">';
-        html += '<div style="color: #2e7d32; font-weight: 500; margin-bottom: 8px;">✓ ' + data.message + '</div>';
+        html += '<div style="color: #2e7d32; font-weight: 600; margin-bottom: 8px;">✓ ' + data.message + '</div>';
         html += '<div style="font-size: 12px; color: #2e7d32;">';
 
         if (action === 'invoices') {
-          html += 'Fetched: ' + data.data.fetched + ' invoices<br/>';
-          html += 'Imported: ' + data.data.imported + ' invoices';
+          html += '<strong>Invoices:</strong> ' + data.data.fetched + ' fetched, ' + data.data.imported + ' imported';
         } else if (action === 'challans') {
-          html += 'Fetched: ' + data.data.fetched + ' challans<br/>';
-          html += 'Imported: ' + data.data.imported + ' challans';
+          html += '<strong>Challans:</strong> ' + data.data.fetched + ' fetched, ' + data.data.imported + ' imported';
         } else if (action === 'all') {
-          html += 'Invoices: ' + data.data.invoices.fetched + ' fetched, ' + data.data.invoices.imported + ' imported<br/>';
-          html += 'Challans: ' + data.data.challans.fetched + ' fetched, ' + data.data.challans.imported + ' imported<br/>';
-          html += '<strong>' + data.data.summary + '</strong>';
+          html += '<strong>Invoices:</strong> ' + data.data.invoices.fetched + ' fetched, ' + data.data.invoices.imported + ' imported<br/>';
+          html += '<strong>Challans:</strong> ' + data.data.challans.fetched + ' fetched, ' + data.data.challans.imported + ' imported<br/>';
+          html += '<br/><strong>' + data.data.summary + '</strong>';
         }
 
         html += '</div></div>';
         resultDiv.innerHTML = html;
       } else {
         let html = '<div style="margin-top: 12px; padding: 12px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 4px;">';
-        html += '<div style="color: #c62828; font-weight: 500;">❌ Error</div>';
+        html += '<div style="color: #c62828; font-weight: 600;">❌ Sync Failed</div>';
         html += '<div style="font-size: 12px; color: #c62828; margin-top: 4px;">' + data.message + '</div>';
+        html += '<div style="font-size: 11px; color: #999; margin-top: 8px;">Tip: You can still manually import invoices and challans via CSV or manual entry.</div>';
         html += '</div>';
         resultDiv.innerHTML = html;
       }
     })
     .catch(error => {
       statusDiv.style.display = 'none';
+      buttons.forEach(btn => btn.disabled = false);
       resultDiv.innerHTML = '<div style="margin-top: 12px; padding: 12px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 4px;">' +
-        '<div style="color: #c62828; font-weight: 500;">❌ Request failed</div>' +
+        '<div style="color: #c62828; font-weight: 600;">❌ Request Failed</div>' +
         '<div style="font-size: 12px; color: #c62828; margin-top: 4px;">' + error.message + '</div>' +
         '</div>';
     });
+}
+
+function fetchData(action) {
+  // Legacy function for backward compatibility
+  fetchSandboxData(action);
 }
 </script>
 
