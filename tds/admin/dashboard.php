@@ -20,6 +20,107 @@ $filingJobs = $stmt->fetchAll();
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM invoices WHERE fy=? AND quarter=? AND allocation_status != 'complete'");
 $stmt->execute([$curFy, $curQ]);
 $unallocated = (int)$stmt->fetchColumn();
+
+// Initialize compliance check result
+$complianceResult = [
+    'status' => 'error',
+    'overall_status' => 'UNKNOWN',
+    'passed_checks' => 0,
+    'total_checks' => 4,
+    'details' => [],
+    'recommendations' => [],
+    'safe_to_file' => false
+];
+
+// Run compliance checks
+try {
+    $checks = [
+        'invoices_exist' => 'Invoices exist',
+        'tds_calculation' => 'TDS calculated',
+        'challan_matching' => 'Challans exist',
+        'pan_validation' => 'PAN validation'
+    ];
+
+    $passed = 0;
+
+    // Check 1: Invoices exist
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM invoices WHERE fy=? AND quarter=?");
+    $stmt->execute([$curFy, $curQ]);
+    $invoiceCount = (int)$stmt->fetchColumn();
+    $complianceResult['details']['invoices_exist'] = [
+        'status' => $invoiceCount > 0 ? 'PASS' : 'FAIL',
+        'message' => $invoiceCount > 0 ? "$invoiceCount invoices found" : 'No invoices found'
+    ];
+    if ($invoiceCount > 0) $passed++;
+
+    // Check 2: TDS calculated
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM invoices WHERE fy=? AND quarter=? AND total_tds > 0");
+    $stmt->execute([$curFy, $curQ]);
+    $tdsCount = (int)$stmt->fetchColumn();
+    $complianceResult['details']['tds_calculation'] = [
+        'status' => $tdsCount > 0 ? 'PASS' : 'FAIL',
+        'message' => $tdsCount > 0 ? "$tdsCount invoices with TDS" : 'No TDS calculated'
+    ];
+    if ($tdsCount > 0) $passed++;
+
+    // Check 3: Challans exist
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM challans WHERE fy=? AND quarter=?");
+    $stmt->execute([$curFy, $curQ]);
+    $challanCount = (int)$stmt->fetchColumn();
+    $complianceResult['details']['challan_matching'] = [
+        'status' => $challanCount > 0 ? 'PASS' : 'FAIL',
+        'message' => $challanCount > 0 ? "$challanCount challans found" : 'No challans found'
+    ];
+    if ($challanCount > 0) $passed++;
+
+    // Check 4: PAN validation
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM invoices i JOIN vendors v ON i.vendor_id=v.id WHERE i.fy=? AND i.quarter=? AND (v.pan IS NULL OR v.pan='')");
+    $stmt->execute([$curFy, $curQ]);
+    $invalidPanCount = (int)$stmt->fetchColumn();
+    $complianceResult['details']['pan_validation'] = [
+        'status' => $invalidPanCount === 0 ? 'PASS' : 'FAIL',
+        'message' => $invalidPanCount === 0 ? 'All PANs valid' : "$invalidPanCount vendors without PANs"
+    ];
+    if ($invalidPanCount === 0) $passed++;
+
+    // Set overall status
+    $complianceResult['passed_checks'] = $passed;
+    $complianceResult['overall_status'] = $passed === 4 ? 'COMPLIANT' : 'NON-COMPLIANT';
+    $complianceResult['status'] = 'success';
+
+    // Add recommendations
+    if ($invoiceCount === 0) {
+        $complianceResult['recommendations'][] = [
+            'type' => 'error',
+            'message' => 'Add invoices for this quarter to proceed'
+        ];
+    }
+    if ($challanCount === 0) {
+        $complianceResult['recommendations'][] = [
+            'type' => 'warning',
+            'message' => 'Add challans to match with invoices'
+        ];
+    }
+    if ($invalidPanCount > 0) {
+        $complianceResult['recommendations'][] = [
+            'type' => 'warning',
+            'message' => 'Update vendor PANs for validation'
+        ];
+    }
+    if ($passed === 4) {
+        $complianceResult['recommendations'][] = [
+            'type' => 'success',
+            'message' => 'System compliant - ready for form generation'
+        ];
+        $complianceResult['safe_to_file'] = true;
+    }
+
+} catch (Exception $e) {
+    $complianceResult = [
+        'status' => 'error',
+        'message' => 'Compliance check failed: ' . $e->getMessage()
+    ];
+}
 ?>
 <div class="kpis fade-in">
   <div class="kpi k1">
