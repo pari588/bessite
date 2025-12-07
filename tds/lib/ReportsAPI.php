@@ -37,11 +37,12 @@ class ReportsAPI {
             }
 
             // Get invoices for the quarter
+            // Note: Include all invoices regardless of allocation status
+            // Allocation is about matching to challans, not about form inclusion
             $invoiceStmt = $this->db->prepare(
                 'SELECT i.*, v.name, v.pan FROM invoices i
                  JOIN vendors v ON i.vendor_id = v.id
                  WHERE i.firm_id = ? AND i.fy = ? AND i.quarter = ?
-                 AND i.allocation_status = "complete"
                  ORDER BY i.invoice_date'
             );
             $invoiceStmt->execute([$firm_id, $fy, $quarter]);
@@ -177,11 +178,12 @@ class ReportsAPI {
             }
 
             // Get all invoices for the FY
+            // Note: Include all invoices regardless of allocation status
+            // Allocation is about matching to challans, not about form inclusion
             $invoiceStmt = $this->db->prepare(
                 'SELECT i.*, v.name, v.pan FROM invoices i
                  JOIN vendors v ON i.vendor_id = v.id
                  WHERE i.firm_id = ? AND i.fy = ?
-                 AND i.allocation_status = "complete"
                  ORDER BY i.quarter, i.invoice_date'
             );
             $invoiceStmt->execute([$firm_id, $fy]);
@@ -574,35 +576,36 @@ class ReportsAPI {
     }
 
     /**
-     * Generate bank-wise summary
+     * Generate BSR-wise summary (bank information not stored in current schema)
      */
     private function generateBankwiseSummary($firm_id, $fy, $quarter) {
+        // Note: Grouping by BSR Code since bank_name column doesn't exist
         $stmt = $this->db->prepare(
-            'SELECT bank_name, COUNT(*) as challan_count, SUM(amount_tds) as total_tds
+            'SELECT bsr_code, COUNT(*) as challan_count, SUM(amount_tds) as total_tds
              FROM challans
              WHERE firm_id = ? AND fy = ? AND quarter = ?
-             GROUP BY bank_name'
+             GROUP BY bsr_code'
         );
         $stmt->execute([$firm_id, $fy, $quarter]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $content = "BANK-WISE SUMMARY\n";
+        $content = "BSR CODE-WISE SUMMARY\n";
         $content .= str_repeat("=", 50) . "\n\n";
-        $content .= "Bank Name | Challans | Total TDS\n";
+        $content .= "BSR Code | Challans | Total TDS\n";
         $content .= str_repeat("-", 50) . "\n";
 
         foreach ($results as $row) {
             $content .= sprintf(
-                "%-20s | %8d | %12.2f\n",
-                $row['bank_name'],
+                "%-10s | %8d | %12.2f\n",
+                $row['bsr_code'],
                 $row['challan_count'],
                 $row['total_tds']
             );
         }
 
         return [
-            'name' => 'Annexure 1 - Bank-wise Summary',
-            'filename' => 'annexure_bankwise_' . $quarter . '.txt',
+            'name' => 'Annexure 1 - BSR Code-wise Summary',
+            'filename' => 'annexure_bsr_' . $quarter . '.txt',
             'content' => $content
         ];
     }
