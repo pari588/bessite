@@ -34,15 +34,12 @@ $rows = $stmt->fetchAll();
         <input class="m3-date" id="inv_date_create" name="invoice_date" type="date" required />
       </div>
       <md-outlined-text-field label="Base Amount (₹)" name="base_amount" id="base_amt_create" type="number" step="0.01" required onchange="calculateTDS('create')"></md-outlined-text-field>
-      <div>
-        <label style="display:block;font-size:12px;color:var(--m3-muted)">TDS Section</label>
-        <md-outlined-select name="section_code" id="inv_section_create" required onchange="calculateTDS('create')">
-          <md-select-option value="">-- Select Section --</md-select-option>
-          <?php foreach($sections as $s): ?>
-            <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
-          <?php endforeach; ?>
-        </md-outlined-select>
-      </div>
+      <md-outlined-select label="TDS Section" name="section_code" id="inv_section_create" required onchange="calculateTDS('create')">
+        <md-select-option value="">-- Select Section --</md-select-option>
+        <?php foreach($sections as $s): ?>
+          <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
+        <?php endforeach; ?>
+      </md-outlined-select>
       <md-outlined-text-field label="TDS Rate (%)" name="tds_rate" id="inv_rate_create" type="number" step="0.001" placeholder="Auto-calculated" readonly></md-outlined-text-field>
       <md-outlined-text-field label="TDS Amount (₹)" name="total_tds" id="inv_tds_create" type="number" step="0.01" placeholder="Auto-calculated" readonly style="background: #f5f5f5;" class="span-2"></md-outlined-text-field>
       <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
@@ -152,16 +149,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <input class="m3-date" id="inv_date" name="invoice_date" type="date" required />
       </div>
       <md-outlined-text-field name="base_amount" id="inv_amt" type="number" step="0.01" label="Base Amount" required onchange="calculateTDS('edit')"></md-outlined-text-field>
-      <div>
-        <label style="display:block;font-size:12px;color:var(--m3-muted)">Section</label>
-        <md-outlined-select name="section_code" id="inv_sec" required onchange="calculateTDS('edit')">
-          <?php foreach($sections as $s): ?>
-            <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
-          <?php endforeach; ?>
-        </md-outlined-select>
-      </div>
+      <md-outlined-select label="Section" name="section_code" id="inv_sec" required onchange="calculateTDS('edit')">
+        <?php foreach($sections as $s): ?>
+          <md-select-option value="<?=htmlspecialchars($s['section_code'])?>"><div slot="headline"><?=htmlspecialchars($s['section_code'].' — '.$s['descn'].' ('.$s['rate'].'%)')?></div></md-select-option>
+        <?php endforeach; ?>
+      </md-outlined-select>
       <md-outlined-text-field name="tds_rate" id="inv_rate" type="number" step="0.001" label="TDS Rate (%)" placeholder="Auto-calculated" readonly></md-outlined-text-field>
-      <md-outlined-text-field name="total_tds" id="inv_tds" type="number" step="0.01" label="TDS Amount (₹)" placeholder="Auto-calculated" readonly style="background: #f5f5f5;"></md-outlined-text-field>
+      <md-outlined-text-field name="total_tds" id="inv_tds" type="number" step="0.01" label="TDS Amount (₹)" placeholder="Auto-calculated" readonly style="background: #f5f5f5;" class="span-2"></md-outlined-text-field>
       <md-outlined-text-field id="inv_vendor" label="Vendor" value="" readonly class="span-3"></md-outlined-text-field>
       <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
         <md-filled-button type="submit">Save</md-filled-button>
