@@ -275,10 +275,10 @@ if ($action === 'generate_fvu' && $firm_id) {
       <input type="hidden" name="action" value="generate_fvu">
       <input type="text" name="fy" value="<?=htmlspecialchars($fy)?>" placeholder="FY (e.g., 2025-26)" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box;">
       <input type="text" name="quarter" value="<?=htmlspecialchars($quarter)?>" placeholder="Quarter (e.g., Q2)" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box;">
-      <md-filled-button type="submit">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">upload</span>
+      <button type="submit" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">upload</span>
         Generate FVU Now
-      </md-filled-button>
+      </button>
     </form>
   </div>
 
@@ -290,10 +290,10 @@ if ($action === 'generate_fvu' && $firm_id) {
     <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
       <input type="hidden" name="action" value="check_fvu">
       <input type="text" name="job_uuid" placeholder="Enter Job UUID" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; box-sizing: border-box;">
-      <md-filled-button type="submit">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">refresh</span>
+      <button type="submit" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">refresh</span>
         Check Status
-      </md-filled-button>
+      </button>
     </form>
   </div>
 </div>
@@ -319,6 +319,50 @@ if ($action === 'generate_fvu' && $firm_id) {
   <?php endif; ?>
 <?php endif; ?>
 
+<!-- STEP 6: E-FILING SUBMISSION -->
+<div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 24px;">
+  <h3 style="margin: 0 0 16px 0; font-size: 16px;">Step 6: E-Filing Submission</h3>
+  <p style="font-size: 13px; color: #666; margin: 0 0 16px 0;">
+    Submit your FVU and Form 27A (signed) to the Tax Authority for final e-filing.
+  </p>
+
+  <?php if (!empty($filingJobs)): ?>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <?php foreach (array_slice($filingJobs, 0, 1) as $job): ?>
+        <?php if ($job['fvu_status']==='succeeded'||$job['fvu_status']==='ready'||$job['fvu_status']==='READY'): ?>
+          <div style="padding: 12px; background: #e8f5e9; border-radius: 4px; border: 1px solid #4caf50;">
+            <div style="font-weight: 600; color: #2e7d32; margin-bottom: 8px;">✓ FVU Ready</div>
+            <div style="font-size: 12px; color: #666;">
+              <strong><?=htmlspecialchars($job['fy'])?> <?=htmlspecialchars($job['quarter'])?></strong><br>
+              Generated: <?=date('d-m-Y H:i', strtotime($job['fvu_generated_at'] ?? 'now'))?>
+            </div>
+          </div>
+          <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+            <input type="hidden" name="action" value="submit_efile">
+            <input type="hidden" name="job_uuid" value="<?=htmlspecialchars($job['fvu_job_id'] ?? '')?>">
+            <div>
+              <label style="font-size: 12px; color: #666; display: block; margin-bottom: 8px;">Form 27A Signature</label>
+              <input type="file" name="form27a_signature" accept=".p12,.pfx,.pem" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box;">
+              <div style="font-size: 11px; color: #999; margin-top: 4px;">Digital signature file (DSC .p12 or .pfx)</div>
+            </div>
+            <button type="submit" style="padding: 10px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;">
+              Submit for E-Filing
+            </button>
+          </form>
+        <?php else: ?>
+          <div style="padding: 16px; background: #fff3e0; border-radius: 4px; text-align: center; grid-column: 1/-1;">
+            <span style="color: #ff9800;">⏳ FVU not ready for submission yet. Current status: <strong><?=htmlspecialchars($job['fvu_status'])?></strong></span>
+          </div>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </div>
+  <?php else: ?>
+    <div style="padding: 16px; background: #f5f5f5; border-radius: 4px; text-align: center;">
+      <span style="color: #999;">No FVU generated yet. Please complete Steps 1-5 first.</span>
+    </div>
+  <?php endif; ?>
+</div>
+
 <!-- RECENT FILING JOBS -->
 <?php if (!empty($filingJobs)): ?>
 <div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px;">
@@ -341,22 +385,27 @@ if ($action === 'generate_fvu' && $firm_id) {
       <tbody>
         <?php foreach ($filingJobs as $job): ?>
           <tr>
-            <td><code style="font-size: 11px;"><?=substr($job['job_uuid'], 0, 8)?>...</code></td>
+            <td><code style="font-size: 11px;"><?=substr($job['fvu_job_id'] ?? $job['id'], 0, 8)?>...</code></td>
             <td><?=htmlspecialchars($job['fy'] ?? '-')?> <?=htmlspecialchars($job['quarter'] ?? '-')?></td>
             <td><?=htmlspecialchars($job['form_type'] ?? '-')?></td>
             <td>
-              <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; background: <?=($job['fvu_status']==='ready'||$job['fvu_status']==='READY')?'#c8e6c9':'#ffe0b2'?>; color: <?=($job['fvu_status']==='ready'||$job['fvu_status']==='READY')?'#2e7d32':'#e65100'?>;">
+              <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; background: <?=($job['fvu_status']==='succeeded'||$job['fvu_status']==='ready'||$job['fvu_status']==='READY')?'#c8e6c9':'#ffe0b2'?>; color: <?=($job['fvu_status']==='succeeded'||$job['fvu_status']==='ready'||$job['fvu_status']==='READY')?'#2e7d32':'#e65100'?>;">
                 <?=htmlspecialchars($job['fvu_status'] ?? 'PENDING')?>
               </span>
             </td>
             <td>
-              <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; background: <?=($job['e_filing_status']==='ACKNOWLEDGED')?'#c8e6c9':'#f5f5f5'?>; color: <?=($job['e_filing_status']==='ACKNOWLEDGED')?'#2e7d32':'#666'?>;">
-                <?=htmlspecialchars($job['e_filing_status'] ?? 'PENDING')?>
+              <span style="padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; background: <?=($job['filing_status']==='ACKNOWLEDGED'||$job['e_filing_status']==='ACKNOWLEDGED')?'#c8e6c9':'#f5f5f5'?>; color: <?=($job['filing_status']==='ACKNOWLEDGED'||$job['e_filing_status']==='ACKNOWLEDGED')?'#2e7d32':'#666'?>;">
+                <?=htmlspecialchars($job['filing_status'] ?? $job['e_filing_status'] ?? 'PENDING')?>
               </span>
             </td>
-            <td><code style="font-size: 10px;"><?=htmlspecialchars($job['ack_no'] ?? '-')?></code></td>
+            <td><code style="font-size: 10px;"><?=htmlspecialchars($job['filing_ack_no'] ?? $job['ack_no'] ?? '-')?></code></td>
             <td style="font-size: 11px;"><?=date('M d H:i', strtotime($job['created_at'] ?? 'now'))?></td>
-            <td><a href="filing-status.php?job_uuid=<?=urlencode($job['job_uuid'])?>" style="color: #1976d2; text-decoration: none;">View</a></td>
+            <td style="display: flex; gap: 8px;">
+              <?php if ($job['fvu_status']==='succeeded'||$job['fvu_status']==='ready'||$job['fvu_status']==='READY'): ?>
+                <a href="/tds/api/download_fvu.php?job_id=<?=urlencode($job['fvu_job_id'] ?? '')?>&download=1" style="color: #4caf50; text-decoration: none; font-size: 11px; font-weight: 600;">Download</a>
+              <?php endif; ?>
+              <a href="filing-status.php?job_uuid=<?=urlencode($job['fvu_job_id'] ?? $job['id'])?>" style="color: #1976d2; text-decoration: none; font-size: 11px;">View</a>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
@@ -364,10 +413,10 @@ if ($action === 'generate_fvu' && $firm_id) {
   </div>
 
   <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
-    <md-filled-button onclick="location.href='filing-status.php'">
-      <span class="material-symbols-rounded" style="margin-right: 6px;">check_circle</span>
+    <button type="button" onclick="location.href='filing-status.php'" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+      <span class="material-symbols-rounded" style="font-size: 18px;">check_circle</span>
       View All Filing Status
-    </md-filled-button>
+    </button>
   </div>
 </div>
 <?php else: ?>
