@@ -157,10 +157,10 @@ $fyList = fy_list(7); // Get 7 years span
       <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
         <?=$invCount?> invoices found
       </div>
-      <md-filled-button type="button" onclick="event.stopPropagation(); generateForm('26Q')">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">description</span>
+      <button type="button" onclick="event.stopPropagation(); generateForm('26Q'); return false;" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
         Generate 26Q
-      </md-filled-button>
+      </button>
     </div>
 
     <!-- FORM 24Q -->
@@ -171,10 +171,10 @@ $fyList = fy_list(7); // Get 7 years span
       <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
         Full financial year aggregation
       </div>
-      <md-filled-button type="button" onclick="event.stopPropagation(); generateForm('24Q')">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">description</span>
+      <button type="button" onclick="event.stopPropagation(); generateForm('24Q'); return false;" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
         Generate 24Q
-      </md-filled-button>
+      </button>
     </div>
 
     <!-- CSI ANNEXURE -->
@@ -185,10 +185,10 @@ $fyList = fy_list(7); // Get 7 years span
       <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
         Supporting document for Form 26Q
       </div>
-      <md-filled-button type="button" onclick="event.stopPropagation(); generateForm('CSI')">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">description</span>
+      <button type="button" onclick="event.stopPropagation(); generateForm('CSI'); return false;" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
         Generate CSI
-      </md-filled-button>
+      </button>
     </div>
 
     <!-- ANNEXURES -->
@@ -199,10 +199,10 @@ $fyList = fy_list(7); // Get 7 years span
       <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
         Complete breakdown analysis
       </div>
-      <md-filled-button type="button" onclick="event.stopPropagation(); generateForm('Annexures')">
-        <span class="material-symbols-rounded" style="margin-right: 6px;">description</span>
+      <button type="button" onclick="event.stopPropagation(); generateForm('Annexures'); return false;" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
         Generate All
-      </md-filled-button>
+      </button>
     </div>
   </div>
 </div>
@@ -250,14 +250,14 @@ $fyList = fy_list(7); // Get 7 years span
     </div>
   </div>
 
-  <md-filled-button onclick="downloadForm(<?=htmlspecialchars(json_encode($generatedForm))?>)">
-    <span class="material-symbols-rounded" style="margin-right: 6px;">download</span>
+  <button type="button" onclick="downloadForm(<?=htmlspecialchars(json_encode($generatedForm))?>); return false;" style="padding: 10px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+    <span class="material-symbols-rounded" style="font-size: 18px;">download</span>
     Download Form
-  </md-filled-button>
-  <md-filled-tonal-button onclick="copyToClipboard(<?=htmlspecialchars(json_encode($generatedForm['content']))?>)" style="margin-left: 8px;">
-    <span class="material-symbols-rounded" style="margin-right: 6px;">content_copy</span>
+  </button>
+  <button type="button" onclick="copyToClipboard(<?=htmlspecialchars(json_encode($generatedForm['content']))?>); return false;" style="margin-left: 8px; padding: 10px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+    <span class="material-symbols-rounded" style="font-size: 18px;">content_copy</span>
     Copy Content
-  </md-filled-tonal-button>
+  </button>
 </div>
 
 <?php elseif ($generatedForm && $generatedForm['status'] !== 'success'): ?>
