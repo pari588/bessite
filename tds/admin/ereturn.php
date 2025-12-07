@@ -44,6 +44,47 @@ try {
     // Table doesn't exist, continue without filing jobs
     $recentJobs = [];
 }
+
+// Determine workflow completion status
+$invoiceCount = 0;
+$challanCount = 0;
+$unreconciled = 0;
+
+try {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM invoices WHERE firm_id = ? AND fy = ? AND quarter = ?");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $invoiceCount = (int)$stmt->fetchColumn();
+} catch (Exception $e) {
+    $invoiceCount = 0;
+}
+
+try {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM challans WHERE firm_id = ? AND fy = ? AND quarter = ?");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $challanCount = (int)$stmt->fetchColumn();
+} catch (Exception $e) {
+    $challanCount = 0;
+}
+
+try {
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) FROM invoices i
+        LEFT JOIN challans c ON c.fy = i.fy AND c.quarter = i.quarter AND c.firm_id = i.firm_id
+        WHERE i.firm_id = ? AND i.fy = ? AND i.quarter = ? AND c.id IS NULL
+    ");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $unreconciled = (int)$stmt->fetchColumn();
+} catch (Exception $e) {
+    $unreconciled = 0;
+}
+
+// Workflow status determination
+$step1_complete = $invoiceCount > 0;
+$step2_complete = $challanCount > 0 && $unreconciled == 0;
+$step3_started = !empty($recentJobs);
+$step3_complete = !empty($recentJobs) && ($recentJobs[0]['status'] ?? null) === 'completed';
+$step4_started = !empty($recentJobs);
+$step5_complete = !empty($recentJobs) && in_array($recentJobs[0]['status'] ?? '', ['submitted', 'acknowledged', 'accepted']);
 ?>
 
 <style>
@@ -249,51 +290,91 @@ try {
     E-Return Filing Workflow
   </h3>
 
-  <div class="workflow-step completed">
-    <div class="workflow-number">✓</div>
+  <!-- STEP 1: DATA COLLECTION -->
+  <div class="workflow-step <?= $step1_complete ? 'completed' : ($invoiceCount > 0 ? 'current' : 'pending') ?>">
+    <div class="workflow-number"><?= $step1_complete ? '✓' : '1' ?></div>
     <div class="workflow-content">
       <strong>Step 1: Data Collection</strong>
       <p>Import invoices and challans into the system via CSV or manual entry</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?= $invoiceCount > 0 ? "✓ $invoiceCount invoice(s) added" : "⏳ Awaiting invoices" ?>
+      </div>
     </div>
   </div>
 
-  <div class="workflow-step completed">
-    <div class="workflow-number">✓</div>
+  <!-- STEP 2: RECONCILIATION -->
+  <div class="workflow-step <?= $step2_complete ? 'completed' : ($challanCount > 0 ? 'current' : 'pending') ?>">
+    <div class="workflow-number"><?= $step2_complete ? '✓' : '2' ?></div>
     <div class="workflow-content">
       <strong>Step 2: Reconciliation</strong>
       <p>Match invoices with challans and verify TDS amounts</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?php if ($step1_complete): ?>
+          <?= $challanCount > 0 ? "✓ $challanCount challan(s) matched" : "⏳ Add challans to match with invoices" ?>
+        <?php else: ?>
+          ⏳ Complete Step 1 first
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
-  <div class="workflow-step current">
-    <div class="workflow-number">3</div>
+  <!-- STEP 3: GENERATE FORM 26Q -->
+  <div class="workflow-step <?= $step3_complete ? 'completed' : ($step2_complete ? 'current' : 'pending') ?>">
+    <div class="workflow-number"><?= $step3_complete ? '✓' : '3' ?></div>
     <div class="workflow-content">
       <strong>Step 3: Generate Form 26Q</strong>
       <p>Create official Form 26Q in NS1 format required by tax authority</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?php if ($step2_complete): ?>
+          <?= $step3_started ? "✓ Form generated" : "⏳ Ready to generate" ?>
+        <?php else: ?>
+          ⏳ Complete reconciliation first
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
-  <div class="workflow-step pending">
-    <div class="workflow-number">4</div>
+  <!-- STEP 4: GENERATE FVU -->
+  <div class="workflow-step <?= $step4_started ? 'current' : 'pending' ?>">
+    <div class="workflow-number"><?= $step4_started ? '⟳' : '4' ?></div>
     <div class="workflow-content">
       <strong>Step 4: Generate FVU</strong>
       <p>File Validation Utility validates form before submission</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?php if ($step3_started): ?>
+          <?= $step4_started ? "✓ Processing..." : "⏳ Generate form to proceed" ?>
+        <?php else: ?>
+          ⏳ Complete Step 3 first
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
-  <div class="workflow-step pending">
-    <div class="workflow-number">5</div>
+  <!-- STEP 5: SUBMIT E-RETURN -->
+  <div class="workflow-step <?= $step5_complete ? 'completed' : ($step4_started ? 'current' : 'pending') ?>">
+    <div class="workflow-number"><?= $step5_complete ? '✓' : '5' ?></div>
     <div class="workflow-content">
       <strong>Step 5: Submit E-Return</strong>
       <p>Submit FVU and Form 27A to tax authority for e-filing</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?php if ($step4_started): ?>
+          <?= $step5_complete ? "✓ Return submitted" : "⏳ FVU generation required" ?>
+        <?php else: ?>
+          ⏳ Complete Step 4 first
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
-  <div class="workflow-step pending">
+  <!-- STEP 6: TRACK STATUS -->
+  <div class="workflow-step <?= $step5_complete ? 'current' : 'pending' ?>">
     <div class="workflow-number">6</div>
     <div class="workflow-content">
       <strong>Step 6: Track Status</strong>
       <p>Monitor filing status and receive acknowledgement from tax authority</p>
+      <div style="font-size: 11px; color: #999; margin-top: 6px;">
+        <?= $step5_complete ? "✓ View status below" : "⏳ Submit return to enable tracking" ?>
+      </div>
     </div>
   </div>
 </div>
@@ -372,26 +453,44 @@ try {
 
   <?php
   // Get invoice and challan counts
-  $stmt = $pdo->prepare("
-    SELECT
-      COUNT(*) as invoice_count,
-      COALESCE(SUM(base_amount), 0) as total_amount,
-      COALESCE(SUM(total_tds), 0) as total_tds
-    FROM invoices
-    WHERE firm_id = ? AND fy = ? AND quarter = ?
-  ");
-  $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
-  $invoiceData = $stmt->fetch();
+  $invoiceData = [
+    'invoice_count' => 0,
+    'total_amount' => 0,
+    'total_tds' => 0
+  ];
+  $challanData = [
+    'challan_count' => 0,
+    'total_paid' => 0
+  ];
 
-  $stmt = $pdo->prepare("
-    SELECT
-      COUNT(*) as challan_count,
-      COALESCE(SUM(amount_tds), 0) as total_paid
-    FROM challans
-    WHERE firm_id = ? AND fy = ? AND quarter = ?
-  ");
-  $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
-  $challanData = $stmt->fetch();
+  try {
+    $stmt = $pdo->prepare("
+      SELECT
+        COUNT(*) as invoice_count,
+        COALESCE(SUM(base_amount), 0) as total_amount,
+        COALESCE(SUM(total_tds), 0) as total_tds
+      FROM invoices
+      WHERE firm_id = ? AND fy = ? AND quarter = ?
+    ");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $invoiceData = $stmt->fetch();
+  } catch (Exception $e) {
+    // Table doesn't exist
+  }
+
+  try {
+    $stmt = $pdo->prepare("
+      SELECT
+        COUNT(*) as challan_count,
+        COALESCE(SUM(amount_tds), 0) as total_paid
+      FROM challans
+      WHERE firm_id = ? AND fy = ? AND quarter = ?
+    ");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $challanData = $stmt->fetch();
+  } catch (Exception $e) {
+    // Table doesn't exist
+  }
 
   $invoiceCount = $invoiceData['invoice_count'] ?? 0;
   $totalAmount = $invoiceData['total_amount'] ?? 0;
