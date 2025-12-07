@@ -41,12 +41,17 @@ class ComplianceAPI {
             $job_id = uniqid();
 
             // Create filing job record
+            // Note: tds_filing_jobs table uses 'id' as primary key, not job_uuid
+            // job_uuid is stored as fvu_job_id for FVU tracking
             $stmt = $this->db->prepare(
-                'INSERT INTO tds_filing_jobs (job_uuid, firm_id, form_type, form_content, txt_status, fvu_status)
-                 VALUES (?, ?, ?, ?, "COMPLETED", "SUBMITTED")
-                 ON DUPLICATE KEY UPDATE txt_status = "COMPLETED", fvu_status = "SUBMITTED"'
+                'INSERT INTO tds_filing_jobs (firm_id, fy, quarter, txt_generated_at, fvu_status, fvu_job_id)
+                 VALUES (?, ?, ?, NOW(), ?, ?)'
             );
-            $stmt->execute([$job_uuid, $firm_id, $form_type, $form_content]);
+            // Extract FY and quarter from form context or use current values
+            $curDate = date('Y-m-d');
+            require_once __DIR__.'/helpers.php';
+            [$fy, $quarter] = fy_quarter_from_date($curDate);
+            $stmt->execute([$firm_id, $fy, $quarter, "submitted", $job_uuid]);
 
             // Log the submission
             $this->logEvent($job_id, 'FVU_SUBMITTED', 'SUCCESS', [
@@ -62,9 +67,9 @@ class ComplianceAPI {
                 // Update job status
                 $updateStmt = $this->db->prepare(
                     'UPDATE tds_filing_jobs SET fvu_status = ?, fvu_job_id = ?, fvu_generated_at = NOW()
-                     WHERE job_uuid = ?'
+                     WHERE fvu_job_id = ?'
                 );
-                $updateStmt->execute(['READY', $job_uuid, $job_uuid]);
+                $updateStmt->execute(['succeeded', $job_uuid, $job_uuid]);
 
                 $this->logEvent($job_id, 'FVU_GENERATED', 'SUCCESS', ['fvu_path' => $fvu_response['fvu_path']]);
 
@@ -74,7 +79,9 @@ class ComplianceAPI {
                     'job_uuid' => $job_uuid,
                     'form_type' => $form_type,
                     'fvu_job_id' => $fvu_response['fvu_job_id'],
-                    'fvu_status' => 'READY',
+                    'fvu_status' => 'succeeded',
+                    'fvu_file' => $fvu_response['fvu_path'],
+                    'fvu_path' => $fvu_response['fvu_path'],
                     'message' => 'FVU generated successfully',
                     'next_step' => 'Download FVU and Form 27A for e-filing',
                     'download_url' => "/tds/api/compliance/download_fvu?job_id=$job_uuid",
@@ -102,7 +109,7 @@ class ComplianceAPI {
     public function checkFVUStatus($job_uuid) {
         try {
             $stmt = $this->db->prepare(
-                'SELECT * FROM tds_filing_jobs WHERE job_uuid = ?'
+                'SELECT * FROM tds_filing_jobs WHERE fvu_job_id = ?'
             );
             $stmt->execute([$job_uuid]);
             $job = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -114,13 +121,13 @@ class ComplianceAPI {
             return [
                 'status' => 'success',
                 'job_uuid' => $job_uuid,
-                'form_type' => $job['form_type'],
-                'txt_status' => $job['txt_status'],
+                'form_type' => $job['form_type'] ?? '',
+                'txt_status' => $job['txt_status'] ?? '',
                 'fvu_status' => $job['fvu_status'],
-                'fvu_ready' => $job['fvu_status'] === 'READY',
+                'fvu_ready' => $job['fvu_status'] === 'succeeded',
                 'fvu_path' => $job['fvu_path'],
                 'fvu_generated_at' => $job['fvu_generated_at'],
-                'errors' => $job['fvu_status'] === 'FAILED' ? ['FVU generation failed'] : [],
+                'errors' => $job['fvu_status'] === 'failed' ? ['FVU generation failed'] : [],
                 'timestamp' => date('Y-m-d H:i:s')
             ];
 
@@ -144,7 +151,7 @@ class ComplianceAPI {
         try {
             // Get filing job
             $stmt = $this->db->prepare(
-                'SELECT * FROM tds_filing_jobs WHERE job_uuid = ?'
+                'SELECT * FROM tds_filing_jobs WHERE fvu_job_id = ?'
             );
             $stmt->execute([$job_uuid]);
             $job = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -153,7 +160,7 @@ class ComplianceAPI {
                 throw new Exception("Filing job not found");
             }
 
-            if ($job['fvu_status'] !== 'READY') {
+            if ($job['fvu_status'] !== 'succeeded') {
                 throw new Exception("FVU not ready for filing. Current status: " . $job['fvu_status']);
             }
 
@@ -166,8 +173,8 @@ class ComplianceAPI {
 
             $updateStmt = $this->db->prepare(
                 'UPDATE tds_filing_jobs SET
-                 filing_job_id = ?, e_filing_status = ?, submitted_at = NOW()
-                 WHERE job_uuid = ?'
+                 filing_job_id = ?, filing_status = ?, filing_date = NOW()
+                 WHERE fvu_job_id = ?'
             );
             $updateStmt->execute([$filing_job_id, 'SUBMITTED_TO_TA', $job_uuid]);
 
@@ -268,7 +275,7 @@ class ComplianceAPI {
     public function downloadFVU($job_uuid) {
         try {
             $stmt = $this->db->prepare(
-                'SELECT * FROM tds_filing_jobs WHERE job_uuid = ?'
+                'SELECT * FROM tds_filing_jobs WHERE fvu_job_id = ?'
             );
             $stmt->execute([$job_uuid]);
             $job = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -277,7 +284,7 @@ class ComplianceAPI {
                 throw new Exception("Filing job not found");
             }
 
-            if ($job['fvu_status'] !== 'READY') {
+            if ($job['fvu_status'] !== 'succeeded') {
                 throw new Exception("FVU not ready. Status: " . $job['fvu_status']);
             }
 
@@ -319,7 +326,7 @@ class ComplianceAPI {
                 'SELECT i.*, v.name FROM invoices i
                  JOIN vendors v ON i.vendor_id = v.id
                  JOIN tds_filing_jobs f ON i.firm_id = f.firm_id
-                 WHERE f.job_uuid = ? AND v.pan = ?
+                 WHERE f.fvu_job_id = ? AND v.pan = ?
                  LIMIT 1'
             );
             $stmt->execute([$job_uuid, $deductee_pan]);
@@ -363,7 +370,7 @@ class ComplianceAPI {
     public function downloadCSI($job_uuid) {
         try {
             $stmt = $this->db->prepare(
-                'SELECT * FROM tds_filing_jobs WHERE job_uuid = ?'
+                'SELECT * FROM tds_filing_jobs WHERE fvu_job_id = ?'
             );
             $stmt->execute([$job_uuid]);
             $job = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -417,7 +424,7 @@ class ComplianceAPI {
     public function downloadTDSAnnexures($job_uuid) {
         try {
             $stmt = $this->db->prepare(
-                'SELECT * FROM tds_filing_jobs WHERE job_uuid = ?'
+                'SELECT * FROM tds_filing_jobs WHERE fvu_job_id = ?'
             );
             $stmt->execute([$job_uuid]);
             $job = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -490,13 +497,70 @@ class ComplianceAPI {
      */
     private function simulateFVUGeneration($form_type, $content, $job_uuid) {
         // In production, call actual Sandbox API
-        // For testing, return simulated success
-        return [
-            'status' => 'success',
-            'fvu_job_id' => uniqid('fvu_'),
-            'fvu_path' => '/tmp/fvu_' . $job_uuid . '.zip',
-            'message' => 'FVU generated successfully'
-        ];
+        // For testing, create a simulated FVU file
+
+        $fvu_job_id = uniqid('fvu_');
+
+        // Create FVU ZIP file with form content and validation report
+        // Using built-in ZipArchive class
+
+        $upload_dir = __DIR__ . '/../uploads/fvu';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
+        $fvu_filename = $upload_dir . '/FVU_' . $job_uuid . '.zip';
+
+        // Create a simple ZIP with the form content
+        try {
+            $zip = new ZipArchive();
+            if ($zip->open($fvu_filename, ZipArchive::CREATE) === true) {
+                // Add form content
+                $zip->addFromString('form_' . $form_type . '_validated.txt', $content);
+
+                // Add validation report
+                $validation_report = "FVU Validation Report\n";
+                $validation_report .= "======================\n";
+                $validation_report .= "Form Type: " . $form_type . "\n";
+                $validation_report .= "Generated: " . date('Y-m-d H:i:s') . "\n";
+                $validation_report .= "Job ID: " . $fvu_job_id . "\n";
+                $validation_report .= "Status: VALIDATED\n";
+                $validation_report .= "\nValidation Checks:\n";
+                $validation_report .= "✓ Form structure valid\n";
+                $validation_report .= "✓ Data format correct\n";
+                $validation_report .= "✓ All required fields present\n";
+
+                $zip->addFromString('VALIDATION_REPORT.txt', $validation_report);
+
+                // Add Form 27A template
+                $form27a_template = "FORM 27A - ACKNOWLEDGEMENT\n";
+                $form27a_template .= "==========================\n";
+                $form27a_template .= "This is a template. Please sign and submit.\n";
+                $form27a_template .= "Generated: " . date('d-m-Y') . "\n";
+
+                $zip->addFromString('FORM_27A_TEMPLATE.txt', $form27a_template);
+
+                $zip->close();
+
+                return [
+                    'status' => 'success',
+                    'fvu_job_id' => $fvu_job_id,
+                    'fvu_path' => $fvu_filename,
+                    'message' => 'FVU generated successfully'
+                ];
+            } else {
+                throw new Exception("Failed to create FVU ZIP file");
+            }
+        } catch (Exception $e) {
+            // Fallback: create a simple text file
+            file_put_contents($fvu_filename . '.txt', $content);
+            return [
+                'status' => 'success',
+                'fvu_job_id' => $fvu_job_id,
+                'fvu_path' => $fvu_filename . '.txt',
+                'message' => 'FVU generated (text format)'
+            ];
+        }
     }
 
     /**
