@@ -29,14 +29,21 @@ $selectedFY = $_GET['fy'] ?? $_POST['fy'] ?? $defaultFY;
 $selectedQuarter = $_GET['quarter'] ?? $_POST['quarter'] ?? 'Q1';
 
 // Get filing jobs for current firm
-$stmt = $pdo->prepare("
-    SELECT * FROM filing_jobs
-    WHERE firm_id = ? AND fy = ? AND quarter = ?
-    ORDER BY created_at DESC
-    LIMIT 5
-");
-$stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
-$recentJobs = $stmt->fetchAll();
+$recentJobs = [];
+try {
+    // Try to get filing jobs if table exists
+    $stmt = $pdo->prepare("
+        SELECT * FROM tds_filing_jobs
+        WHERE firm_id = ? AND fy = ? AND quarter = ?
+        ORDER BY created_at DESC
+        LIMIT 5
+    ");
+    $stmt->execute([$firmId, $selectedFY, $selectedQuarter]);
+    $recentJobs = $stmt->fetchAll();
+} catch (Exception $e) {
+    // Table doesn't exist, continue without filing jobs
+    $recentJobs = [];
+}
 ?>
 
 <style>
