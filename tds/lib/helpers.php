@@ -13,7 +13,7 @@ function clean_csv_row($row){ return array_map(fn($v)=>trim((string)$v), $row); 
 function money($n){ return number_format((float)$n,2,'.',''); }
 
 function get_tds_sections(PDO $pdo){
-  $res=$pdo->query("SELECT section_code, MAX(description) AS descn FROM tds_rates GROUP BY section_code ORDER BY section_code");
+  $res=$pdo->query("SELECT section_code, MAX(description) AS descn, MAX(rate) AS rate FROM tds_rates GROUP BY section_code ORDER BY section_code");
   return $res->fetchAll();
 }
 

@@ -129,6 +129,51 @@ $summary = $summaryStmt->fetch();
 </div>
 
 <script>
+// Handle single challan form submission
+document.getElementById('manChForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  try {
+    const response = await fetch('/tds/api/add_challan.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: formData
+    });
+
+    // Check if response is OK (status 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Get response text first to handle empty responses
+    const responseText = await response.text();
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+
+    const result = JSON.parse(responseText);
+
+    if (result.ok) {
+      alert('Challan added successfully');
+      // Reset form
+      this.reset();
+      // Refresh list if function exists
+      if (typeof refreshChallans === 'function') {
+        refreshChallans();
+      } else {
+        location.reload();
+      }
+    } else {
+      alert('Error: ' + (result.msg || result.message || 'Failed to add challan'));
+    }
+  } catch (error) {
+    console.error('Challan form error:', error);
+    alert('Error: ' + error.message);
+  }
+});
+
 // CSV bulk import functions for challans
 async function handleChallanCsvUpload(event) {
   const file = event.target.files[0];
@@ -147,10 +192,22 @@ async function handleChallanCsvUpload(event) {
 
     const response = await fetch('/tds/api/bulk_import_challans.php', {
       method: 'POST',
+      credentials: 'same-origin',
       body: formData
     });
 
-    const result = await response.json();
+    // Check if response is OK
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Get response text first
+    const responseText = await response.text();
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+
+    const result = JSON.parse(responseText);
 
     // Hide progress
     document.getElementById('challanImportProgress').style.display = 'none';
@@ -205,13 +262,14 @@ async function handleChallanCsvUpload(event) {
     event.target.value = '';
 
   } catch (error) {
+    console.error('CSV import error:', error);
     document.getElementById('challanImportProgress').style.display = 'none';
     const resultDiv = document.getElementById('challanImportResult');
     resultDiv.style.display = 'block';
     resultDiv.style.background = '#ffebee';
     resultDiv.style.borderLeft = '4px solid #d32f2f';
     resultDiv.style.color = '#c62828';
-    resultDiv.innerHTML = `<strong>✗ Network Error</strong><div>${error.message}</div>`;
+    resultDiv.innerHTML = `<strong>✗ Import Error</strong><div>${error.message}</div>`;
   }
 }
 

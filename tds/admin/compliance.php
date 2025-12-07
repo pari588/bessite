@@ -2,6 +2,7 @@
 require_once __DIR__.'/../lib/auth.php'; auth_require();
 require_once __DIR__.'/../lib/db.php';
 require_once __DIR__.'/../lib/ComplianceAPI.php';
+require_once __DIR__.'/../lib/helpers.php';
 
 $page_title='E-Filing & Compliance';
 include __DIR__.'/_layout_top.php';
@@ -12,14 +13,6 @@ $firm_id = $firm['id'] ?? null;
 
 // Get current FY and quarter
 $today = date('Y-m-d');
-function fy_quarter_from_date($date) {
-    $year = (int)date('Y', strtotime($date));
-    $month = (int)date('n', strtotime($date));
-    if ($month >= 4) $fy = $year . '-' . ($year + 1 % 100);
-    else $fy = ($year - 1) . '-' . ($year % 100);
-    $quarter = 'Q' . ceil($month / 3);
-    return [$fy, $quarter];
-}
 [$curFy, $curQ] = fy_quarter_from_date($today);
 
 // Get parameters

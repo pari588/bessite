@@ -2,6 +2,7 @@
 require_once __DIR__.'/../lib/auth.php'; auth_require();
 require_once __DIR__.'/../lib/db.php';
 require_once __DIR__.'/../lib/AnalyticsAPI.php';
+require_once __DIR__.'/../lib/helpers.php';
 
 $page_title='Analytics & Compliance';
 include __DIR__.'/_layout_top.php';
@@ -12,14 +13,6 @@ $firm_id = $firm['id'] ?? null;
 
 // Get current FY and quarter
 $today = date('Y-m-d');
-function fy_quarter_from_date($date) {
-    $year = (int)date('Y', strtotime($date));
-    $month = (int)date('n', strtotime($date));
-    if ($month >= 4) $fy = $year . '-' . ($year + 1 % 100);
-    else $fy = ($year - 1) . '-' . ($year % 100);
-    $quarter = 'Q' . ceil($month / 3);
-    return [$fy, $quarter];
-}
 [$curFy, $curQ] = fy_quarter_from_date($today);
 
 // Get parameters from URL
@@ -88,14 +81,23 @@ $checkLabels = [
   </div>
 </div>
 
+<?php
+// Get available financial years for dropdown
+$fyList = fy_list(7); // Get 7 years span
+?>
+
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
   <div style="padding: 8px;">
     <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Financial Year</label>
-    <md-filled-text-field label="FY" value="<?=htmlspecialchars($fy)?>" onchange="updateAnalytics(this.value, document.getElementById('quarterSelect').value)"></md-filled-text-field>
+    <select id="fySelect" onchange="updateAnalytics(this.value, document.getElementById('quarterSelect').value)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+      <?php foreach ($fyList as $fyOption): ?>
+        <option value="<?=htmlspecialchars($fyOption)?>" <?= $fy === $fyOption ? 'selected' : '' ?>><?=htmlspecialchars($fyOption)?></option>
+      <?php endforeach; ?>
+    </select>
   </div>
   <div style="padding: 8px;">
     <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Quarter</label>
-    <select id="quarterSelect" onchange="updateAnalytics(document.getElementById('fyInput').value, this.value)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+    <select id="quarterSelect" onchange="updateAnalytics(document.getElementById('fySelect').value, this.value)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
       <option value="Q1" <?= $quarter === 'Q1' ? 'selected' : '' ?>>Q1 (Apr-Jun)</option>
       <option value="Q2" <?= $quarter === 'Q2' ? 'selected' : '' ?>>Q2 (Jul-Sep)</option>
       <option value="Q3" <?= $quarter === 'Q3' ? 'selected' : '' ?>>Q3 (Oct-Dec)</option>

@@ -20,15 +20,17 @@ $rows = $stmt->fetchAll();
 <script defer src="/tds/public/assets/app_dates.js"></script>
 <script defer src="/tds/public/assets/app_live.js"></script>
 
+<style></style>
+
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
   <!-- SINGLE INVOICE FORM -->
   <div class="card fade-in">
     <h3>Add Single Invoice</h3>
     <form id="singleInvForm" method="post" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <input type="hidden" name="single" value="1" />
-      <md-outlined-text-field label="Vendor Name" name="vendor_name" style="grid-column:1/3" required></md-outlined-text-field>
-      <md-outlined-text-field label="Vendor PAN" name="vendor_pan" placeholder="XXXXX9999X" required></md-outlined-text-field>
-      <md-outlined-text-field label="Invoice No" name="invoice_no" required></md-outlined-text-field>
+      <md-outlined-text-field label="Vendor Name" name="vendor_name" id="vendor_name_create" required></md-outlined-text-field>
+      <md-outlined-text-field label="Vendor PAN" name="vendor_pan" id="vendor_pan_create" placeholder="XXXXX9999X" required></md-outlined-text-field>
+      <md-outlined-text-field label="Invoice No" name="invoice_no" id="invoice_no_create" required></md-outlined-text-field>
       <div style="display:flex;flex-direction:column;gap:4px">
         <label style="font-size:12px;color:#666">Invoice Date</label>
         <input class="m3-date" id="inv_date_create" name="invoice_date" type="date" required />
@@ -166,6 +168,51 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
+// Handle single invoice form submission
+document.getElementById('singleInvForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  try {
+    const response = await fetch('/tds/api/add_invoice.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: formData
+    });
+
+    // Check if response is OK (status 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Get response text first to handle empty responses
+    const responseText = await response.text();
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+
+    const result = JSON.parse(responseText);
+
+    if (result.ok) {
+      alert('Invoice added successfully');
+      // Reset form
+      this.reset();
+      // Refresh list if function exists
+      if (typeof refreshInvoices === 'function') {
+        refreshInvoices();
+      } else {
+        location.reload();
+      }
+    } else {
+      alert('Error: ' + (result.msg || result.message || 'Failed to add invoice'));
+    }
+  } catch (error) {
+    console.error('Invoice form error:', error);
+    alert('Error: ' + error.message);
+  }
+});
+
 // CSV bulk import functions
 async function handleCsvUpload(event) {
   const file = event.target.files[0];
@@ -184,10 +231,22 @@ async function handleCsvUpload(event) {
 
     const response = await fetch('/tds/api/bulk_import_invoices.php', {
       method: 'POST',
+      credentials: 'same-origin',
       body: formData
     });
 
-    const result = await response.json();
+    // Check if response is OK
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Get response text first
+    const responseText = await response.text();
+    if (!responseText) {
+      throw new Error('Empty response from server');
+    }
+
+    const result = JSON.parse(responseText);
 
     // Hide progress
     document.getElementById('importProgress').style.display = 'none';
@@ -242,13 +301,14 @@ async function handleCsvUpload(event) {
     event.target.value = '';
 
   } catch (error) {
+    console.error('CSV import error:', error);
     document.getElementById('importProgress').style.display = 'none';
     const resultDiv = document.getElementById('importResult');
     resultDiv.style.display = 'block';
     resultDiv.style.background = '#ffebee';
     resultDiv.style.borderLeft = '4px solid #d32f2f';
     resultDiv.style.color = '#c62828';
-    resultDiv.innerHTML = `<strong>✗ Network Error</strong><div>${error.message}</div>`;
+    resultDiv.innerHTML = `<strong>✗ Import Error</strong><div>${error.message}</div>`;
   }
 }
 
@@ -267,6 +327,11 @@ Tech Services,TECH91234H,INV-003,2024-06-10,500000,194J,`;
   a.click();
   window.URL.revokeObjectURL(url);
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  calculateTDS('create');
+});
 </script>
 
 <?php include __DIR__.'/_layout_bottom.php';

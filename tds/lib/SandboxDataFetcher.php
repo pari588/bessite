@@ -287,23 +287,49 @@ class SandboxDataFetcher {
             // Get date range
             $dates = $this->getQuarterDateRange($fy, $quarter);
 
-            // Prepare API request
-            $url = $this->apiBaseUrl . '/tds/deductees';
-            $params = [
-                'tan' => $tan,
-                'from_date' => $dates['start'],
-                'to_date' => $dates['end'],
-                'limit' => 100,
-                'offset' => 0
+            // Try multiple possible endpoints for deductees
+            $endpoints = [
+                '/v1/tds/deductees',
+                '/tds/deductees',
+                '/data/deductees'
             ];
 
-            $response = $this->makeRequest('GET', $url, [], $params);
+            $lastError = null;
 
-            if (empty($response['deductees'])) {
-                return [];
+            foreach ($endpoints as $baseEndpoint) {
+                try {
+                    $params = [
+                        'tan' => $tan,
+                        'from_date' => $dates['start'],
+                        'to_date' => $dates['end'],
+                        'limit' => 100,
+                        'offset' => 0
+                    ];
+
+                    $response = $this->makeRequest('GET', $baseEndpoint, [], $params);
+
+                    // Handle both possible response formats
+                    $deductees = $response['deductees'] ?? $response['data']['deductees'] ?? $response['data'] ?? [];
+
+                    // If we got data, return it
+                    if (!empty($deductees)) {
+                        return $this->transformDeductees($deductees);
+                    }
+
+                } catch (Exception $e) {
+                    // Try next endpoint
+                    $lastError = $e->getMessage();
+                    continue;
+                }
             }
 
-            return $this->transformDeductees($response['deductees']);
+            // If we got here, no endpoint worked but didn't have errors
+            if ($lastError) {
+                throw new Exception("All endpoints failed: $lastError");
+            }
+
+            // No data found (HTTP 200 but empty)
+            return [];
 
         } catch (Exception $e) {
             throw new Exception("Failed to fetch deductees: " . $e->getMessage());
