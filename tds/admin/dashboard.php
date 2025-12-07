@@ -51,6 +51,7 @@ $unallocated = (int)$stmt->fetchColumn();
     <a href="invoices.php">Invoices</a> ·
     <a href="challans.php">Challans</a> ·
     <a href="reconcile.php">Reconcile TDS</a> ·
+    <a href="ereturn.php">E-Return Filing</a> ·
     <a href="filing-status.php">Filing Status</a>
   </p>
 </div>
