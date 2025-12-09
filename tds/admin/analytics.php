@@ -122,7 +122,13 @@ if (!empty($action)) {
 ?>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-  <h2 style="margin: 0;">Risk Analytics & Potential Notices</h2>
+  <h2 style="margin: 0;">📊 Risk Analytics & Potential Notices</h2>
+  <div style="font-size: 12px; color: #666;">Tab: <?=htmlspecialchars($tab)?> | TAN: <?=htmlspecialchars($firm_tan)?></div>
+</div>
+
+<!-- DEBUG: Check if page is rendering -->
+<div style="background: #fff8e1; border: 2px solid #ffb74d; padding: 12px; margin-bottom: 16px; border-radius: 4px; font-size: 12px; color: #e65100;">
+  <strong>✓ Analytics Page Loaded</strong> - If you see this, the page is rendering correctly. Tab: <strong><?=htmlspecialchars($tab)?></strong>
 </div>
 
 <?php if ($actionResult): ?>
