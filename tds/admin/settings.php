@@ -29,11 +29,11 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
   <div id="profileViewMode">
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Full Name</div>
-      <div style="font-size:16px;font-weight:500"><?=v($user,'name')?></div>
+      <div style="font-size:16px;font-weight:500" id="displayName"><?=v($user,'name')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Email Address</div>
-      <div style="font-size:16px;font-weight:500"><?=v($user,'email')?></div>
+      <div style="font-size:16px;font-weight:500" id="displayEmail"><?=v($user,'email')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Role</div>
@@ -179,11 +179,26 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 function toggleProfileEdit() {
   const viewMode = document.getElementById('profileViewMode');
   const editMode = document.getElementById('profileEditForm');
-  viewMode.style.display = viewMode.style.display === 'none' ? 'block' : 'none';
-  editMode.style.display = editMode.style.display === 'none' ? 'block' : 'none';
+
+  const isViewHidden = viewMode.style.display === 'none';
+  viewMode.style.display = isViewHidden ? 'block' : 'none';
+  editMode.style.display = isViewHidden ? 'none' : 'block';
 }
 
-document.getElementById('editProfileToggle').addEventListener('click', toggleProfileEdit);
+document.getElementById('editProfileToggle').addEventListener('click', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  // Populate form fields from displayed values when entering edit mode
+  const viewMode = document.getElementById('profileViewMode');
+  if(viewMode.style.display !== 'none') {
+    // Switching to edit mode - populate fields
+    document.getElementById('profileName').value = document.getElementById('displayName').textContent;
+    document.getElementById('profileEmail').value = document.getElementById('displayEmail').textContent;
+  }
+
+  toggleProfileEdit();
+});
 
 // Profile Edit Form Submit
 document.getElementById('profileEditForm').addEventListener('submit', async (e)=>{
