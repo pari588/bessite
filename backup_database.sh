@@ -10,9 +10,9 @@
 
 # Configuration
 BACKUP_DIR="/home/bombayengg/backups"
-DATABASE_NAME="tds_autofile"
-MYSQL_USER="tdsuser"
-MYSQL_PASSWORD="StrongPass123"  # Set if needed
+DATABASE_NAME="bombayengg"
+MYSQL_USER="bombayengg"
+MYSQL_PASSWORD="oCFCrCMwKyy5jzg"  # Set if needed
 RETENTION_DAYS=30  # Keep backups for 30 days
 LOG_FILE="/var/log/db_backup.log"
 
