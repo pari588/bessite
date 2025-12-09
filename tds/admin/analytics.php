@@ -33,10 +33,11 @@ if (!empty($action)) {
         // Load API only when needed
         require_once __DIR__.'/../lib/SandboxTDSAPI.php';
         $apiKey = getenv('SANDBOX_API_KEY') ?? '';
-        if (empty($apiKey)) {
-            throw new Exception("SANDBOX_API_KEY not configured");
+        $apiSecret = getenv('SANDBOX_API_SECRET') ?? '';
+        if (empty($apiKey) || empty($apiSecret)) {
+            throw new Exception("SANDBOX_API_KEY or SANDBOX_API_SECRET not configured");
         }
-        $api = new SandboxTDSAPI($apiKey, '', function($msg) { /* logging */ });
+        $api = new SandboxTDSAPI($apiKey, $apiSecret, function($msg) { /* logging */ });
         if (!$api) {
             throw new Exception("Failed to initialize Analytics API");
         }
@@ -131,20 +132,63 @@ if (!empty($action)) {
 </div>
 <?php endif; ?>
 
-<!-- Context Info -->
-<div style="background: #f0f7ff; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 20px;">
-  <strong style="color: #1976d2;">TAN:</strong> <code><?=htmlspecialchars($firm_tan)?></code> | <strong style="color: #1976d2;">FY:</strong> <code><?=htmlspecialchars($fy)?></code> | <strong style="color: #1976d2;">Quarter:</strong> <code><?=htmlspecialchars($quarter)?></code>
+<!-- Context Info with Selectors -->
+<div style="background: #f0f7ff; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center;">
+  <div>
+    <strong style="color: #1976d2;">TAN:</strong> <code><?=htmlspecialchars($firm_tan)?></code>
+  </div>
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <div>
+      <label style="display: block; font-size: 12px; color: #1976d2; font-weight: 600; margin-bottom: 4px;">Financial Year</label>
+      <select id="fySelector" style="padding: 6px 12px; border: 1px solid #1976d2; border-radius: 4px; font-size: 13px; background: white; color: #333;">
+        <?php
+        // Generate FY options for last 5 years and next 2 years
+        $currentYear = (int)date('Y');
+        for ($year = $currentYear - 5; $year <= $currentYear + 2; $year++) {
+          $fyOption = "FY " . $year . "-" . substr(($year + 1), 2);
+          $selected = ($fy === $fyOption) ? 'selected' : '';
+          echo "<option value=\"" . htmlspecialchars($fyOption) . "\" $selected>" . htmlspecialchars($fyOption) . "</option>";
+        }
+        ?>
+      </select>
+    </div>
+    <div>
+      <label style="display: block; font-size: 12px; color: #1976d2; font-weight: 600; margin-bottom: 4px;">Quarter</label>
+      <select id="quarterSelector" style="padding: 6px 12px; border: 1px solid #1976d2; border-radius: 4px; font-size: 13px; background: white; color: #333;">
+        <option value="Q1" <?=$quarter === 'Q1' ? 'selected' : ''?>>Q1 (Apr-Jun)</option>
+        <option value="Q2" <?=$quarter === 'Q2' ? 'selected' : ''?>>Q2 (Jul-Sep)</option>
+        <option value="Q3" <?=$quarter === 'Q3' ? 'selected' : ''?>>Q3 (Oct-Dec)</option>
+        <option value="Q4" <?=$quarter === 'Q4' ? 'selected' : ''?>>Q4 (Jan-Mar)</option>
+      </select>
+    </div>
+  </div>
 </div>
 
 <!-- Tab Navigation -->
 <div style="display: flex; gap: 2px; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
-  <a href="?tab=tds" style="padding: 12px 20px; text-decoration: none; color: <?=$tab==='tds' ? '#1976d2' : '#666'?>; border-bottom: 3px solid <?=$tab==='tds' ? '#1976d2' : 'transparent'?>; font-weight: <?=$tab==='tds' ? '600' : '500'?>;">
+  <a href="?tab=tds&fy=<?=urlencode($fy)?>&quarter=<?=urlencode($quarter)?>" style="padding: 12px 20px; text-decoration: none; color: <?=$tab==='tds' ? '#1976d2' : '#666'?>; border-bottom: 3px solid <?=$tab==='tds' ? '#1976d2' : 'transparent'?>; font-weight: <?=$tab==='tds' ? '600' : '500'?>;">
     📊 TDS Analytics (24Q, 26Q, 27Q)
   </a>
-  <a href="?tab=tcs" style="padding: 12px 20px; text-decoration: none; color: <?=$tab==='tcs' ? '#1976d2' : '#666'?>; border-bottom: 3px solid <?=$tab==='tcs' ? '#1976d2' : 'transparent'?>; font-weight: <?=$tab==='tcs' ? '600' : '500'?>;">
+  <a href="?tab=tcs&fy=<?=urlencode($fy)?>&quarter=<?=urlencode($quarter)?>" style="padding: 12px 20px; text-decoration: none; color: <?=$tab==='tcs' ? '#1976d2' : '#666'?>; border-bottom: 3px solid <?=$tab==='tcs' ? '#1976d2' : 'transparent'?>; font-weight: <?=$tab==='tcs' ? '600' : '500'?>;">
     📊 TCS Analytics (27EQ)
   </a>
 </div>
+
+<script>
+document.getElementById('fySelector').addEventListener('change', function() {
+  const fy = encodeURIComponent(this.value);
+  const quarter = encodeURIComponent(document.getElementById('quarterSelector').value);
+  const tab = '<?=urlencode($tab)?>';
+  window.location.href = '?tab=' + tab + '&fy=' + fy + '&quarter=' + quarter;
+});
+
+document.getElementById('quarterSelector').addEventListener('change', function() {
+  const quarter = encodeURIComponent(this.value);
+  const fy = encodeURIComponent(document.getElementById('fySelector').value);
+  const tab = '<?=urlencode($tab)?>';
+  window.location.href = '?tab=' + tab + '&fy=' + fy + '&quarter=' + quarter;
+});
+</script>
 
 <?php if ($tab === 'tds'): ?>
 <!-- TDS Analytics -->
@@ -154,6 +198,8 @@ if (!empty($action)) {
     <h3 style="margin: 0 0 16px 0; font-size: 16px;">📤 Submit TDS Form</h3>
     <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
       <input type="hidden" name="action" value="submit_tds_analytics">
+      <input type="hidden" name="fy" value="<?=htmlspecialchars($fy)?>">
+      <input type="hidden" name="quarter" value="<?=htmlspecialchars($quarter)?>">
 
       <div>
         <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">Form Type</label>
@@ -216,6 +262,8 @@ if (!empty($action)) {
     <h3 style="margin: 0 0 16px 0; font-size: 16px;">📤 Submit Form 27EQ (TCS)</h3>
     <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
       <input type="hidden" name="action" value="submit_tcs_analytics">
+      <input type="hidden" name="fy" value="<?=htmlspecialchars($fy)?>">
+      <input type="hidden" name="quarter" value="<?=htmlspecialchars($quarter)?>">
 
       <div style="padding: 10px; background: #f0f7ff; border-left: 3px solid #1976d2; border-radius: 4px;">
         <strong style="color: #1976d2; font-size: 13px;">Form Type: 27EQ (Tax Collected at Source)</strong>

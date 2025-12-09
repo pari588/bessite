@@ -464,19 +464,13 @@ class SandboxTDSAPI {
     try {
       $this->ensureValidToken();
 
-      // Ensure form_content is base64 encoded
-      if (is_array($form_content)) {
-        $form_content = json_encode($form_content);
-      }
-      $encoded_content = base64_encode($form_content);
-
+      // Step 1: Submit job metadata to get presigned URL
       $payload = [
-        '@entity' => 'in.co.sandbox.tds.analytics.potential_notices.job',
+        '@entity' => 'in.co.sandbox.tds.analytics.potential_notice.request',
         'tan' => $tan,
         'quarter' => $quarter,
         'financial_year' => $fy,
-        'form' => $form,
-        'form_content' => $encoded_content
+        'form' => $form
       ];
 
       $response = $this->makeAuthenticatedRequest(
@@ -486,11 +480,41 @@ class SandboxTDSAPI {
       );
 
       $jobId = $response['data']['job_id'] ?? null;
+      $presignedUrl = $response['data']['json_url'] ?? null;
       $status = $response['data']['status'] ?? 'unknown';
+
+      // Step 2: Upload form content to presigned URL
+      if ($presignedUrl && $form_content) {
+        // Ensure form_content is JSON
+        if (is_array($form_content)) {
+          $form_content = json_encode($form_content);
+        } else if (!is_string($form_content)) {
+          $form_content = (string)$form_content;
+        }
+
+        // Upload to presigned URL via HTTP PUT
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+          CURLOPT_URL => $presignedUrl,
+          CURLOPT_CUSTOMREQUEST => 'PUT',
+          CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+          CURLOPT_POSTFIELDS => $form_content,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_TIMEOUT => 30
+        ]);
+
+        $upload_response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($http_code !== 200) {
+          throw new Exception("Failed to upload form data to presigned URL: HTTP $http_code");
+        }
+      }
 
       $this->log('analytics_submit_tds', 'success', "TDS Analytics job submitted: $jobId",
         json_encode(['tan' => $tan, 'form' => $form]),
-        json_encode(['job_id' => $jobId, 'status' => $status]));
+        json_encode(['job_id' => $jobId, 'status' => $status, 'presigned_url' => $presignedUrl]));
 
       return [
         'status' => 'success',
@@ -501,12 +525,16 @@ class SandboxTDSAPI {
         'form' => $form,
         'job_status' => $status,
         'created_at' => $response['data']['created_at'] ?? null,
-        'json_url' => $response['data']['json_url'] ?? null
+        'error' => null
       ];
     } catch (Exception $e) {
       $this->log('analytics_submit_tds', 'failed', $e->getMessage(),
         json_encode(compact('tan', 'quarter', 'form', 'fy')));
-      throw $e;
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage(),
+        'details' => 'Failed to submit TDS analytics job'
+      ];
     }
   }
 
@@ -632,18 +660,13 @@ class SandboxTDSAPI {
     try {
       $this->ensureValidToken();
 
-      if (is_array($form_content)) {
-        $form_content = json_encode($form_content);
-      }
-      $encoded_content = base64_encode($form_content);
-
+      // Step 1: Submit job metadata to get presigned URL
       $payload = [
-        '@entity' => 'in.co.sandbox.tcs.analytics.potential_notices.job',
+        '@entity' => 'in.co.sandbox.tcs.analytics.potential_notice.request',
         'tan' => $tan,
         'quarter' => $quarter,
         'financial_year' => $fy,
-        'form' => '27EQ',
-        'form_content' => $encoded_content
+        'form' => '27EQ'
       ];
 
       $response = $this->makeAuthenticatedRequest(
@@ -653,6 +676,37 @@ class SandboxTDSAPI {
       );
 
       $jobId = $response['data']['job_id'] ?? null;
+      $presignedUrl = $response['data']['json_url'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      // Step 2: Upload form content to presigned URL
+      if ($presignedUrl && $form_content) {
+        // Ensure form_content is JSON
+        if (is_array($form_content)) {
+          $form_content = json_encode($form_content);
+        } else if (!is_string($form_content)) {
+          $form_content = (string)$form_content;
+        }
+
+        // Upload to presigned URL via HTTP PUT
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+          CURLOPT_URL => $presignedUrl,
+          CURLOPT_CUSTOMREQUEST => 'PUT',
+          CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+          CURLOPT_POSTFIELDS => $form_content,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_TIMEOUT => 30
+        ]);
+
+        $upload_response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($http_code !== 200) {
+          throw new Exception("Failed to upload form data to presigned URL: HTTP $http_code");
+        }
+      }
 
       $this->log('analytics_submit_tcs', 'success', "TCS Analytics job submitted: $jobId",
         json_encode(['tan' => $tan]));
@@ -664,8 +718,9 @@ class SandboxTDSAPI {
         'quarter' => $quarter,
         'financial_year' => $fy,
         'form' => '27EQ',
-        'job_status' => $response['data']['status'] ?? 'unknown',
-        'json_url' => $response['data']['json_url'] ?? null
+        'job_status' => $status,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'error' => null
       ];
     } catch (Exception $e) {
       $this->log('analytics_submit_tcs', 'failed', $e->getMessage(),
