@@ -40,16 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
 
             $message = 'Password has been set successfully!';
 
-            // Log the action
-            $stmt = $pdo->prepare('
-                INSERT INTO activity_log (user_id, action, description, created_at)
-                VALUES (?, ?, ?, NOW())
-            ');
-            $stmt->execute([
-                $_SESSION['uid'],
-                'set_password',
-                'Set password for user ID ' . $userId
-            ]);
+            // Log the action (if activity_log table exists)
+            try {
+                $stmt = $pdo->prepare('
+                    INSERT INTO activity_log (user_id, action, description, created_at)
+                    VALUES (?, ?, ?, NOW())
+                ');
+                $stmt->execute([
+                    $_SESSION['uid'],
+                    'set_password',
+                    'Set password for user ID ' . $userId
+                ]);
+            } catch (Exception $logError) {
+                // Silently skip logging if table doesn't exist
+            }
         } catch (Exception $e) {
             $error = 'Failed to update password: ' . $e->getMessage();
         }
