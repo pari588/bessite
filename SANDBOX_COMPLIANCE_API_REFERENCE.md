@@ -472,54 +472,88 @@ quarter: "Q1"
 
 ---
 
-### 10. Generate Form 16 Certificate
+### 10. Generate Form 16 / Form 16A Certificate
 
-**Endpoint:** `POST /tds/compliance/traces/deductors/forms/16`
+**Endpoint:** `POST /tds/compliance/traces/deductors/forms/{certificate_type}`
 
-**Purpose:** Generate Form 16 (TDS Certificate) for deductees.
+**Purpose:** Download/Generate Form 16 (Part A and Part B) or Form 16A certificates from tax authority.
+
+**Path Parameters:**
+- `certificate_type`: "16" for Form 16, "16A" for Form 16A
+
+**Request Headers:**
+```
+Authorization: JWT access token (required)
+x-api-key: API key for identification (required)
+Content-Type: application/json
+```
 
 **Request Body:**
 ```json
 {
-  "@entity": "in.co.sandbox.tds.compliance.form16.generate.request",
+  "@entity": "in.co.sandbox.tds.compliance.certificate.job",
   "tan": "AHMA09719B",
+  "quarter": "Q1|Q2|Q3|Q4",
   "financial_year": "FY 2024-25",
-  "deductee_pan": "AAAPA1234A",
-  "deductee_name": "Deductee Name",
-  "form_variant": "ORIGINAL|CORRECTED"
+  "form": "26Q|24Q|27Q",
+  "remember_me": true,
+  "pan": "AAAPA1234A"
 }
 ```
 
-**Response:**
+**Request Parameters:**
+- `tan`: TAN of deductor - required
+- `quarter`: Quarter (Q1, Q2, Q3, Q4) - required
+- `financial_year`: FY in format "FY YYYY-YY" - required
+- `form`: Form type (26Q, 24Q, 27Q) - required
+- `remember_me`: Store credentials for webhooks - optional (default: false)
+  - `true`: Sandbox stores credentials, sends webhooks
+  - `false`: Users must provide credentials in each poll
+- `pan`: PAN of deductee - optional
+
+**Response (200 OK):**
 ```json
 {
-  "code": 202,
+  "code": 200,
   "timestamp": 1763362637000,
+  "transaction_id": "f24cd229-42c8-43de-af79-8ce2d3c4c3db",
   "data": {
-    "@entity": "in.co.sandbox.tds.compliance.form16.generate.response",
+    "@entity": "in.co.sandbox.tds.compliance.certificate.job",
     "job_id": "550e8600-e29b-41d4-a716-446655440002",
     "tan": "AHMA09719B",
-    "deductee_pan": "AAAPA1234A",
-    "certificate_number": "CERT-AAAPA-20241209",
+    "quarter": "Q1",
     "financial_year": "FY 2024-25",
-    "status": "processing|succeeded|failed",
-    "pdf_download_url": "https://api.sandbox.co.in/download/form16/..."
+    "form": "26Q",
+    "status": "created|processing|succeeded|failed",
+    "remember_me": true,
+    "created_at": 1763362637000
   }
 }
 ```
 
+**Status Lifecycle:**
+- `created` → Job created
+- `processing` → Downloading from tax authority
+- `succeeded` → Certificate ready
+- `failed` → Download failed
+
 ---
 
-### 11. Poll Form 16 Status
+### 11. Poll Form 16 / Form 16A Status
 
-**Endpoint:** `POST /tds/compliance/traces/deductors/forms/16/status`
+**Endpoint:** `POST /tds/compliance/traces/deductors/forms/{certificate_type}/status`
 
-**Purpose:** Check the status of Form 16 generation.
+**Purpose:** Check status of Form 16/16A certificate download and get download link.
+
+**Path Parameters:**
+- `certificate_type`: "16" for Form 16, "16A" for Form 16A
 
 **Request Body:**
 ```json
 {
-  "job_id": "550e8600-e29b-41d4-a716-446655440002"
+  "@entity": "in.co.sandbox.tds.compliance.certificate.status.request",
+  "job_id": "550e8600-e29b-41d4-a716-446655440002",
+  "pan": "AAAPA1234A"
 }
 ```
 
@@ -527,29 +561,38 @@ quarter: "Q1"
 ```json
 {
   "code": 200,
+  "timestamp": 1763362637000,
   "data": {
+    "@entity": "in.co.sandbox.tds.compliance.certificate.status.response",
     "job_id": "550e8600-e29b-41d4-a716-446655440002",
     "status": "succeeded|processing|failed",
-    "certificate_number": "CERT-AAAPA-20241209",
-    "pdf_download_url": "https://api.sandbox.co.in/download/form16/...",
-    "pdf_expiry": 86400
+    "certificate_download_url": "https://api.sandbox.co.in/download/form16/...",
+    "form_part_a_url": "https://api.sandbox.co.in/download/form16/part-a/...",
+    "form_part_b_url": "https://api.sandbox.co.in/download/form16/part-b/...",
+    "updated_at": 1763362700000
   }
 }
 ```
 
 ---
 
-### 12. Search Form 16 Certificates
+### 12. Search Form 16 / Form 16A Certificates
 
-**Endpoint:** `POST /tds/compliance/traces/deductors/forms/16/search`
+**Endpoint:** `POST /tds/compliance/traces/deductors/forms/{certificate_type}/search`
 
-**Purpose:** Search Form 16 certificates for deductees.
+**Purpose:** Search and retrieve all Form 16/16A certificates matching criteria.
+
+**Path Parameters:**
+- `certificate_type`: "16" for Form 16, "16A" for Form 16A
 
 **Request Body:**
 ```json
 {
+  "@entity": "in.co.sandbox.tds.compliance.certificate.search.request",
   "tan": "AHMA09719B",
+  "quarter": "Q1|Q2|Q3|Q4",
   "financial_year": "FY 2024-25",
+  "form": "26Q|24Q|27Q",
   "status": "succeeded|failed",
   "page_size": 50,
   "last_evaluated_key": "pagination_cursor"
@@ -560,21 +603,43 @@ quarter: "Q1"
 ```json
 {
   "code": 200,
+  "timestamp": 1763362637000,
   "data": {
-    "count": 25,
+    "@entity": "in.co.sandbox.tds.compliance.certificate.search.response",
+    "count": 10,
     "items": [
       {
         "job_id": "550e8600-e29b-41d4-a716-446655440002",
-        "deductee_pan": "AAAPA1234A",
-        "certificate_number": "CERT-AAAPA-20241209",
+        "tan": "AHMA09719B",
+        "quarter": "Q1",
+        "financial_year": "FY 2024-25",
+        "form": "26Q",
         "status": "succeeded",
-        "pdf_download_url": "https://api.sandbox.co.in/download/form16/..."
+        "certificate_download_url": "https://api.sandbox.co.in/download/form16/...",
+        "created_at": 1763362637000
       }
     ],
+    "last_evaluated_key": "next_cursor",
     "has_more": true
   }
 }
 ```
+
+### remember_me Behavior
+
+**When `remember_me: true`:**
+- Credentials stored securely by Sandbox
+- Webhooks sent when job completes
+- Polling doesn't require credentials again
+- Single poll returns complete status
+
+**When `remember_me: false`:**
+- Credentials not stored
+- No webhook notifications
+- Polling requires credentials each time
+- Two polls needed for complete status:
+  1. First poll: Authenticate and check
+  2. Second poll: Get final status after login
 
 ---
 
