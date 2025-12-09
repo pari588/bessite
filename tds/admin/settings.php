@@ -15,6 +15,50 @@ $users = $stmt->fetchAll();
 function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 ?>
 
+<!-- YOUR PROFILE SECTION -->
+<div class="card fade-in" style="max-width:600px;margin-right:auto">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <span class="material-symbols-rounded" style="font-size:24px;color:#4caf50">account_circle</span>
+    <h3 style="margin:0;flex:1">Your Profile</h3>
+    <button type="button" id="editProfileToggle" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit profile">
+      <span class="material-symbols-rounded">edit</span>
+    </button>
+  </div>
+
+  <!-- VIEW MODE -->
+  <div id="profileViewMode">
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Full Name</div>
+      <div style="font-size:16px;font-weight:500"><?=v($user,'name')?></div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Email Address</div>
+      <div style="font-size:16px;font-weight:500"><?=v($user,'email')?></div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Role</div>
+      <div style="display:inline-block;padding:6px 12px;border-radius:4px;font-size:13px;font-weight:600;background:#e3f2fd;color:#1976d2"><?=ucfirst($user['role'])?></div>
+    </div>
+    <div>
+      <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Member Since</div>
+      <div style="font-size:16px;font-weight:500"><?=date('F d, Y', strtotime($user['created_at']))?></div>
+    </div>
+  </div>
+
+  <!-- EDIT MODE -->
+  <form id="profileEditForm" style="display:none" class="form-grid">
+    <md-outlined-text-field name="profile_name" label="Full Name" id="profileName" value="<?=v($user,'name')?>" required></md-outlined-text-field>
+    <md-outlined-text-field name="profile_email" label="Email Address" type="email" id="profileEmail" value="<?=v($user,'email')?>" required></md-outlined-text-field>
+    <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
+      <span id="profileMsg" class="badge" style="display:none;margin-right:auto"></span>
+      <md-filled-button type="button" onclick="toggleProfileEdit()" style="background:#999;--md-filled-button-container-color:#999">Cancel</md-filled-button>
+      <md-filled-button type="submit">Save Profile</md-filled-button>
+    </div>
+  </form>
+</div>
+
+<div style="height: 40px;"></div>
+
 <!-- CHANGE PASSWORD SECTION -->
 <div class="card fade-in" style="max-width:600px;margin-right:auto">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
@@ -130,6 +174,41 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 </div>
 
 <script>
+// Toggle Profile Edit Mode
+function toggleProfileEdit() {
+  const viewMode = document.getElementById('profileViewMode');
+  const editMode = document.getElementById('profileEditForm');
+  viewMode.style.display = viewMode.style.display === 'none' ? 'block' : 'none';
+  editMode.style.display = editMode.style.display === 'none' ? 'block' : 'none';
+}
+
+document.getElementById('editProfileToggle').addEventListener('click', toggleProfileEdit);
+
+// Profile Edit Form Submit
+document.getElementById('profileEditForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('profileName').value;
+  const email = document.getElementById('profileEmail').value;
+
+  const res = await fetch('/tds/api/update_profile.php', {
+    method:'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name: name, email: email})
+  });
+
+  const data = await res.json().catch(()=>({ok:false}));
+  const el = document.getElementById('profileMsg');
+  el.style.display = 'inline-block';
+
+  if(data.ok) {
+    el.textContent = 'Profile updated successfully';
+    setTimeout(()=>{ location.reload(); }, 1500);
+  } else {
+    el.textContent = 'Error: ' + (data.msg||'Failed');
+    setTimeout(()=>{ el.style.display='none'; }, 5000);
+  }
+});
+
 // Change Password Form
 document.getElementById('passwordForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
