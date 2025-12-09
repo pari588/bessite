@@ -20,17 +20,20 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
     <span class="material-symbols-rounded" style="font-size:24px;color:#4caf50">account_circle</span>
     <h3 style="margin:0;flex:1">Your Profile</h3>
+    <button type="button" id="profileEditBtn" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1;display:flex" title="Edit profile">
+      <span class="material-symbols-rounded">edit</span>
+    </button>
   </div>
 
-  <!-- PROFILE INFO -->
-  <div style="margin-bottom:24px">
+  <!-- PROFILE INFO (VIEW MODE) -->
+  <div id="profileViewMode" style="margin-bottom:24px">
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Full Name</div>
-      <div style="font-size:16px;font-weight:500"><?=v($user,'name')?></div>
+      <div style="font-size:16px;font-weight:500" data-field="name"><?=v($user,'name')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Email Address</div>
-      <div style="font-size:16px;font-weight:500"><?=v($user,'email')?></div>
+      <div style="font-size:16px;font-weight:500" data-field="email"><?=v($user,'email')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Role</div>
@@ -42,15 +45,16 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
     </div>
   </div>
 
-  <!-- EDIT PROFILE FORM -->
-  <div style="background:#f0f7ff;border-radius:8px;padding:20px;margin-bottom:20px;border-left:4px solid #1976d2">
+  <!-- EDIT PROFILE FORM (EDIT MODE) -->
+  <div id="profileEditMode" style="display:none;background:#f0f7ff;border-radius:8px;padding:20px;margin-bottom:20px;border-left:4px solid #1976d2">
     <h4 style="margin-top:0;margin-bottom:16px;font-size:14px;font-weight:600">Edit Profile</h4>
     <form id="profileEditForm" class="form-grid">
-      <md-outlined-text-field name="profile_name" label="Full Name" id="profileName" required></md-outlined-text-field>
-      <md-outlined-text-field name="profile_email" label="Email Address" type="email" id="profileEmail" required></md-outlined-text-field>
+      <input type="text" id="profileName" placeholder="Full Name" style="padding:12px;border:1px solid #ddd;border-radius:4px;font-size:14px;font-family:inherit" required>
+      <input type="email" id="profileEmail" placeholder="Email Address" style="padding:12px;border:1px solid #ddd;border-radius:4px;font-size:14px;font-family:inherit" required>
       <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
         <span id="profileMsg" class="badge" style="display:none;margin-right:auto"></span>
-        <md-filled-button type="submit">Save Changes</md-filled-button>
+        <button type="button" id="profileCancelBtn" style="padding:8px 16px;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600">Cancel</button>
+        <button type="submit" style="padding:8px 16px;background:#1976d2;color:white;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600">Save Changes</button>
       </div>
     </form>
   </div>
@@ -174,6 +178,29 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 </div>
 
 <script>
+// Edit button click - show edit form
+document.getElementById('profileEditBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  // Get current values from display
+  const name = document.querySelector('[data-field="name"]').textContent;
+  const email = document.querySelector('[data-field="email"]').textContent;
+
+  // Populate form
+  document.getElementById('profileName').value = name;
+  document.getElementById('profileEmail').value = email;
+
+  // Toggle visibility
+  document.getElementById('profileViewMode').style.display = 'none';
+  document.getElementById('profileEditMode').style.display = 'block';
+});
+
+// Cancel button click - hide edit form
+document.getElementById('profileCancelBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('profileViewMode').style.display = 'block';
+  document.getElementById('profileEditMode').style.display = 'none';
+});
+
 // Profile Edit Form Submit
 document.getElementById('profileEditForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
