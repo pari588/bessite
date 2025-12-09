@@ -48,11 +48,11 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
   <!-- EDIT PROFILE FORM (EDIT MODE) -->
   <div id="profileEditMode" style="display:none;background:#f0f7ff;border-radius:8px;padding:20px;margin-bottom:20px;border-left:4px solid #1976d2">
     <h4 style="margin-top:0;margin-bottom:16px;font-size:14px;font-weight:600">Edit Profile</h4>
-    <form id="profileEditForm" class="form-grid">
+    <form id="profileEditForm" style="display:flex;flex-direction:column;gap:16px">
       <input type="text" id="profileName" placeholder="Full Name" style="padding:12px;border:1px solid #ddd;border-radius:4px;font-size:14px;font-family:inherit" required>
       <input type="email" id="profileEmail" placeholder="Email Address" style="padding:12px;border:1px solid #ddd;border-radius:4px;font-size:14px;font-family:inherit" required>
-      <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
-        <span id="profileMsg" class="badge" style="display:none;margin-right:auto"></span>
+      <span id="profileMsg" class="badge" style="display:none;margin-bottom:8px"></span>
+      <div style="display:flex;gap:12px;justify-content:flex-end">
         <button type="button" id="profileCancelBtn" style="padding:8px 16px;background:#999;color:white;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600">Cancel</button>
         <button type="submit" style="padding:8px 16px;background:#1976d2;color:white;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600">Save Changes</button>
       </div>
