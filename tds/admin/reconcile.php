@@ -9,6 +9,14 @@ include __DIR__.'/_layout_top.php';
 $fys = fy_list();
 $today = date('Y-m-d');
 [$currFY,$currQ] = fy_quarter_from_date($today);
+
+// Check if there's actually any data in the database
+$dataExists = (bool) $pdo->query('SELECT 1 FROM invoices LIMIT 1')->fetch();
+if (!$dataExists) {
+    // Clear stale session cache when database is empty
+    unset($_SESSION['reconcile_report']);
+}
+
 $rep = $_SESSION['reconcile_report'] ?? null;
 $chosenFY = $rep['fy'] ?? $currFY;
 $chosenQ = $rep['quarter'] ?? $currQ;
