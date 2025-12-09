@@ -23,19 +23,20 @@ class SandboxTDSAPI {
    * @param int $firm_id Firm ID with API credentials
    * @param PDO $pdo Database connection
    * @param callable $logCallback Optional callback for logging API calls
+   * @param string $environment Optional environment ('sandbox' or 'production'), defaults to 'sandbox'
    */
-  public function __construct($firm_id, PDO $pdo, $logCallback = null) {
+  public function __construct($firm_id, PDO $pdo, $logCallback = null, $environment = 'sandbox') {
     $this->pdo = $pdo;
     $this->firmId = $firm_id;
     $this->logCallback = $logCallback;
 
-    // Fetch API credentials from database
-    $stmt = $pdo->prepare('SELECT * FROM api_credentials WHERE firm_id=? AND is_active=1');
-    $stmt->execute([$firm_id]);
+    // Fetch API credentials from database for specified environment
+    $stmt = $pdo->prepare('SELECT * FROM api_credentials WHERE firm_id=? AND environment=? AND is_active=1');
+    $stmt->execute([$firm_id, $environment]);
     $cred = $stmt->fetch();
 
     if (!$cred) {
-      throw new Exception("No active API credentials found for firm $firm_id");
+      throw new Exception("No active API credentials found for firm $firm_id in $environment environment");
     }
 
     $this->apiKey = $cred['api_key'];
