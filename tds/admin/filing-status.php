@@ -82,7 +82,7 @@ if ($jobId > 0) {
         const form = document.getElementById('submitForm');
         const formData = new FormData(form);
         try {
-          const res = await fetch('/tds/api/filing/submit', { method: 'POST', body: formData });
+          const res = await fetch('/tds/api/filing/submit.php', { method: 'POST', body: formData });
           const data = await res.json();
           if (data.ok) {
             alert('Filing submitted! Tracking ID: ' + data.filing_job_id);
