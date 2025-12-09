@@ -6,7 +6,8 @@ This folder contains all technical documentation for the TDS AutoFile system inc
 
 ## 📋 Quick Navigation
 
-### 🚀 API References
+### 🚀 API References & Environment Setup
+- **[SANDBOX_HOST_URLS_AND_ENVIRONMENTS.md](SANDBOX_HOST_URLS_AND_ENVIRONMENTS.md)** - **START HERE** - Host URLs, environment setup, and credential configuration
 - **[CALCULATOR_API_REFERENCE.md](CALCULATOR_API_REFERENCE.md)** - Complete Calculator API specification (TDS/TCS sync & async calculations)
 - **[REPORTS_API_REFERENCE.md](REPORTS_API_REFERENCE.md)** - Reports API documentation (Form 24Q, 26Q, 27Q, 27EQ generation)
 - **[SANDBOX_COMPLIANCE_API_REFERENCE.md](SANDBOX_COMPLIANCE_API_REFERENCE.md)** - Compliance API specification
