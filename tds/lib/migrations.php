@@ -11,6 +11,7 @@ function run_migrations($pdo) {
     'create_tds_filing_logs_table',
     'create_deductees_table',
     'create_challan_linkages_table',
+    'create_analytics_jobs_table',
     'alter_firms_table',
     'alter_invoices_table',
     'alter_challans_table',
@@ -152,6 +153,39 @@ function create_challan_linkages_table($pdo) {
       FOREIGN KEY (challan_id) REFERENCES challans(id),
       INDEX idx_deductee (deductee_id),
       INDEX idx_challan (challan_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  ");
+}
+
+function create_analytics_jobs_table($pdo) {
+  $pdo->exec("
+    CREATE TABLE IF NOT EXISTS analytics_jobs (
+      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+      filing_job_id BIGINT NOT NULL,
+      firm_id INT NOT NULL,
+      job_id VARCHAR(100) NOT NULL UNIQUE COMMENT 'Sandbox job_id UUID',
+      job_type ENUM('potential_notices','risk_assessment','form_validation') DEFAULT 'potential_notices',
+      fy VARCHAR(9) NOT NULL COMMENT '2025-26',
+      quarter ENUM('Q1','Q2','Q3','Q4') NOT NULL,
+      form VARCHAR(10) COMMENT 'e.g., 26Q, 27Q, 24Q',
+      status ENUM('submitted','queued','processing','succeeded','failed') DEFAULT 'submitted',
+      report_url VARCHAR(500),
+      error_message TEXT,
+      potential_risks INT COMMENT 'Number of potential notices identified',
+      risk_level VARCHAR(20) COMMENT 'LOW, MEDIUM, HIGH, CRITICAL',
+      initiated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      completed_at TIMESTAMP NULL,
+      last_polled_at TIMESTAMP NULL,
+      poll_count INT DEFAULT 0,
+      created_by INT,
+
+      FOREIGN KEY (filing_job_id) REFERENCES tds_filing_jobs(id) ON DELETE CASCADE,
+      FOREIGN KEY (firm_id) REFERENCES firms(id) ON DELETE CASCADE,
+      FOREIGN KEY (created_by) REFERENCES users(id),
+      INDEX idx_filing_job (filing_job_id),
+      INDEX idx_firm_status (firm_id, status),
+      INDEX idx_job_id (job_id),
+      INDEX idx_initiated (initiated_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   ");
 }

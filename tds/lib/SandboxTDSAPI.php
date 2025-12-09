@@ -315,6 +315,45 @@ class SandboxTDSAPI {
   }
 
   /**
+   * Poll Potential Notice Analysis job from Sandbox Analytics API
+   * Checks the results of Potential Notice analysis for compliance risks
+   *
+   * @param string $job_id Job ID from analytics-analysis request
+   * @return array Job status with potential notice report details
+   * @throws Exception
+   */
+  public function pollAnalyticsJob($job_id) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tds/analytics/potential-notices',
+        ['job_id' => $job_id]
+      );
+
+      $status = $response['data']['status'] ?? 'unknown';
+      $reportUrl = $response['data']['potential_notice_report_url'] ?? null;
+
+      $this->log('analytics_poll', 'success', "Analytics job status: $status", json_encode(['job_id' => $job_id]), json_encode(['report_url' => $reportUrl]));
+
+      return [
+        'status' => $status,
+        'job_id' => $job_id,
+        'form' => $response['data']['form'] ?? null,
+        'quarter' => $response['data']['quarter'] ?? null,
+        'financial_year' => $response['data']['financial_year'] ?? null,
+        'tan' => $response['data']['tan'] ?? null,
+        'report_url' => $reportUrl,
+        'error' => $response['data']['error'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_poll', 'failed', $e->getMessage(), json_encode(['job_id' => $job_id]));
+      throw $e;
+    }
+  }
+
+  /**
    * Ensure access token is valid, refresh if needed
    *
    * @throws Exception
