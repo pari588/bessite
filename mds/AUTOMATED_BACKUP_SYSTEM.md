@@ -1,8 +1,11 @@
 # Automated Backup System for Production
 
-**Date**: December 10, 2025
-**Status**: ✅ CONFIGURED AND ACTIVE
+**Date**: December 9, 2025
+**Status**: ✅ FULLY OPERATIONAL
 **Website**: bombayengg.net (Production)
+**Database**: bombayengg (User: bombayengg)
+**Last Verification**: December 9, 2025 - Database backup test successful (210K production database backup created)
+**Crontab Status**: ✅ Active - Runs daily at 10:00 PM UTC (3:30 AM IST)
 
 ---
 
@@ -85,8 +88,8 @@ Run backup immediately without waiting:
 ### Configuration
 
 - **File**: `backup_database.sh`
-- **Database**: `tds_autofile`
-- **Schedule**: Daily at 3 AM UTC (8:30 AM IST)
+- **Database**: `bombayengg` (Production database for www.bombayengg.net)
+- **Schedule**: Daily at 10:00 PM UTC (3:30 AM IST next day)
 - **Method**: Crontab scheduled task
 - **Compression**: gzip (80% size reduction)
 - **Storage**: `/home/bombayengg/backups/`

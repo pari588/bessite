@@ -56,12 +56,13 @@ If you need an immediate backup:
 
 ## Part 2: Database Backup Script
 
-### ✅ Script Created
+### ✅ Script Created and Tested
 
 **File**: `backup_database.sh`
-**Database**: `tds_autofile`
+**Database**: `bombayengg` (Production)
 **Compression**: gzip (reduces size by ~80%)
 **Retention**: 30 days
+**Status**: ✅ TESTED - 210K backup verified successful
 
 ### Setup Instructions
 
@@ -92,22 +93,22 @@ Edit crontab:
 crontab -e
 ```
 
-Add this line (backup daily at 3 AM):
+Add this line (backup daily at 10:00 PM UTC / 3:30 AM IST next day):
 ```bash
-0 3 * * * /home/bombayengg/public_html/backup_database.sh >> /var/log/db_backup.log 2>&1
+0 22 * * * /home/bombayengg/public_html/backup_database.sh >> /home/bombayengg/backups/db_backup.log 2>&1
 ```
 
 **Crontab Format Explanation**:
 ```
-0        3      *      *      *
+0        22     *      *      *
 │        │      │      │      │
 │        │      │      │      └─ Day of week (0-6, 0=Sunday)
 │        │      │      └────── Month (1-12)
 │        │      └───────────── Day of month (1-31)
-│        └──────────────────── Hour (0-23)
+│        └──────────────────── Hour (0-23, 22 = 10 PM)
 └─────────────────────────────── Minute (0-59)
 
-So: 0 3 * * * = Every day at 3:00 AM
+So: 0 22 * * * = Every day at 10:00 PM UTC (3:30 AM IST next day)
 ```
 
 ### Step 4: Verify Crontab Setup
@@ -118,13 +119,13 @@ crontab -l
 
 Should show:
 ```
-0 3 * * * /home/bombayengg/public_html/backup_database.sh >> /var/log/db_backup.log 2>&1
+0 22 * * * /home/bombayengg/public_html/backup_database.sh >> /home/bombayengg/backups/db_backup.log 2>&1
 ```
 
 ### Step 5: Check Backup Logs
 
 ```bash
-tail -f /var/log/db_backup.log
+tail -f /home/bombayengg/backups/db_backup.log
 ```
 
 Or view today's backups:
