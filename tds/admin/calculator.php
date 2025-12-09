@@ -165,10 +165,14 @@ if ($useSandbox && !empty($baseAmount) && $firm_id) {
       <div id="sectionDiv">
         <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Section Code / Nature of Payment</label>
         <select id="sectionCode" name="section_code" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
-          <option value="">-- Select --</option>
-          <?php foreach ($tdsRates as $code => $rate): ?>
+          <option value="">-- Select Section --</option>
+          <?php foreach ($tdsRates as $rateData):
+            $code = $rateData['section_code'] ?? $rateData;
+            $desc = $rateData['description'] ?? $rateData['desc'] ?? '';
+            $rate = $rateData['rate'] ?? 0;
+          ?>
             <option value="<?=htmlspecialchars($code)?>" <?= $sectionCode === $code ? 'selected' : '' ?>>
-              <?=htmlspecialchars($code)?> - <?=htmlspecialchars($rate['description'])?> (<?=$rate['rate']?>%)
+              <?=htmlspecialchars($code)?> - <?=htmlspecialchars($desc)?> (<?=$rate?>%)
             </option>
           <?php endforeach; ?>
         </select>
@@ -297,11 +301,11 @@ if ($useSandbox && !empty($baseAmount) && $firm_id) {
         </div>
         <div class="result-row">
           <span class="result-label">Rate</span>
-          <span class="result-value"><?=$result['rate']?>%</span>
+          <span class="result-value"><?=($result['tds_rate'] ?? $result['rate'] ?? 0)?>%</span>
         </div>
         <div class="result-row">
           <span class="result-label">TDS/TCS Amount</span>
-          <span class="result-value" style="color: #d32f2f; font-size: 18px;">₹<?=number_format($result['tds_amount'] ?? $result['tcs_amount'], 2)?></span>
+          <span class="result-value" style="color: #d32f2f; font-size: 18px;">₹<?=number_format(($result['tds_amount'] ?? $result['tcs_amount'] ?? 0), 2)?></span>
         </div>
         <div class="result-row">
           <span class="result-label">Net Amount (After TDS)</span>
