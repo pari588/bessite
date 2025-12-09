@@ -778,6 +778,285 @@ class SandboxTDSAPI {
   }
 
   /**
+   * CALCULATOR API - Calculate TDS on Non-Salary Payments
+   *
+   * Calculates TDS (Tax Deducted at Source) on various non-salary payments
+   * including contract services, interest, winnings, rent, etc.
+   * This is a synchronous operation - returns calculation immediately.
+   *
+   * @param string $deducteeType Type of entity (individual, huf, company, firm, trust, etc.)
+   * @param bool $isPanAvailable Is PAN available?
+   * @param string $residentialStatus Residential status (resident or non_resident)
+   * @param bool $is206abApplicable Is Section 206AB applicable?
+   * @param bool $isPanOperative Is PAN operative?
+   * @param string $natureOfPayment Type of payment (fees, interest, rent, winnings, etc.)
+   * @param float $creditAmount Payment amount in INR
+   * @param int $creditDate Payment date in milliseconds (EPOCH)
+   * @return array Deduction rate, amount, section, threshold, due date, pan_status
+   * @throws Exception
+   */
+  public function calculateNonSalaryTDS($deducteeType, $isPanAvailable, $residentialStatus, $is206abApplicable, $isPanOperative, $natureOfPayment, $creditAmount, $creditDate) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.calculator.non_salary.request',
+        'deductee_type' => $deducteeType,
+        'is_pan_available' => $isPanAvailable,
+        'residential_status' => $residentialStatus,
+        'is_206ab_applicable' => $is206abApplicable,
+        'is_pan_operative' => $isPanOperative,
+        'nature_of_payment' => $natureOfPayment,
+        'credit_amount' => $creditAmount,
+        'credit_date' => $creditDate
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/calculator/non-salary',
+        $payload
+      );
+
+      $data = $response['data'] ?? [];
+
+      $this->log('calculator_non_salary', 'success', "Non-salary TDS calculated",
+        json_encode(['amount' => $creditAmount, 'nature' => $natureOfPayment]),
+        json_encode(['rate' => $data['deduction_rate'] ?? 0, 'amount' => $data['deduction_amount'] ?? 0]));
+
+      return [
+        'status' => 'success',
+        'deduction_rate' => $data['deduction_rate'] ?? 0,
+        'deduction_amount' => $data['deduction_amount'] ?? 0,
+        'section' => $data['section'] ?? null,
+        'threshold' => $data['threshold'] ?? 0,
+        'due_date' => $data['due_date'] ?? null,
+        'pan_status' => $data['pan_status'] ?? 'unknown'
+      ];
+    } catch (Exception $e) {
+      $this->log('calculator_non_salary', 'failed', $e->getMessage(),
+        json_encode(compact('creditAmount', 'natureOfPayment')));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * CALCULATOR API - Calculate TCS on Transactions
+   *
+   * Calculates TCS (Tax Collected at Source) on various transactions
+   * including goods sales, services, materials, scrap sales, e-commerce, etc.
+   * This is a synchronous operation.
+   *
+   * @param string $collecteeType Type of entity making payment (individual, huf, company, firm, trust, etc.)
+   * @param bool $isPanAvailable Is PAN available?
+   * @param string $residentialStatus Residential status (resident or non_resident)
+   * @param bool $is206ccaApplicable Is Section 206CCA applicable?
+   * @param bool $isPanOperative Is PAN operative?
+   * @param string $natureOfPayment Type of transaction (goods, services, material, scrap, e_commerce, etc.)
+   * @param float $paymentAmount Transaction amount in INR (including GST)
+   * @param int $paymentDate Transaction date in milliseconds (EPOCH)
+   * @return array Collection rate, amount, section, threshold, due date, pan_status
+   * @throws Exception
+   */
+  public function calculateTCS($collecteeType, $isPanAvailable, $residentialStatus, $is206ccaApplicable, $isPanOperative, $natureOfPayment, $paymentAmount, $paymentDate) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tcs.calculator.request',
+        'collectee_type' => $collecteeType,
+        'is_pan_available' => $isPanAvailable,
+        'residential_status' => $residentialStatus,
+        'is_206cca_applicable' => $is206ccaApplicable,
+        'is_pan_operative' => $isPanOperative,
+        'nature_of_payment' => $natureOfPayment,
+        'payment_amount' => $paymentAmount,
+        'payment_date' => $paymentDate
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tcs/calculator',
+        $payload
+      );
+
+      $data = $response['data'] ?? [];
+
+      $this->log('calculator_tcs', 'success', "TCS calculated",
+        json_encode(['amount' => $paymentAmount, 'nature' => $natureOfPayment]),
+        json_encode(['rate' => $data['collection_rate'] ?? 0, 'amount' => $data['collection_amount'] ?? 0]));
+
+      return [
+        'status' => 'success',
+        'collection_rate' => $data['collection_rate'] ?? 0,
+        'collection_amount' => $data['collection_amount'] ?? 0,
+        'section' => $data['section'] ?? null,
+        'threshold' => $data['threshold'] ?? 0,
+        'due_date' => $data['due_date'] ?? null,
+        'pan_status' => $data['pan_status'] ?? 'unknown'
+      ];
+    } catch (Exception $e) {
+      $this->log('calculator_tcs', 'failed', $e->getMessage(),
+        json_encode(compact('paymentAmount', 'natureOfPayment')));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * CALCULATOR API - Submit Salary TDS Calculation Job (Async)
+   *
+   * Submit bulk salary data for TDS calculation.
+   * This is an asynchronous operation - use pollSalaryTDSJob() to check status.
+   *
+   * @param array $employees Array of employee data with employee_id, pan, gross_salary, month
+   * @param string $financialYear Financial year (e.g., "2024-25")
+   * @return array Job details including job_id and status
+   * @throws Exception
+   */
+  public function submitSalaryTDSJob($employees, $financialYear) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.calculator.salary.request',
+        'employees' => $employees
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/calculator/salary?financial_year=' . urlencode($financialYear),
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      $this->log('calculator_salary_submit', 'success', "Salary TDS job submitted: $jobId",
+        json_encode(['employee_count' => count($employees), 'fy' => $financialYear]),
+        json_encode(['job_id' => $jobId, 'status' => $status]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'financial_year' => $financialYear,
+        'employee_count' => count($employees),
+        'job_status' => $status,
+        'error' => null
+      ];
+    } catch (Exception $e) {
+      $this->log('calculator_salary_submit', 'failed', $e->getMessage(),
+        json_encode(['employee_count' => count($employees ?? []), 'fy' => $financialYear]));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * CALCULATOR API - Poll Salary TDS Job Status (Async)
+   *
+   * Check the status of a submitted salary TDS calculation job.
+   * Job statuses: created → queued → processing → succeeded or failed
+   *
+   * @param string $jobId Job ID from submitSalaryTDSJob()
+   * @param string $financialYear Financial year
+   * @return array Job status with results URL when complete
+   * @throws Exception
+   */
+  public function pollSalaryTDSJob($jobId, $financialYear) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tds/calculator/salary?job_id=' . urlencode($jobId) . '&financial_year=' . urlencode($financialYear),
+        []
+      );
+
+      $status = $response['data']['status'] ?? 'unknown';
+      $workbookUrl = $response['data']['workbook_url'] ?? null;
+      $recordCount = $response['data']['record_count'] ?? 0;
+
+      $this->log('calculator_salary_poll', 'success', "Salary TDS job status: $status",
+        json_encode(['job_id' => $jobId]),
+        json_encode(['status' => $status, 'records' => $recordCount]));
+
+      return [
+        'status' => $status,
+        'job_id' => $jobId,
+        'financial_year' => $financialYear,
+        'workbook_url' => $workbookUrl,
+        'record_count' => $recordCount
+      ];
+    } catch (Exception $e) {
+      $this->log('calculator_salary_poll', 'failed', $e->getMessage(),
+        json_encode(['job_id' => $jobId]));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage(),
+        'job_id' => $jobId
+      ];
+    }
+  }
+
+  /**
+   * CALCULATOR API - Calculate Salary TDS Synchronously
+   *
+   * Calculate TDS on salary immediately (no job submission/polling).
+   * Returns base64-encoded Excel workbook with calculations.
+   * This is a synchronous operation.
+   *
+   * @param array $employees Array of employee data with detailed salary/deductions
+   * @param string $financialYear Financial year (e.g., "2024-25")
+   * @return array Workbook data (base64-encoded Excel), record count, financial year
+   * @throws Exception
+   */
+  public function calculateSalaryTDSSync($employees, $financialYear) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.calculator.salary.sync.request',
+        'employees' => $employees
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/calculator/salary/sync?financial_year=' . urlencode($financialYear),
+        $payload
+      );
+
+      $workbookData = $response['data']['workbook_data'] ?? null;
+      $recordCount = $response['data']['record_count'] ?? 0;
+
+      $this->log('calculator_salary_sync', 'success', "Salary TDS calculated (sync)",
+        json_encode(['employee_count' => count($employees), 'fy' => $financialYear]),
+        json_encode(['records' => $recordCount, 'workbook_size' => strlen($workbookData ?? '')]));
+
+      return [
+        'status' => 'success',
+        'workbook_data' => $workbookData,
+        'record_count' => $recordCount,
+        'financial_year' => $financialYear,
+        'employee_count' => count($employees)
+      ];
+    } catch (Exception $e) {
+      $this->log('calculator_salary_sync', 'failed', $e->getMessage(),
+        json_encode(['employee_count' => count($employees ?? []), 'fy' => $financialYear]));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
    * Log API activity to database
    *
    * @param string $stage Processing stage

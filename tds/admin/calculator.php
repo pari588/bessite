@@ -2,12 +2,14 @@
 require_once __DIR__.'/../lib/auth.php'; auth_require();
 require_once __DIR__.'/../lib/db.php';
 require_once __DIR__.'/../lib/CalculatorAPI.php';
+require_once __DIR__.'/../lib/SandboxTDSAPI.php';
 
 $page_title='TDS/TCS Calculator';
 include __DIR__.'/_layout_top.php';
 
-// Initialize calculator API
+// Initialize both calculator APIs
 $calculator = new CalculatorAPI($pdo);
+$firm_id = $_SESSION['firm_id'] ?? null;
 
 // Get all available TDS rates
 $tdsRates = $calculator->getAllTDSRates();
@@ -15,13 +17,51 @@ $tcsRates = $calculator->getAllTCSRates();
 
 // Process calculation request
 $result = null;
-$bulkResults = null;
+$sandboxResult = null;
 $calcType = $_POST['calc_type'] ?? 'tds';
 $baseAmount = $_POST['base_amount'] ?? '';
 $sectionCode = $_POST['section_code'] ?? '';
 $customRate = !empty($_POST['custom_rate']) ? (float)$_POST['custom_rate'] : null;
+$useSandbox = !empty($_POST['use_sandbox']) && $firm_id;
 
-if (!empty($baseAmount) && !empty($sectionCode)) {
+// For Sandbox API calculations
+$deducteeType = $_POST['deductee_type'] ?? 'individual';
+$residentialStatus = $_POST['residential_status'] ?? 'resident';
+$isPanAvailable = !empty($_POST['is_pan_available']);
+$isPanOperative = !empty($_POST['is_pan_operative']);
+$is206abApplicable = !empty($_POST['is_206ab_applicable']);
+
+if ($useSandbox && !empty($baseAmount) && $firm_id) {
+    try {
+        $api = new SandboxTDSAPI($firm_id, $pdo);
+
+        if ($calcType === 'non_salary_tds') {
+            $sandboxResult = $api->calculateNonSalaryTDS(
+                $deducteeType,
+                $isPanAvailable,
+                $residentialStatus,
+                $is206abApplicable,
+                $isPanOperative,
+                $sectionCode,
+                (float)$baseAmount,
+                time() * 1000  // Current time in milliseconds
+            );
+        } elseif ($calcType === 'tcs_sandbox') {
+            $sandboxResult = $api->calculateTCS(
+                $deducteeType,
+                $isPanAvailable,
+                $residentialStatus,
+                !empty($_POST['is_206cca_applicable']),
+                $isPanOperative,
+                $sectionCode,
+                (float)$baseAmount,
+                time() * 1000
+            );
+        }
+    } catch (Exception $e) {
+        $sandboxResult = ['status' => 'failed', 'error' => $e->getMessage()];
+    }
+} elseif (!empty($baseAmount) && !empty($sectionCode)) {
     try {
         if ($calcType === 'tds') {
             $result = $calculator->calculateInvoiceTDS((float)$baseAmount, $sectionCode, $customRate);
@@ -96,6 +136,12 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
   <div class="calc-card">
     <h3 style="margin: 0 0 16px 0; font-size: 16px;">Calculate TDS/TCS</h3>
 
+    <?php if ($firm_id): ?>
+      <div style="padding: 12px; background: #e3f2fd; border-radius: 4px; border-left: 4px solid #2196f3; font-size: 12px; color: #1565c0; margin-bottom: 12px;">
+        <strong>✓ Sandbox API Available</strong> - Use official Sandbox calculations for precision
+      </div>
+    <?php endif; ?>
+
     <form method="POST" style="display: flex; flex-direction: column; gap: 16px;">
       <div>
         <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Calculation Type</label>
@@ -104,6 +150,10 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
           <option value="tcs" <?= $calcType === 'tcs' ? 'selected' : '' ?>>TCS (Collection)</option>
           <option value="contractor" <?= $calcType === 'contractor' ? 'selected' : '' ?>>Contractor TDS (₹50K+ Threshold)</option>
           <option value="salary" <?= $calcType === 'salary' ? 'selected' : '' ?>>Salary TDS (With Tax Slabs)</option>
+          <?php if ($firm_id): ?>
+            <option value="non_salary_tds" <?= $calcType === 'non_salary_tds' ? 'selected' : '' ?>>🌐 Sandbox: Non-Salary TDS</option>
+            <option value="tcs_sandbox" <?= $calcType === 'tcs_sandbox' ? 'selected' : '' ?>>🌐 Sandbox: TCS</option>
+          <?php endif; ?>
         </select>
       </div>
 
@@ -113,9 +163,9 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
       </div>
 
       <div id="sectionDiv">
-        <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Section Code</label>
+        <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Section Code / Nature of Payment</label>
         <select id="sectionCode" name="section_code" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
-          <option value="">-- Select Section --</option>
+          <option value="">-- Select --</option>
           <?php foreach ($tdsRates as $code => $rate): ?>
             <option value="<?=htmlspecialchars($code)?>" <?= $sectionCode === $code ? 'selected' : '' ?>>
               <?=htmlspecialchars($code)?> - <?=htmlspecialchars($rate['description'])?> (<?=$rate['rate']?>%)
@@ -124,9 +174,43 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
         </select>
       </div>
 
+      <div id="sandboxFieldsDiv" style="display: none;">
+        <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Deductee Type</label>
+        <select name="deductee_type" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+          <option value="individual" <?= $deducteeType === 'individual' ? 'selected' : '' ?>>Individual</option>
+          <option value="huf" <?= $deducteeType === 'huf' ? 'selected' : '' ?>>HUF</option>
+          <option value="company" <?= $deducteeType === 'company' ? 'selected' : '' ?>>Company</option>
+          <option value="firm" <?= $deducteeType === 'firm' ? 'selected' : '' ?>>Partnership Firm</option>
+          <option value="trust" <?= $deducteeType === 'trust' ? 'selected' : '' ?>>Trust</option>
+        </select>
+
+        <div style="margin-top: 12px;">
+          <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">Residential Status</label>
+          <select name="residential_status" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            <option value="resident" <?= $residentialStatus === 'resident' ? 'selected' : '' ?>>Resident</option>
+            <option value="non_resident" <?= $residentialStatus === 'non_resident' ? 'selected' : '' ?>>Non-Resident</option>
+          </select>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; gap: 12px;">
+          <label style="font-size: 12px; color: #666; display: flex; align-items: center;">
+            <input type="checkbox" name="is_pan_available" <?= $isPanAvailable ? 'checked' : '' ?> style="margin-right: 6px;">
+            PAN Available
+          </label>
+          <label style="font-size: 12px; color: #666; display: flex; align-items: center;">
+            <input type="checkbox" name="is_pan_operative" <?= $isPanOperative ? 'checked' : '' ?> style="margin-right: 6px;">
+            PAN Operative
+          </label>
+          <label style="font-size: 12px; color: #666; display: flex; align-items: center;">
+            <input type="checkbox" name="is_206ab_applicable" <?= $is206abApplicable ? 'checked' : '' ?> style="margin-right: 6px;">
+            206AB Applicable
+          </label>
+        </div>
+      </div>
+
       <div>
         <label style="font-size: 12px; color: #666; margin-bottom: 8px; display: block;">
-          Custom Rate (%) <span style="color: #999;">(optional)</span>
+          Custom Rate (%) <span style="color: #999;">(optional, for standard calculator)</span>
         </label>
         <input type="number" name="custom_rate" value="<?=htmlspecialchars($customRate ?? '')?>" placeholder="Default rate will be used" step="0.01" min="0" max="100" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
       </div>
@@ -160,7 +244,52 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
   <div class="calc-card">
     <h3 style="margin: 0 0 16px 0; font-size: 16px;">Calculation Result</h3>
 
-    <?php if ($result && $result['status'] !== 'error'): ?>
+    <?php if ($sandboxResult && $sandboxResult['status'] === 'success'): ?>
+      <div class="calc-result">
+        <div style="padding: 12px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; margin-bottom: 16px; font-size: 12px; color: #1565c0;">
+          <strong>✓ Sandbox Official Calculation</strong>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Amount</span>
+          <span class="result-value">₹<?=number_format($baseAmount, 2)?></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Deduction/Collection Rate</span>
+          <span class="result-value"><?=($sandboxResult['deduction_rate'] ?? $sandboxResult['collection_rate'] ?? 0)?>%</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">TDS/TCS Amount</span>
+          <span class="result-value" style="color: #d32f2f; font-size: 18px;">₹<?=number_format($sandboxResult['deduction_amount'] ?? $sandboxResult['collection_amount'] ?? 0, 2)?></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Applicable Section</span>
+          <span class="result-value"><?=$sandboxResult['section'] ?? '-'?></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Threshold</span>
+          <span class="result-value">₹<?=number_format($sandboxResult['threshold'] ?? 0, 2)?></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">PAN Status</span>
+          <span class="result-value"><?=$sandboxResult['pan_status'] ?? 'Unknown'?></span>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; padding: 12px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
+        <div style="font-size: 13px; color: #2e7d32;">
+          <strong>✓ Sandbox Calculation Complete</strong>
+          <p style="margin: 6px 0 0 0; font-size: 12px;">Official rate verified by Sandbox Tax Authority API</p>
+        </div>
+      </div>
+    <?php elseif ($sandboxResult && $sandboxResult['status'] === 'failed'): ?>
+      <div style="padding: 12px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 4px;">
+        <div style="color: #c62828; font-size: 13px;">
+          <strong>❌ Sandbox Calculation Error</strong>
+          <p style="margin: 6px 0 0 0; font-size: 12px;"><?=htmlspecialchars($sandboxResult['error'] ?? 'Unknown error')?></p>
+          <p style="margin: 6px 0 0 0; font-size: 11px; color: #999;">Note: Ensure your Sandbox account has API access enabled</p>
+        </div>
+      </div>
+    <?php elseif ($result && $result['status'] !== 'error'): ?>
       <div class="calc-result">
         <div class="result-row">
           <span class="result-label">Base Amount</span>
@@ -225,10 +354,17 @@ if (!empty($baseAmount) && !empty($sectionCode)) {
 <script>
 function updateRates(type) {
   const sectionDiv = document.getElementById('sectionDiv');
+  const sandboxFieldsDiv = document.getElementById('sandboxFieldsDiv');
+
   if (type === 'salary' || type === 'contractor') {
     sectionDiv.style.display = 'none';
+    sandboxFieldsDiv.style.display = 'none';
+  } else if (type === 'non_salary_tds' || type === 'tcs_sandbox') {
+    sectionDiv.style.display = 'block';
+    sandboxFieldsDiv.style.display = 'block';
   } else {
     sectionDiv.style.display = 'block';
+    sandboxFieldsDiv.style.display = 'none';
   }
 }
 
