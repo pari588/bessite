@@ -195,7 +195,18 @@ document.querySelectorAll('.editBtn').forEach(btn => {
     document.getElementById('editUserId').value = userId;
     document.getElementById('editName').value = userName;
     document.getElementById('editEmail').value = userEmail;
-    document.getElementById('editRole').value = userRole;
+
+    // Set the role in the Material Design select
+    const roleSelect = document.getElementById('editRole');
+    roleSelect.value = userRole;
+    const options = roleSelect.querySelectorAll('md-select-option');
+    options.forEach(opt => opt.removeAttribute('selected'));
+    options.forEach(opt => {
+      if(opt.getAttribute('value') === userRole) {
+        opt.setAttribute('selected', '');
+      }
+    });
+
     document.getElementById('editUserForm').style.display = 'block';
   });
 });
