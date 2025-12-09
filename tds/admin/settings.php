@@ -140,7 +140,7 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
           <th>Email</th>
           <th>Role</th>
           <th>Added</th>
-          <th style="text-align:center">Action</th>
+          <th style="text-align:center">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -154,7 +154,12 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
               </span>
             </td>
             <td style="font-size:12px;color:#999"><?=date('M d, Y', strtotime($u['created_at']))?></td>
-            <td style="text-align:center;display:flex;gap:8px;justify-content:center">
+            <td style="text-align:center;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+              <?php if($user['role'] === 'owner'): ?>
+                <button type="button" class="setPasswordBtn" data-id="<?=$u['id']?>" data-email="<?=v($u,'email')?>" data-name="<?=v($u,'name')?>" style="background:none;border:none;color:#4caf50;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Set password for user">
+                  <span class="material-symbols-rounded">vpn_key</span>
+                </button>
+              <?php endif; ?>
               <?php if($u['id'] !== $_SESSION['uid']): ?>
                 <?php if($user['role'] === 'owner'): ?>
                   <button type="button" class="editBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" data-email="<?=v($u,'email')?>" data-role="<?=$u['role']?>" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit user">
@@ -178,6 +183,15 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 </div>
 
 <script>
+// Set Password Button - Redirect to password management page
+document.querySelectorAll('.setPasswordBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const userId = this.dataset.id;
+    const userName = this.dataset.name;
+    window.location.href = '/tds/admin/set_password.php?user_id=' + userId;
+  });
+});
+
 // Edit button click - show edit form
 document.getElementById('profileEditBtn').addEventListener('click', function(e) {
   e.preventDefault();
