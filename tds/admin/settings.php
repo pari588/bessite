@@ -108,12 +108,16 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
             <td style="font-size:12px;color:#999"><?=date('M d, Y', strtotime($u['created_at']))?></td>
             <td style="text-align:center;display:flex;gap:8px;justify-content:center">
               <?php if($u['id'] !== $_SESSION['uid']): ?>
-                <button type="button" class="editBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" data-email="<?=v($u,'email')?>" data-role="<?=$u['role']?>" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit user">
-                  <span class="material-symbols-rounded">edit</span>
-                </button>
-                <button type="button" class="deleteBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" style="background:none;border:none;color:#d32f2f;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Delete user">
-                  <span class="material-symbols-rounded">delete</span>
-                </button>
+                <?php if($user['role'] === 'owner'): ?>
+                  <button type="button" class="editBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" data-email="<?=v($u,'email')?>" data-role="<?=$u['role']?>" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit user">
+                    <span class="material-symbols-rounded">edit</span>
+                  </button>
+                  <button type="button" class="deleteBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" style="background:none;border:none;color:#d32f2f;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Delete user">
+                    <span class="material-symbols-rounded">delete</span>
+                  </button>
+                <?php else: ?>
+                  <span style="color:#999;font-size:12px">—</span>
+                <?php endif; ?>
               <?php else: ?>
                 <span style="color:#999;font-size:12px">—</span>
               <?php endif; ?>
