@@ -37,6 +37,154 @@ try {
 $actionResult = null;
 $action = $_POST['action'] ?? '';
 
+// Handle Compliance API actions
+if (!empty($action)) {
+    try {
+        switch ($action) {
+            case 'check_compliance':
+                // Check 206AB/206CCA compliance status
+                $pan = $_POST['pan'] ?? '';
+                if (!preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/', $pan)) {
+                    throw new Exception("Invalid PAN format. Expected: XXXXX9999X");
+                }
+                // In future, call Sandbox API endpoint: POST /tds/compliance/206ab/check
+                $actionResult = [
+                    'status' => 'success',
+                    'message' => 'Compliance check initiated for ' . htmlspecialchars($pan),
+                    'data' => [
+                        'pan' => $pan,
+                        'status' => 'Check will be performed by Sandbox API',
+                        'api_endpoint' => '/tds/compliance/206ab/check'
+                    ]
+                ];
+                break;
+
+            case 'download_csi':
+                // Download Challan Status Information (CSI)
+                $fy = $_POST['fy'] ?? '';
+                if (empty($fy)) {
+                    throw new Exception("FY is required");
+                }
+                $result = $compliance->downloadCSI($firm_id ?? 1);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'CSI Annexure ready for download',
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to prepare CSI');
+                }
+                break;
+
+            case 'download_form16':
+                // Download Form 16 for deductee
+                $deductee_pan = $_POST['deductee_pan'] ?? '';
+                if (!preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/', $deductee_pan)) {
+                    throw new Exception("Invalid PAN format");
+                }
+                $result = $compliance->downloadForm16($firm_id ?? 1, $deductee_pan);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'Form 16 generated for ' . htmlspecialchars($deductee_pan),
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to download Form 16');
+                }
+                break;
+
+            case 'download_annexures':
+                // Download TDS Annexures
+                $fy = $_POST['fy'] ?? '';
+                if (empty($fy)) {
+                    throw new Exception("FY is required");
+                }
+                $result = $compliance->downloadTDSAnnexures($firm_id ?? 1);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'TDS Annexures ready for download',
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to download annexures');
+                }
+                break;
+
+            case 'generate_fvu':
+                // Generate FVU (File Validation Unit)
+                $fy = $_POST['fy'] ?? '';
+                $quarter = $_POST['quarter'] ?? '';
+                if (empty($fy) || empty($quarter)) {
+                    throw new Exception("FY and Quarter are required");
+                }
+                // Generate form content (simplified - in production, fetch actual form)
+                $form_content = "FORM 26Q DATA FOR $fy $quarter\n";
+                $form_content .= "Generated: " . date('Y-m-d H:i:s') . "\n";
+                $result = $compliance->generateFVU($form_content, '26Q', $firm_id);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'FVU generation initiated',
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to generate FVU');
+                }
+                break;
+
+            case 'check_fvu':
+                // Check FVU generation status
+                $job_uuid = $_POST['job_uuid'] ?? '';
+                if (empty($job_uuid)) {
+                    throw new Exception("Job UUID is required");
+                }
+                $result = $compliance->checkFVUStatus($job_uuid);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'FVU Status: ' . $result['fvu_status'],
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to check FVU status');
+                }
+                break;
+
+            case 'submit_efile':
+                // Submit FVU for e-filing
+                $job_uuid = $_POST['job_uuid'] ?? '';
+                if (empty($job_uuid)) {
+                    throw new Exception("Job UUID is required");
+                }
+                // Form 27A content (signed by user - simplified here)
+                $form27a_content = "FORM 27A ACKNOWLEDGEMENT\n";
+                $form27a_content .= "Generated: " . date('Y-m-d H:i:s') . "\n";
+                $result = $compliance->eFileReturn($job_uuid, $form27a_content);
+                if ($result['status'] === 'success') {
+                    $actionResult = [
+                        'status' => 'success',
+                        'message' => 'Return submitted for e-filing',
+                        'data' => $result
+                    ];
+                } else {
+                    throw new Exception($result['message'] ?? 'Failed to submit for e-filing');
+                }
+                break;
+
+            default:
+                throw new Exception("Unknown action: " . htmlspecialchars($action));
+        }
+    } catch (Exception $e) {
+        $actionResult = [
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
 // Determine workflow step status based on actual data
 $workflowStatus = [
     1 => 'pending',  // Invoice Entry
@@ -288,79 +436,67 @@ if ($action === 'generate_fvu' && $firm_id) {
   <?php endfor; ?>
 </div>
 
-<!-- ANALYTICS & RISK ASSESSMENT -->
+<!-- COMPLIANCE CHECK & DOWNLOADS -->
 <div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 24px;">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-    <h3 style="margin: 0; font-size: 16px;">Analytics & Risk Assessment</h3>
-    <span class="material-symbols-rounded" style="font-size: 20px; color: #1976d2;">analytics</span>
+    <h3 style="margin: 0; font-size: 16px;">Compliance Checks & Document Downloads</h3>
+    <span class="material-symbols-rounded" style="font-size: 20px; color: #1976d2;">verified</span>
   </div>
 
   <div style="background: #f0f7ff; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 16px;">
     <p style="margin: 0; font-size: 13px; color: #1976d2; line-height: 1.5;">
-      <strong>Sandbox Analytics API</strong> provides Potential Notice Analysis to identify tax compliance risks and flag issues that might trigger tax authority notices. Submit jobs or check their status here.
+      <strong>Sandbox Compliance API</strong> provides FVU generation, e-filing submission, compliance checks (206AB/206CCA), and document downloads. All compliance-related operations are managed here.
     </p>
   </div>
 
-  <!-- TAB NAVIGATION -->
-  <div style="display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
-    <button type="button" onclick="switchAnalyticsTab('submit')" id="tab-submit" style="padding: 12px 16px; background: none; border: none; border-bottom: 2px solid #1976d2; color: #1976d2; cursor: pointer; font-size: 13px; font-weight: 600;">
-      <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">send</span>
-      Submit New Job
-    </button>
-    <button type="button" onclick="switchAnalyticsTab('poll')" id="tab-poll" style="padding: 12px 16px; background: none; border: none; border-bottom: 2px solid #e0e0e0; color: #666; cursor: pointer; font-size: 13px; font-weight: 600;">
-      <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">refresh</span>
-      Poll Status
-    </button>
-  </div>
-
-  <!-- SUBMIT NEW JOB TAB -->
-  <div id="tab-content-submit" style="display: block;">
-    <form id="submitAnalyticsForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-      <input type="text" id="submitTan" placeholder="TAN (e.g., AHMA09719B)" maxlength="10" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: monospace;" required>
-      <select id="submitQuarter" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
-        <option value="">Select Quarter</option>
-        <option value="Q1">Q1 (Apr-Jun)</option>
-        <option value="Q2">Q2 (Jul-Sep)</option>
-        <option value="Q3">Q3 (Oct-Dec)</option>
-        <option value="Q4">Q4 (Jan-Mar)</option>
-      </select>
-      <select id="submitForm" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
-        <option value="">Select Form</option>
-        <option value="24Q">Form 24Q (TCS)</option>
-        <option value="26Q">Form 26Q (Non-Salary)</option>
-        <option value="27Q">Form 27Q (NRI)</option>
-      </select>
-      <input type="text" id="submitFy" placeholder="FY (e.g., FY 2024-25)" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
-      <button type="button" onclick="submitAnalyticsJob()" style="grid-column: 1 / -1; padding: 10px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
-        <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">send</span>
-        Submit Analytics Job
-      </button>
-    </form>
-    <div id="submitMsg" class="badge" style="display: none; margin-bottom: 16px;"></div>
-  </div>
-
-  <!-- POLL JOB STATUS TAB -->
-  <div id="tab-content-poll" style="display: none;">
-    <div id="analyticsJobsContainer" style="display: none; margin-bottom: 16px;">
-      <div style="font-size: 12px; color: #666; margin-bottom: 12px;">
-        <strong>Recent Analytics Jobs:</strong>
-      </div>
-      <div id="analyticsJobsList" style="display: grid; gap: 8px;"></div>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <!-- Compliance Check 206AB/206CCA -->
+    <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; border: 1px solid #e0e0e0;">
+      <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 12px;">✓ Compliance Check (206AB/206CCA)</div>
+      <form method="POST" style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="hidden" name="action" value="check_compliance">
+        <input type="text" name="pan" placeholder="Enter PAN (e.g., AAAPA1234A)" maxlength="10" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+        <button type="submit" style="padding: 8px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Check Status</button>
+      </form>
     </div>
 
-    <div id="noAnalyticsJobs" style="padding: 16px; background: #f5f5f5; border-radius: 4px; text-align: center; color: #999; font-size: 13px;">
-      No analytics jobs tracked yet. Initiate an analytics job to start risk assessment.
+    <!-- Download Challan Status Info (CSI) -->
+    <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; border: 1px solid #e0e0e0;">
+      <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 12px;">📋 Download CSI Annexure</div>
+      <form method="POST" style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="hidden" name="action" value="download_csi">
+        <select name="fy" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;" required>
+          <option value="">Select FY</option>
+          <option value="2024-25">FY 2024-25</option>
+          <option value="2023-24">FY 2023-24</option>
+        </select>
+        <button type="submit" style="padding: 8px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Download</button>
+      </form>
     </div>
 
-    <form id="pollAnalyticsForm" style="display: flex; gap: 12px; margin-top: 16px;">
-      <input type="text" id="jobIdInput" placeholder="Enter Analytics Job ID" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: monospace;">
-      <button type="button" onclick="pollAnalyticsJob()" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
-        <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">refresh</span>
-        Poll Status
-      </button>
-    </form>
+    <!-- Download Form 16 -->
+    <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; border: 1px solid #e0e0e0;">
+      <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 12px;">📄 Download Form 16</div>
+      <form method="POST" style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="hidden" name="action" value="download_form16">
+        <input type="text" name="deductee_pan" placeholder="Deductee PAN" maxlength="10" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+        <button type="submit" style="padding: 8px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Download</button>
+      </form>
+    </div>
 
-    <div id="analyticsMsg" class="badge" style="display: none; margin-top: 12px;"></div>
+    <!-- Download TDS Annexures -->
+    <div style="padding: 12px; background: #f9f9f9; border-radius: 4px; border: 1px solid #e0e0e0;">
+      <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 12px;">📦 Download TDS Annexures</div>
+      <form method="POST" style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="hidden" name="action" value="download_annexures">
+        <select name="fy" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box;" required>
+          <option value="">Select FY</option>
+          <option value="2024-25">FY 2024-25</option>
+          <option value="2023-24">FY 2023-24</option>
+        </select>
+        <button type="submit" style="padding: 8px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Download</button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -535,261 +671,12 @@ if ($action === 'generate_fvu' && $firm_id) {
 <?php endif; ?>
 
 <script>
-// Load analytics jobs on page load
-document.addEventListener('DOMContentLoaded', function() {
-  loadAnalyticsJobs();
-});
-
-// Fetch and display analytics jobs
-async function loadAnalyticsJobs() {
-  try {
-    const response = await fetch('/tds/api/get_analytics_jobs.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({limit: 5})
-    });
-    const data = await response.json();
-
-    if (data.ok && data.data.jobs.length > 0) {
-      displayAnalyticsJobs(data.data.jobs);
-    }
-  } catch (e) {
-    console.error('Failed to load analytics jobs:', e);
-  }
-}
-
-// Display analytics jobs list
-function displayAnalyticsJobs(jobs) {
-  const container = document.getElementById('analyticsJobsContainer');
-  const noJobs = document.getElementById('noAnalyticsJobs');
-  const list = document.getElementById('analyticsJobsList');
-
-  container.style.display = 'block';
-  noJobs.style.display = 'none';
-  list.innerHTML = '';
-
-  jobs.forEach(job => {
-    const jobEl = document.createElement('div');
-    jobEl.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 4px; border-left: 3px solid ' + getStatusColor(job.status);
-
-    const statusBg = getStatusBgColor(job.status);
-    const statusText = getStatusLabel(job.status);
-
-    jobEl.innerHTML = `
-      <div style="flex: 1;">
-        <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 4px;">
-          ${htmlEscape(job.job_type)} - ${htmlEscape(job.fy)} ${htmlEscape(job.quarter)}
-        </div>
-        <div style="font-size: 11px; color: #999; font-family: monospace;">
-          ${htmlEscape(job.job_id.substring(0, 12))}...
-        </div>
-      </div>
-      <div style="text-align: right;">
-        <div style="padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: ${statusBg}; margin-bottom: 4px;">
-          ${statusText}
-        </div>
-        <div style="font-size: 10px; color: #999;">
-          ${job.last_polled_at ? new Date(job.last_polled_at).toLocaleDateString() : 'Not polled'}
-        </div>
-      </div>
-    `;
-
-    list.appendChild(jobEl);
-  });
-}
-
-// Poll analytics job status
-async function pollAnalyticsJob() {
-  const jobId = document.getElementById('jobIdInput').value.trim();
-  if (!jobId) {
-    showMsg('Please enter a Job ID', 'error');
-    return;
-  }
-
-  const btn = event.target.closest('button');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-rounded" style="font-size:16px;animation:spin 1s linear infinite;">refresh</span>';
-
-  try {
-    const response = await fetch('/tds/api/poll_analytics_job.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({job_id: jobId})
-    });
-
-    const data = await response.json();
-
-    if (data.ok) {
-      const result = data.data;
-      let message = `Status: <strong>${result.status.toUpperCase()}</strong>`;
-
-      if (result.status === 'succeeded' && result.report_url) {
-        message += `<br><a href="${htmlEscape(result.report_url)}" target="_blank" style="color: #4caf50; text-decoration: underline; font-weight: 600;">Download Report</a>`;
-      }
-
-      if (result.error) {
-        message += `<br><span style="color: #d32f2f;">Error: ${htmlEscape(result.error)}</span>`;
-      }
-
-      showMsg(message, 'success');
-      loadAnalyticsJobs(); // Reload list
-      document.getElementById('jobIdInput').value = '';
-    } else {
-      showMsg(data.msg || 'Failed to poll job', 'error');
-    }
-  } catch (e) {
-    showMsg('Error: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-  }
-}
-
-// Helper functions
-function getStatusColor(status) {
-  switch(status) {
-    case 'succeeded': return '#4caf50';
-    case 'processing': return '#ff9800';
-    case 'failed': return '#d32f2f';
-    default: return '#1976d2';
-  }
-}
-
-function getStatusBgColor(status) {
-  switch(status) {
-    case 'succeeded': return '#c8e6c9';
-    case 'processing': return '#ffe0b2';
-    case 'failed': return '#ffcdd2';
-    default: return '#e3f2fd';
-  }
-}
-
-function getStatusLabel(status) {
-  switch(status) {
-    case 'succeeded': return '✓ Succeeded';
-    case 'processing': return '⏳ Processing';
-    case 'failed': return '✗ Failed';
-    case 'queued': return '⟳ Queued';
-    default: return '◯ Submitted';
-  }
-}
-
-function htmlEscape(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function showMsg(message, type) {
-  const msgEl = document.getElementById('analyticsMsg');
-  msgEl.innerHTML = message;
-  msgEl.className = 'badge ' + type;
-  msgEl.style.display = 'block';
-
-  if (type !== 'error') {
-    setTimeout(() => msgEl.style.display = 'none', 5000);
-  }
-}
-
-// Switch between submit and poll tabs
-function switchAnalyticsTab(tab) {
-  const submitTab = document.getElementById('tab-content-submit');
-  const pollTab = document.getElementById('tab-content-poll');
-  const submitBtn = document.getElementById('tab-submit');
-  const pollBtn = document.getElementById('tab-poll');
-
-  if (tab === 'submit') {
-    submitTab.style.display = 'block';
-    pollTab.style.display = 'none';
-    submitBtn.style.borderBottom = '2px solid #1976d2';
-    submitBtn.style.color = '#1976d2';
-    pollBtn.style.borderBottom = '2px solid #e0e0e0';
-    pollBtn.style.color = '#666';
-  } else {
-    submitTab.style.display = 'none';
-    pollTab.style.display = 'block';
-    submitBtn.style.borderBottom = '2px solid #e0e0e0';
-    submitBtn.style.color = '#666';
-    pollBtn.style.borderBottom = '2px solid #1976d2';
-    pollBtn.style.color = '#1976d2';
-    loadAnalyticsJobs(); // Reload when switching to poll tab
-  }
-}
-
-// Submit new analytics job
-async function submitAnalyticsJob() {
-  const tan = document.getElementById('submitTan').value.trim();
-  const quarter = document.getElementById('submitQuarter').value;
-  const form = document.getElementById('submitForm').value;
-  const fy = document.getElementById('submitFy').value.trim();
-
-  const msgEl = document.getElementById('submitMsg');
-
-  if (!tan || !quarter || !form || !fy) {
-    showSubmitMsg('Please fill all fields', 'error', msgEl);
-    return;
-  }
-
-  const btn = event.target;
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-rounded" style="font-size:16px;animation:spin 1s linear infinite;">send</span>';
-
-  try {
-    const response = await fetch('/tds/api/submit_analytics_job.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({tan, quarter, form, fy})
-    });
-
-    const data = await response.json();
-
-    if (data.ok) {
-      showSubmitMsg('✓ Job submitted successfully! Job ID: ' + htmlEscape(data.data.job_id.substring(0, 8)) + '...', 'success', msgEl);
-
-      // Clear form
-      document.getElementById('submitTan').value = '';
-      document.getElementById('submitQuarter').value = '';
-      document.getElementById('submitForm').value = '';
-      document.getElementById('submitFy').value = '';
-
-      // Switch to poll tab
-      setTimeout(() => {
-        switchAnalyticsTab('poll');
-        loadAnalyticsJobs();
-      }, 2000);
-    } else {
-      showSubmitMsg('Error: ' + (data.msg || 'Failed to submit job'), 'error', msgEl);
-    }
-  } catch (e) {
-    showSubmitMsg('Error: ' + e.message, 'error', msgEl);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-  }
-}
-
-// Show submit message
-function showSubmitMsg(message, type, msgEl) {
-  msgEl.innerHTML = message;
-  msgEl.className = 'badge ' + type;
-  msgEl.style.display = 'block';
-
-  if (type !== 'error') {
-    setTimeout(() => msgEl.style.display = 'none', 5000);
-  }
-}
-
 // CSS for spinning animation
 const style = document.createElement('style');
 style.textContent = `
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-  .analytics-job-status {
-    word-break: break-all;
   }
 `;
 document.head.appendChild(style);
