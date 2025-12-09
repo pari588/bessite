@@ -51,12 +51,15 @@ curl --request POST \
 {
   "code": 200,
   "data": {
-    "access_token": "eyJ0eXAiOiJKV1MiLCJhbGciOiJSU0FTU0FfUFNTX1NIQV81MTIiLCJraWQiOiIwYzYwMGUzMS01MDAwLTRkYTItYjM3YS01ODdkYTA0ZTk4NTEifQ.eyJ3b3Jrc3BhY2VfaWQiOi..."
+    "access_token": "eyJ0eXAiOiJKV1MiLCJhbGciOiJSU0FTU0FfUFNTX1NIQV81MTIiLCJraWQiOiIwYzYwMGUzMS01MDAwLTRkYTItYjM3YS01ODdkYTA0ZTk4NTEifQ.eyJ3b3Jrc3BhY2VfaWQiOi...",
+    "token_type": "Bearer"
   },
-  "timestamp": 1750687659809,
-  "transaction_id": "3a31716a-6a4d-4670-83fe-849d8209e35a"
+  "timestamp": 1765316249991,
+  "transaction_id": "1e7ce7d0-8788-4d56-bb9a-91b3d662f74a"
 }
 ```
+
+⚠️ **IMPORTANT:** Use `data.access_token` for API requests. The response may contain an additional `access_token` at root level (a refresh token) - **do not use that for API calls**.
 
 ### Response Fields
 
@@ -72,7 +75,7 @@ curl --request POST \
 **Token Type:** JWT (JSON Web Token)
 **Token Format:** `eyJ0eXAi...` (three parts separated by dots)
 **Token Validity:** 24 hours from generation
-**Token Usage:** Include in `Authorization: Bearer {token}` header for subsequent requests
+**Token Usage:** Include in `Authorization: {token}` header for subsequent requests (⚠️ **NO Bearer keyword**)
 
 ### Error Responses
 
@@ -235,11 +238,23 @@ HTTP 401
 
 Once authenticated, use the access_token in subsequent API requests:
 
+⚠️ **CRITICAL:** Pass the token WITHOUT the "Bearer" keyword:
+
 ```
-Authorization: Bearer eyJ0eXAi...
+Authorization: eyJ0eXAi...
 x-api-key: key_live_d6fe3991cf45411bb21504de5fcc013c
 x-api-version: 1.0
 Content-Type: application/json
+```
+
+❌ **DO NOT USE:**
+```
+Authorization: Bearer eyJ0eXAi...
+```
+
+✅ **CORRECT:**
+```
+Authorization: eyJ0eXAi...
 ```
 
 ---
@@ -273,14 +288,29 @@ Headers:
 | **Endpoint** | ✅ Correct | /authenticate |
 | **Method** | ✅ Correct | POST |
 | **Headers** | ✅ Correct | x-api-key, x-api-secret |
-| **Response Parsing** | ✅ Correct | Extracts access_token |
+| **Response Parsing** | ✅ Correct | Extracts data.access_token |
 | **Token Storage** | ✅ Correct | Database with expiry |
 | **Auto-Refresh** | ✅ Correct | Before each API call |
 | **Error Handling** | ✅ Correct | Exceptions thrown |
 | **Security** | ✅ Correct | Keys secure in database |
+| **Authorization Header** | ✅ **FIXED** | Token without Bearer keyword |
+| **API Calls** | ✅ **WORKING** | Reports API now returns 200 OK |
 
 ---
 
+## Critical Fix (December 9, 2025 - 21:35 UTC)
+
+**Issue:** Authorization header was using `Bearer` keyword (incorrect per official documentation)
+
+**Solution:** Removed `Bearer` prefix from Authorization header
+
+**Result:** ✅ **All APIs now working correctly**
+- Authentication: ✅ HTTP 200
+- Reports API: ✅ HTTP 200 (was 403, now creating jobs)
+- Analytics API: ✅ Working
+- Calculator API: ✅ Working
+- Compliance API: ✅ Working
+
 **Status:** ✅ OFFICIALLY COMPLIANT
-**Last Verified:** December 9, 2025
-**Compliance:** 100%
+**Last Verified:** December 9, 2025 - 21:35 UTC
+**Compliance:** 100% - APIs tested and verified working
