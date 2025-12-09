@@ -79,7 +79,8 @@ if ($jobId > 0) {
     <script>
       document.getElementById('submitForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(this);
+        const form = document.getElementById('submitForm');
+        const formData = new FormData(form);
         try {
           const res = await fetch('/tds/api/filing/submit', { method: 'POST', body: formData });
           const data = await res.json();
@@ -87,7 +88,7 @@ if ($jobId > 0) {
             alert('Filing submitted! Tracking ID: ' + data.filing_job_id);
             location.reload();
           } else {
-            alert('Error: ' + data.msg);
+            alert('Error: ' + (data.msg || data.message || 'Unknown error'));
           }
         } catch (err) {
           alert('Error: ' + err.message);
@@ -151,14 +152,78 @@ if ($jobId > 0) {
 
 <?php
 } else {
-  // Show list of all jobs
-  $stmt = $pdo->prepare('SELECT * FROM tds_filing_jobs ORDER BY created_at DESC');
-  $stmt->execute();
+  // Show list of all jobs with filtering
+  $filterFy = $_GET['filter_fy'] ?? '';
+  $filterQuarter = $_GET['filter_quarter'] ?? '';
+
+  $sql = 'SELECT * FROM tds_filing_jobs';
+  $params = [];
+  $conditions = [];
+
+  if ($filterFy) {
+    $conditions[] = 'fy = ?';
+    $params[] = $filterFy;
+  }
+  if ($filterQuarter) {
+    $conditions[] = 'quarter = ?';
+    $params[] = $filterQuarter;
+  }
+
+  if ($conditions) {
+    $sql .= ' WHERE ' . implode(' AND ', $conditions);
+  }
+  $sql .= ' ORDER BY created_at DESC';
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
   $jobs = $stmt->fetchAll();
+
+  // Get unique FY and quarters for filter dropdowns
+  $fyStmt = $pdo->prepare('SELECT DISTINCT fy FROM tds_filing_jobs ORDER BY fy DESC');
+  $fyStmt->execute();
+  $allFy = $fyStmt->fetchAll(PDO::FETCH_COLUMN);
+
+  $quarterStmt = $pdo->prepare('SELECT DISTINCT quarter FROM tds_filing_jobs ORDER BY quarter');
+  $quarterStmt->execute();
+  $allQuarters = $quarterStmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <div class="card fade-in">
   <h3 style="margin-top:0">All Filing Jobs</h3>
+
+  <div style="margin-bottom: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px; display: grid; grid-template-columns: auto auto auto auto; gap: 12px; align-items: center;">
+    <label style="font-weight: 500; color: #333;">Filter:</label>
+
+    <form method="GET" style="display: grid; grid-template-columns: auto auto auto; gap: 12px; align-items: center;">
+      <div>
+        <select name="filter_fy" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 130px;">
+          <option value="">All FY</option>
+          <?php foreach($allFy as $fy): ?>
+            <option value="<?=htmlspecialchars($fy)?>" <?=$filterFy === $fy ? 'selected' : ''?>><?=htmlspecialchars($fy)?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div>
+        <select name="filter_quarter" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 120px;">
+          <option value="">All Quarters</option>
+          <?php foreach($allQuarters as $q): ?>
+            <option value="<?=htmlspecialchars($q)?>" <?=$filterQuarter === $q ? 'selected' : ''?>><?=htmlspecialchars($q)?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <button type="submit" style="padding: 8px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+        Filter
+      </button>
+
+      <?php if ($filterFy || $filterQuarter): ?>
+        <a href="?" style="padding: 8px 16px; background: #999; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block;">
+          Clear Filters
+        </a>
+      <?php endif; ?>
+    </form>
+  </div>
   <div class="table-wrap">
   <table class="table">
     <thead><tr><th>FY/Q</th><th>FVU Status</th><th>Filing Status</th><th>Ack No</th><th>Records</th><th>TDS Total</th><th>Created</th><th>Action</th></tr></thead>

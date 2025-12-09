@@ -136,6 +136,39 @@ if ($action === 'generate_fvu' && $firm_id) {
     } catch (Exception $e) {
         $actionResult = ['status' => 'error', 'message' => $e->getMessage()];
     }
+} elseif ($action === 'submit_efile' && !empty($filingJobs)) {
+    try {
+        // Get the most recent filing job
+        $job = $filingJobs[0];
+
+        // Get form 27A if uploaded
+        $form27aContent = '';
+        if (!empty($_FILES['form27a_signature'])) {
+            $form27aContent = file_get_contents($_FILES['form27a_signature']['tmp_name']);
+        }
+
+        // Submit for e-filing via the API
+        $filing = $compliance->eFileReturn($job['fvu_job_id'], $form27aContent);
+
+        // Update the filing job with the new filing status
+        if (!empty($filing['filing_job_id'])) {
+            $stmt = $pdo->prepare("
+                UPDATE tds_filing_jobs
+                SET filing_job_id = ?, filing_status = 'submitted', filing_date = NOW()
+                WHERE id = ?
+            ");
+            $stmt->execute([$filing['filing_job_id'], $job['id']]);
+        }
+
+        $actionResult = [
+            'status' => 'success',
+            'message' => 'TDS return submitted for e-filing successfully!',
+            'filing_job_id' => $filing['filing_job_id'] ?? '',
+            'next_action' => 'Monitor status - acknowledgement typically received within 2-4 hours'
+        ];
+    } catch (Exception $e) {
+        $actionResult = ['status' => 'error', 'message' => 'Error submitting for e-filing: ' . $e->getMessage()];
+    }
 }
 
 ?>
@@ -347,13 +380,13 @@ if ($action === 'generate_fvu' && $firm_id) {
           Generated: <?=date('d-m-Y H:i', strtotime($efileJob['fvu_generated_at'] ?? 'now'))?>
         </div>
       </div>
-      <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+      <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 12px;">
         <input type="hidden" name="action" value="submit_efile">
         <input type="hidden" name="job_uuid" value="<?=htmlspecialchars($efileJob['fvu_job_id'] ?? '')?>">
         <div>
-          <label style="font-size: 12px; color: #666; display: block; margin-bottom: 8px;">Form 27A Signature</label>
-          <input type="file" name="form27a_signature" accept=".p12,.pfx,.pem" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box;">
-          <div style="font-size: 11px; color: #999; margin-top: 4px;">Digital signature file (DSC .p12 or .pfx)</div>
+          <label style="font-size: 12px; color: #666; display: block; margin-bottom: 8px;">Form 27A Signature (Optional)</label>
+          <input type="file" name="form27a_signature" accept=".p12,.pfx,.pem,.txt" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; width: 100%; box-sizing: border-box;">
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">Digital signature file (DSC .p12, .pfx, .pem) - Optional for testing</div>
         </div>
         <button type="submit" style="padding: 10px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;">
           Submit for E-Filing
