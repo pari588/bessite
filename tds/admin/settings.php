@@ -44,6 +44,26 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
     </md-filled-button>
   </div>
 
+  <!-- EDIT USER FORM -->
+  <div id="editUserForm" style="display:none;padding:20px;background:#fff3e0;border-radius:8px;margin-bottom:20px;border-left:4px solid #ff9800">
+    <h4 style="margin-top:0;margin-bottom:15px">Edit User</h4>
+    <form id="editForm" class="form-grid">
+      <input type="hidden" name="user_id" id="editUserId">
+      <md-outlined-text-field name="name" label="Full Name" id="editName" required></md-outlined-text-field>
+      <md-outlined-text-field name="email" label="Email Address" type="email" id="editEmail" required></md-outlined-text-field>
+      <md-outlined-select name="role" id="editRole" required>
+        <md-select-option><div slot="headline">Select Role</div></md-select-option>
+        <md-select-option value="staff"><div slot="headline">Staff</div></md-select-option>
+        <md-select-option value="owner"><div slot="headline">Owner</div></md-select-option>
+      </md-outlined-select>
+      <div class="span-2" style="display:flex;gap:10px;justify-content:flex-end">
+        <md-filled-button type="button" onclick="document.getElementById('editUserForm').style.display='none'" style="background:#999;--md-filled-button-container-color:#999">Cancel</md-filled-button>
+        <md-filled-button type="submit">Save Changes</md-filled-button>
+        <span id="editMsg" class="badge" style="display:none"></span>
+      </div>
+    </form>
+  </div>
+
   <!-- ADD USER FORM -->
   <div id="addUserForm" style="display:none;padding:20px;background:#f5f5f5;border-radius:8px;margin-bottom:20px">
     <h4 style="margin-top:0;margin-bottom:15px">Add New User</h4>
@@ -86,9 +106,12 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
               </span>
             </td>
             <td style="font-size:12px;color:#999"><?=date('M d, Y', strtotime($u['created_at']))?></td>
-            <td style="text-align:center">
+            <td style="text-align:center;display:flex;gap:8px;justify-content:center">
               <?php if($u['id'] !== $_SESSION['uid']): ?>
-                <button type="button" class="deleteBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" style="background:none;border:none;color:#d32f2f;cursor:pointer;font-size:18px;padding:0;line-height:1">
+                <button type="button" class="editBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" data-email="<?=v($u,'email')?>" data-role="<?=$u['role']?>" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit user">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button type="button" class="deleteBtn" data-id="<?=$u['id']?>" data-name="<?=v($u,'name')?>" style="background:none;border:none;color:#d32f2f;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Delete user">
                   <span class="material-symbols-rounded">delete</span>
                 </button>
               <?php else: ?>
@@ -154,6 +177,49 @@ document.getElementById('addForm').addEventListener('submit', async (e)=>{
   if(data.ok) {
     el.textContent = 'User created successfully';
     document.getElementById('addForm').reset();
+    setTimeout(()=>{ location.reload(); }, 1500);
+  } else {
+    el.textContent = 'Error: ' + (data.msg||'Failed');
+    setTimeout(()=>{ el.style.display='none'; }, 5000);
+  }
+});
+
+// Edit User
+document.querySelectorAll('.editBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const userId = this.dataset.id;
+    const userName = this.dataset.name;
+    const userEmail = this.dataset.email;
+    const userRole = this.dataset.role;
+
+    document.getElementById('editUserId').value = userId;
+    document.getElementById('editName').value = userName;
+    document.getElementById('editEmail').value = userEmail;
+    document.getElementById('editRole').value = userRole;
+    document.getElementById('editUserForm').style.display = 'block';
+  });
+});
+
+// Edit Form Submit
+document.getElementById('editForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const userId = document.getElementById('editUserId').value;
+  const name = document.getElementById('editName').value;
+  const email = document.getElementById('editEmail').value;
+  const role = document.getElementById('editRole').value;
+
+  const res = await fetch('/tds/api/edit_user.php', {
+    method:'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({user_id: userId, name: name, email: email, role: role})
+  });
+
+  const data = await res.json().catch(()=>({ok:false}));
+  const el = document.getElementById('editMsg');
+  el.style.display = 'inline-block';
+
+  if(data.ok) {
+    el.textContent = 'User updated successfully';
     setTimeout(()=>{ location.reload(); }, 1500);
   } else {
     el.textContent = 'Error: ' + (data.msg||'Failed');
