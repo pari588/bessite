@@ -103,18 +103,9 @@ if (!empty($filingJobs)) {
     }
 }
 
-// Set current active step
-$activeStep = 5;  // Default to FVU generation
-if ($workflowStatus[1] === 'pending') $activeStep = 1;
-elseif ($workflowStatus[2] === 'pending') $activeStep = 2;
-elseif ($workflowStatus[3] === 'pending') $activeStep = 3;
-elseif ($workflowStatus[4] === 'pending') $activeStep = 4;
-elseif ($workflowStatus[6] === 'pending') $activeStep = 6;
-elseif ($workflowStatus[7] === 'pending') $activeStep = 7;
-
-if ($workflowStatus[$activeStep] === 'pending') {
-    $workflowStatus[$activeStep] = 'active';
-}
+// Don't auto-mark steps as 'active' unless there's actual progress
+// Only mark as active if explicitly set by data conditions above
+// The workflowStatus array already has the correct values
 
 // Process actions
 $actionResult = null;
