@@ -33,7 +33,7 @@ if (!empty($action)) {
         // Load API only when needed
         require_once __DIR__.'/../lib/SandboxTDSAPI.php';
         // SandboxTDSAPI requires firm_id and PDO connection
-        $api = new SandboxTDSAPI($firm_id, $pdo, function($msg) { /* logging */ });
+        $api = new SandboxTDSAPI($firm_id, $pdo, function($msg) { /* logging */ }, 'production');
         if (!$api) {
             throw new Exception("Failed to initialize Analytics API");
         }

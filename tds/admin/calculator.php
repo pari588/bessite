@@ -33,7 +33,7 @@ $is206abApplicable = !empty($_POST['is_206ab_applicable']);
 
 if ($useSandbox && !empty($baseAmount) && $firm_id) {
     try {
-        $api = new SandboxTDSAPI($firm_id, $pdo);
+        $api = new SandboxTDSAPI($firm_id, $pdo, null, 'production');
 
         if ($calcType === 'non_salary_tds') {
             $sandboxResult = $api->calculateNonSalaryTDS(

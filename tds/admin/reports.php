@@ -34,7 +34,7 @@ $sandboxJobStatus = null;
 // Handle Sandbox Reports API requests
 if ($tab === 'sandbox' && $action === 'submit' && $firm_id && $tan) {
     try {
-        $api = new SandboxTDSAPI($firm_id, $pdo);
+        $api = new SandboxTDSAPI($firm_id, $pdo, null, 'production');
 
         // Map form type to TDS form
         $tdsForm = $formType; // Can be 24Q, 26Q, 27Q
@@ -61,7 +61,7 @@ if ($tab === 'sandbox' && $action === 'submit' && $firm_id && $tan) {
 } elseif ($tab === 'sandbox' && $action === 'poll' && isset($_GET['job_id']) && $firm_id) {
     // Poll job status
     try {
-        $api = new SandboxTDSAPI($firm_id, $pdo);
+        $api = new SandboxTDSAPI($firm_id, $pdo, null, 'production');
         $jobId = $_GET['job_id'];
 
         if ($formType === 'TCS') {
