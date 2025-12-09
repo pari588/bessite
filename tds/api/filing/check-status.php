@@ -36,7 +36,7 @@ try {
   if ($job['fvu_status'] === 'pending' || $job['fvu_status'] === 'submitted') {
     // Poll Sandbox for FVU status
     try {
-      $api = new SandboxTDSAPI($job['firm_id'], $pdo);
+      $api = new SandboxTDSAPI($job['firm_id'], $pdo, null, 'production');
       $fvuStatus = $api->pollFVUJobStatus($job['fvu_job_id']);
 
       // Update local job record
@@ -83,7 +83,7 @@ try {
   if ($job['filing_status'] === 'submitted' || $job['filing_status'] === 'processing') {
     // Poll Sandbox for e-filing status
     try {
-      $api = new SandboxTDSAPI($job['firm_id'], $pdo);
+      $api = new SandboxTDSAPI($job['firm_id'], $pdo, null, 'production');
       $filingStatus = $api->pollEFilingStatus($job['filing_job_id']);
 
       $newStatus = $filingStatus['status'];

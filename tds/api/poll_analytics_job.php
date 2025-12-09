@@ -40,11 +40,8 @@ try {
     }
 
     // Initialize API
-    $api = new SandboxTDSAPI(
-        SANDBOX_API_KEY,
-        SANDBOX_API_SECRET,
-        function($msg) { /* logging callback */ }
-    );
+    $firm_id = $_SESSION['firm_id'] ?? 1;
+    $api = new SandboxTDSAPI($firm_id, $pdo, function($msg) { /* logging callback */ }, 'production');
 
     // Poll job based on type
     if ($type === 'tds') {

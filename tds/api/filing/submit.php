@@ -85,7 +85,7 @@ try {
 
   try {
     // Try to initialize and submit to Sandbox API
-    $api = new SandboxTDSAPI($job['firm_id'], $pdo);
+    $api = new SandboxTDSAPI($job['firm_id'], $pdo, null, 'production');
     logFiling('efile_submit', 'pending', "Submitting TDS return for e-filing", $jobId);
 
     $filingJob = $api->submitEFilingJob($job['fvu_file_path'], $job['form27a_file_path']);

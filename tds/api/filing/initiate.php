@@ -107,7 +107,7 @@ try {
 
   // ====== STEP 3: Initialize Sandbox API client ======
   try {
-    $api = new SandboxTDSAPI($firm_id, $pdo);
+    $api = new SandboxTDSAPI($firm_id, $pdo, null, 'production');
   } catch (Exception $e) {
     log_filing('api_init', 'failed', $e->getMessage(), $jobId);
     json_err('Sandbox API not configured: ' . $e->getMessage());

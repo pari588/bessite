@@ -69,7 +69,7 @@ try {
   // Initialize API client
   $api = new SandboxTDSAPI($_SESSION['firm_id'], $pdo, function($stage, $status, $msg, $req = null, $res = null) {
     // Logging callback
-  });
+  }, 'production');
 
   // Call Calculator API
   $result = $api->calculateTCS(
