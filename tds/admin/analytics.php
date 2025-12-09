@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__.'/../lib/auth.php'; auth_require();
 require_once __DIR__.'/../lib/db.php';
-require_once __DIR__.'/../lib/SandboxTDSAPI.php';
 require_once __DIR__.'/../lib/helpers.php';
 
 $page_title='Risk Analytics & Potential Notices';
 include __DIR__.'/_layout_top.php';
+
+// NOTE: SandboxTDSAPI is only loaded when needed (for API calls)
+// to avoid issues if class doesn't exist during page load
 
 // Get firm data
 $firm = $pdo->query('SELECT id, tan FROM firms LIMIT 1')->fetch();
@@ -21,15 +23,6 @@ $fy = $_GET['fy'] ?? $curFy;
 $quarter = $_GET['quarter'] ?? $curQ;
 $tab = $_GET['tab'] ?? 'tds'; // tds or tcs
 
-// Initialize API (safely handle missing API key)
-$apiKey = getenv('SANDBOX_API_KEY') ?? '';
-try {
-    $api = new SandboxTDSAPI($apiKey, '', function($msg) { /* logging */ });
-} catch (Exception $e) {
-    // API initialization failed, but page should still render
-    $api = null;
-}
-
 // Process actions
 $actionResult = null;
 $action = $_POST['action'] ?? '';
@@ -37,9 +30,15 @@ $action = $_POST['action'] ?? '';
 // Handle Analytics API actions
 if (!empty($action)) {
     try {
-        // Check if API is initialized
+        // Load API only when needed
+        require_once __DIR__.'/../lib/SandboxTDSAPI.php';
+        $apiKey = getenv('SANDBOX_API_KEY') ?? '';
+        if (empty($apiKey)) {
+            throw new Exception("SANDBOX_API_KEY not configured");
+        }
+        $api = new SandboxTDSAPI($apiKey, '', function($msg) { /* logging */ });
         if (!$api) {
-            throw new Exception("Analytics API not available. Please check SANDBOX_API_KEY configuration.");
+            throw new Exception("Failed to initialize Analytics API");
         }
 
         switch ($action) {
