@@ -11,13 +11,18 @@
 # Configuration
 BACKUP_DIR="/home/bombayengg/backups"
 DATABASE_NAME="tds_autofile"
-MYSQL_USER="root"
-MYSQL_PASSWORD=""  # Set if needed
+MYSQL_USER="tdsuser"
+MYSQL_PASSWORD="StrongPass123"  # Set if needed
 RETENTION_DAYS=30  # Keep backups for 30 days
 LOG_FILE="/var/log/db_backup.log"
 
 # Create backup directory if it doesn't exist
 mkdir -p "$BACKUP_DIR"
+
+# Ensure log file can be written (create with proper permissions if needed)
+if [ ! -f "$LOG_FILE" ]; then
+    touch "$LOG_FILE" 2>/dev/null || LOG_FILE="$BACKUP_DIR/db_backup.log"
+fi
 
 # Timestamp
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
