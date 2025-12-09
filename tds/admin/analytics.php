@@ -32,10 +32,8 @@ if (!empty($action)) {
     try {
         // Load API only when needed
         require_once __DIR__.'/../lib/SandboxTDSAPI.php';
-        $apiKey = getenv('SANDBOX_API_KEY') ?? '';
-        $apiSecret = getenv('SANDBOX_API_SECRET') ?? '';
-        // Note: Both key and secret may come from environment or be empty if using other auth methods
-        $api = new SandboxTDSAPI($apiKey, $apiSecret, function($msg) { /* logging */ });
+        // SandboxTDSAPI requires firm_id and PDO connection
+        $api = new SandboxTDSAPI($firm_id, $pdo, function($msg) { /* logging */ });
         if (!$api) {
             throw new Exception("Failed to initialize Analytics API");
         }
