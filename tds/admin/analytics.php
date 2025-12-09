@@ -108,9 +108,20 @@ if (!empty($action)) {
                 throw new Exception("Unknown action: $action");
         }
     } catch (Exception $e) {
+        $errorMsg = $e->getMessage();
+
+        // Provide helpful guidance for common errors
+        if (strpos($errorMsg, 'HTTP 403') !== false) {
+            $errorMsg = "Authentication Failed (403): Your API credentials may be invalid or expired. Please verify your Sandbox API credentials in the database. Contact Sandbox support if the issue persists.";
+        } elseif (strpos($errorMsg, 'HTTP 401') !== false) {
+            $errorMsg = "Unauthorized (401): Invalid API key or secret. Please check your credentials.";
+        } elseif (strpos($errorMsg, 'No active API credentials') !== false) {
+            $errorMsg = "No API Credentials: Please configure API credentials for this firm in the database.";
+        }
+
         $actionResult = [
             'status' => 'error',
-            'message' => $e->getMessage()
+            'message' => $errorMsg
         ];
     }
 }
