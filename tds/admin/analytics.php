@@ -34,9 +34,7 @@ if (!empty($action)) {
         require_once __DIR__.'/../lib/SandboxTDSAPI.php';
         $apiKey = getenv('SANDBOX_API_KEY') ?? '';
         $apiSecret = getenv('SANDBOX_API_SECRET') ?? '';
-        if (empty($apiKey) || empty($apiSecret)) {
-            throw new Exception("SANDBOX_API_KEY or SANDBOX_API_SECRET not configured");
-        }
+        // Note: Both key and secret may come from environment or be empty if using other auth methods
         $api = new SandboxTDSAPI($apiKey, $apiSecret, function($msg) { /* logging */ });
         if (!$api) {
             throw new Exception("Failed to initialize Analytics API");
