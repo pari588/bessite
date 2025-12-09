@@ -297,30 +297,71 @@ if ($action === 'generate_fvu' && $firm_id) {
 
   <div style="background: #f0f7ff; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 16px;">
     <p style="margin: 0; font-size: 13px; color: #1976d2; line-height: 1.5;">
-      <strong>Sandbox Analytics API</strong> provides Potential Notice Analysis to identify tax compliance risks and flag issues that might trigger tax authority notices. Poll status of analysis jobs here.
+      <strong>Sandbox Analytics API</strong> provides Potential Notice Analysis to identify tax compliance risks and flag issues that might trigger tax authority notices. Submit jobs or check their status here.
     </p>
   </div>
 
-  <div id="analyticsJobsContainer" style="display: none; margin-bottom: 16px;">
-    <div style="font-size: 12px; color: #666; margin-bottom: 12px;">
-      <strong>Recent Analytics Jobs:</strong>
-    </div>
-    <div id="analyticsJobsList" style="display: grid; gap: 8px;"></div>
-  </div>
-
-  <div id="noAnalyticsJobs" style="padding: 16px; background: #f5f5f5; border-radius: 4px; text-align: center; color: #999; font-size: 13px;">
-    No analytics jobs tracked yet. Initiate an analytics job to start risk assessment.
-  </div>
-
-  <form id="pollAnalyticsForm" style="display: flex; gap: 12px; margin-top: 16px;">
-    <input type="text" id="jobIdInput" placeholder="Enter Analytics Job ID" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: monospace;">
-    <button type="button" onclick="pollAnalyticsJob()" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
+  <!-- TAB NAVIGATION -->
+  <div style="display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    <button type="button" onclick="switchAnalyticsTab('submit')" id="tab-submit" style="padding: 12px 16px; background: none; border: none; border-bottom: 2px solid #1976d2; color: #1976d2; cursor: pointer; font-size: 13px; font-weight: 600;">
+      <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">send</span>
+      Submit New Job
+    </button>
+    <button type="button" onclick="switchAnalyticsTab('poll')" id="tab-poll" style="padding: 12px 16px; background: none; border: none; border-bottom: 2px solid #e0e0e0; color: #666; cursor: pointer; font-size: 13px; font-weight: 600;">
       <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">refresh</span>
       Poll Status
     </button>
-  </form>
+  </div>
 
-  <div id="analyticsMsg" class="badge" style="display: none; margin-top: 12px;"></div>
+  <!-- SUBMIT NEW JOB TAB -->
+  <div id="tab-content-submit" style="display: block;">
+    <form id="submitAnalyticsForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+      <input type="text" id="submitTan" placeholder="TAN (e.g., AHMA09719B)" maxlength="10" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: monospace;" required>
+      <select id="submitQuarter" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
+        <option value="">Select Quarter</option>
+        <option value="Q1">Q1 (Apr-Jun)</option>
+        <option value="Q2">Q2 (Jul-Sep)</option>
+        <option value="Q3">Q3 (Oct-Dec)</option>
+        <option value="Q4">Q4 (Jan-Mar)</option>
+      </select>
+      <select id="submitForm" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
+        <option value="">Select Form</option>
+        <option value="24Q">Form 24Q (TCS)</option>
+        <option value="26Q">Form 26Q (Non-Salary)</option>
+        <option value="27Q">Form 27Q (NRI)</option>
+      </select>
+      <input type="text" id="submitFy" placeholder="FY (e.g., FY 2024-25)" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;" required>
+      <button type="button" onclick="submitAnalyticsJob()" style="grid-column: 1 / -1; padding: 10px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
+        <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">send</span>
+        Submit Analytics Job
+      </button>
+    </form>
+    <div id="submitMsg" class="badge" style="display: none; margin-bottom: 16px;"></div>
+  </div>
+
+  <!-- POLL JOB STATUS TAB -->
+  <div id="tab-content-poll" style="display: none;">
+    <div id="analyticsJobsContainer" style="display: none; margin-bottom: 16px;">
+      <div style="font-size: 12px; color: #666; margin-bottom: 12px;">
+        <strong>Recent Analytics Jobs:</strong>
+      </div>
+      <div id="analyticsJobsList" style="display: grid; gap: 8px;"></div>
+    </div>
+
+    <div id="noAnalyticsJobs" style="padding: 16px; background: #f5f5f5; border-radius: 4px; text-align: center; color: #999; font-size: 13px;">
+      No analytics jobs tracked yet. Initiate an analytics job to start risk assessment.
+    </div>
+
+    <form id="pollAnalyticsForm" style="display: flex; gap: 12px; margin-top: 16px;">
+      <input type="text" id="jobIdInput" placeholder="Enter Analytics Job ID" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: monospace;">
+      <button type="button" onclick="pollAnalyticsJob()" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
+        <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">refresh</span>
+        Poll Status
+      </button>
+    </form>
+
+    <div id="analyticsMsg" class="badge" style="display: none; margin-top: 12px;"></div>
+  </div>
 </div>
 
 <!-- QUICK ACTIONS -->
@@ -642,6 +683,95 @@ function htmlEscape(text) {
 
 function showMsg(message, type) {
   const msgEl = document.getElementById('analyticsMsg');
+  msgEl.innerHTML = message;
+  msgEl.className = 'badge ' + type;
+  msgEl.style.display = 'block';
+
+  if (type !== 'error') {
+    setTimeout(() => msgEl.style.display = 'none', 5000);
+  }
+}
+
+// Switch between submit and poll tabs
+function switchAnalyticsTab(tab) {
+  const submitTab = document.getElementById('tab-content-submit');
+  const pollTab = document.getElementById('tab-content-poll');
+  const submitBtn = document.getElementById('tab-submit');
+  const pollBtn = document.getElementById('tab-poll');
+
+  if (tab === 'submit') {
+    submitTab.style.display = 'block';
+    pollTab.style.display = 'none';
+    submitBtn.style.borderBottom = '2px solid #1976d2';
+    submitBtn.style.color = '#1976d2';
+    pollBtn.style.borderBottom = '2px solid #e0e0e0';
+    pollBtn.style.color = '#666';
+  } else {
+    submitTab.style.display = 'none';
+    pollTab.style.display = 'block';
+    submitBtn.style.borderBottom = '2px solid #e0e0e0';
+    submitBtn.style.color = '#666';
+    pollBtn.style.borderBottom = '2px solid #1976d2';
+    pollBtn.style.color = '#1976d2';
+    loadAnalyticsJobs(); // Reload when switching to poll tab
+  }
+}
+
+// Submit new analytics job
+async function submitAnalyticsJob() {
+  const tan = document.getElementById('submitTan').value.trim();
+  const quarter = document.getElementById('submitQuarter').value;
+  const form = document.getElementById('submitForm').value;
+  const fy = document.getElementById('submitFy').value.trim();
+
+  const msgEl = document.getElementById('submitMsg');
+
+  if (!tan || !quarter || !form || !fy) {
+    showSubmitMsg('Please fill all fields', 'error', msgEl);
+    return;
+  }
+
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-rounded" style="font-size:16px;animation:spin 1s linear infinite;">send</span>';
+
+  try {
+    const response = await fetch('/tds/api/submit_analytics_job.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({tan, quarter, form, fy})
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      showSubmitMsg('✓ Job submitted successfully! Job ID: ' + htmlEscape(data.data.job_id.substring(0, 8)) + '...', 'success', msgEl);
+
+      // Clear form
+      document.getElementById('submitTan').value = '';
+      document.getElementById('submitQuarter').value = '';
+      document.getElementById('submitForm').value = '';
+      document.getElementById('submitFy').value = '';
+
+      // Switch to poll tab
+      setTimeout(() => {
+        switchAnalyticsTab('poll');
+        loadAnalyticsJobs();
+      }, 2000);
+    } else {
+      showSubmitMsg('Error: ' + (data.msg || 'Failed to submit job'), 'error', msgEl);
+    }
+  } catch (e) {
+    showSubmitMsg('Error: ' + e.message, 'error', msgEl);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// Show submit message
+function showSubmitMsg(message, type, msgEl) {
   msgEl.innerHTML = message;
   msgEl.className = 'badge ' + type;
   msgEl.style.display = 'block';

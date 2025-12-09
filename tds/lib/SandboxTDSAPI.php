@@ -315,6 +315,111 @@ class SandboxTDSAPI {
   }
 
   /**
+   * Submit Potential Notice Analysis job to Sandbox Analytics API
+   * Initiates analysis to check and avoid potential notices towards TDS return
+   *
+   * @param string $tan TAN identifier (e.g., AHMA09719B)
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $fy Financial year (e.g., FY 2024-25)
+   * @return array Job details including job_id, status, and json_url
+   * @throws Exception
+   */
+  public function submitAnalyticsJob($tan, $quarter, $form, $fy) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.analytics.potential_notice.request',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'form' => $form,
+        'financial_year' => $fy
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/analytics/potential-notices',
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      $this->log('analytics_submit', 'success', "Analytics job submitted: $jobId", json_encode($payload), json_encode(['job_id' => $jobId, 'status' => $status]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'tan' => $response['data']['tan'] ?? $tan,
+        'quarter' => $response['data']['quarter'] ?? $quarter,
+        'financial_year' => $response['data']['financial_year'] ?? $fy,
+        'form' => $response['data']['form'] ?? $form,
+        'job_status' => $status,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'json_url' => $response['data']['json_url'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_submit', 'failed', $e->getMessage(), json_encode(compact('tan', 'quarter', 'form', 'fy')));
+      throw $e;
+    }
+  }
+
+  /**
+   * Fetch all Potential Notice Analysis jobs from Sandbox Analytics API
+   * Retrieves list of analytics jobs with filtering and pagination
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $fy Financial year (e.g., FY 2024-25)
+   * @param int $pageSize Number of records (max 50)
+   * @param string|null $lastEvaluatedKey Pagination marker
+   * @return array List of jobs with pagination info
+   * @throws Exception
+   */
+  public function fetchAnalyticsJobs($tan, $quarter, $form, $fy, $pageSize = 50, $lastEvaluatedKey = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.analytics.potential_notice.jobs.search',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'form' => $form,
+        'financial_year' => $fy,
+        'page_size' => min($pageSize, 50)
+      ];
+
+      if ($lastEvaluatedKey) {
+        $payload['last_evaluated_key'] = $lastEvaluatedKey;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/analytics/potential-notices/search',
+        $payload
+      );
+
+      $items = $response['data']['items'] ?? [];
+      $nextKey = $response['data']['last_evaluated_key'] ?? null;
+
+      $this->log('analytics_fetch', 'success', "Fetched " . count($items) . " analytics jobs", json_encode(['tan' => $tan, 'form' => $form]));
+
+      return [
+        'status' => 'success',
+        'count' => count($items),
+        'jobs' => $items,
+        'last_evaluated_key' => $nextKey,
+        'has_more' => $nextKey ? true : false
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_fetch', 'failed', $e->getMessage(), json_encode(compact('tan', 'quarter', 'form', 'fy')));
+      throw $e;
+    }
+  }
+
+  /**
    * Poll Potential Notice Analysis job from Sandbox Analytics API
    * Checks the results of Potential Notice analysis for compliance risks
    *
