@@ -448,6 +448,323 @@ class SandboxTDSAPI {
   }
 
   /**
+   * ANALYTICS API - Submit TDS Potential Notice Analysis Job
+   *
+   * Analyzes TDS returns to identify compliance risks and potential tax notices
+   *
+   * @param string $tan TAN identifier (e.g., AHMA09719B)
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $fy Financial year (e.g., FY 2024-25)
+   * @param mixed $form_content Form data (array or JSON string)
+   * @return array Job details including job_id and status
+   * @throws Exception
+   */
+  public function submitTDSAnalyticsJob($tan, $quarter, $form, $fy, $form_content) {
+    try {
+      $this->ensureValidToken();
+
+      // Ensure form_content is base64 encoded
+      if (is_array($form_content)) {
+        $form_content = json_encode($form_content);
+      }
+      $encoded_content = base64_encode($form_content);
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.analytics.potential_notices.job',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => $form,
+        'form_content' => $encoded_content
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/analytics/potential-notices',
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      $this->log('analytics_submit_tds', 'success', "TDS Analytics job submitted: $jobId",
+        json_encode(['tan' => $tan, 'form' => $form]),
+        json_encode(['job_id' => $jobId, 'status' => $status]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => $form,
+        'job_status' => $status,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'json_url' => $response['data']['json_url'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_submit_tds', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'form', 'fy')));
+      throw $e;
+    }
+  }
+
+  /**
+   * ANALYTICS API - Fetch TDS Analytics Jobs
+   *
+   * Search and retrieve historical TDS analytics jobs with pagination
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $fy Financial year
+   * @param int $pageSize Number of records (max 50)
+   * @param string|null $lastEvaluatedKey Pagination marker
+   * @return array List of jobs with pagination info
+   * @throws Exception
+   */
+  public function fetchTDSAnalyticsJobs($tan, $quarter, $form, $fy, $pageSize = 50, $lastEvaluatedKey = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.analytics.potential_notices.search.request',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => $form,
+        'page_size' => min($pageSize, 50)
+      ];
+
+      if ($lastEvaluatedKey) {
+        $payload['last_evaluated_key'] = $lastEvaluatedKey;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/analytics/potential-notices/search',
+        $payload
+      );
+
+      $items = $response['data']['items'] ?? [];
+      $nextKey = $response['data']['last_evaluated_key'] ?? null;
+
+      $this->log('analytics_fetch_tds', 'success', "Fetched " . count($items) . " TDS analytics jobs",
+        json_encode(['tan' => $tan, 'form' => $form]));
+
+      return [
+        'status' => 'success',
+        'count' => count($items),
+        'jobs' => $items,
+        'last_evaluated_key' => $nextKey,
+        'has_more' => $nextKey ? true : false
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_fetch_tds', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'form', 'fy')));
+      throw $e;
+    }
+  }
+
+  /**
+   * ANALYTICS API - Poll TDS Analytics Job Status
+   *
+   * Check the status and results of a TDS potential notice analysis job
+   *
+   * @param string $job_id Job ID from analytics job submission
+   * @return array Job status with risk assessment details
+   * @throws Exception
+   */
+  public function pollTDSAnalyticsJob($job_id) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tds/analytics/potential-notices',
+        ['job_id' => $job_id],
+        'query'
+      );
+
+      $status = $response['data']['status'] ?? 'unknown';
+      $riskLevel = $response['data']['risk_level'] ?? null;
+      $riskScore = $response['data']['risk_score'] ?? 0;
+
+      $this->log('analytics_poll_tds', 'success', "TDS Analytics job status: $status",
+        json_encode(['job_id' => $job_id]),
+        json_encode(['status' => $status, 'risk_level' => $riskLevel, 'risk_score' => $riskScore]));
+
+      return [
+        'status' => $status,
+        'job_id' => $job_id,
+        'form' => $response['data']['form'] ?? null,
+        'quarter' => $response['data']['quarter'] ?? null,
+        'financial_year' => $response['data']['financial_year'] ?? null,
+        'tan' => $response['data']['tan'] ?? null,
+        'risk_level' => $riskLevel,
+        'risk_score' => $riskScore,
+        'potential_notices_count' => $response['data']['potential_notices_count'] ?? 0,
+        'report_url' => $response['data']['report_url'] ?? null,
+        'issues' => $response['data']['issues'] ?? [],
+        'error' => $response['data']['error'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_poll_tds', 'failed', $e->getMessage(),
+        json_encode(['job_id' => $job_id]));
+      throw $e;
+    }
+  }
+
+  /**
+   * ANALYTICS API - Submit TCS Potential Notice Analysis Job
+   *
+   * Analyzes TCS (Tax Collected at Source) returns for Form 27EQ
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $fy Financial year
+   * @param mixed $form_content Form data (array or JSON string)
+   * @return array Job details
+   * @throws Exception
+   */
+  public function submitTCSAnalyticsJob($tan, $quarter, $fy, $form_content) {
+    try {
+      $this->ensureValidToken();
+
+      if (is_array($form_content)) {
+        $form_content = json_encode($form_content);
+      }
+      $encoded_content = base64_encode($form_content);
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tcs.analytics.potential_notices.job',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => '27EQ',
+        'form_content' => $encoded_content
+      ];
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tcs/analytics/potential-notices',
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+
+      $this->log('analytics_submit_tcs', 'success', "TCS Analytics job submitted: $jobId",
+        json_encode(['tan' => $tan]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => '27EQ',
+        'job_status' => $response['data']['status'] ?? 'unknown',
+        'json_url' => $response['data']['json_url'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_submit_tcs', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'fy')));
+      throw $e;
+    }
+  }
+
+  /**
+   * ANALYTICS API - Fetch TCS Analytics Jobs
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter
+   * @param string $fy Financial year
+   * @param int $pageSize Number of records
+   * @param string|null $lastEvaluatedKey Pagination marker
+   * @return array List of TCS analytics jobs
+   * @throws Exception
+   */
+  public function fetchTCSAnalyticsJobs($tan, $quarter, $fy, $pageSize = 50, $lastEvaluatedKey = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tcs.analytics.potential_notices.search.request',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $fy,
+        'form' => '27EQ',
+        'page_size' => min($pageSize, 50)
+      ];
+
+      if ($lastEvaluatedKey) {
+        $payload['last_evaluated_key'] = $lastEvaluatedKey;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tcs/analytics/potential-notices/search',
+        $payload
+      );
+
+      $items = $response['data']['items'] ?? [];
+
+      $this->log('analytics_fetch_tcs', 'success', "Fetched " . count($items) . " TCS analytics jobs");
+
+      return [
+        'status' => 'success',
+        'count' => count($items),
+        'jobs' => $items,
+        'last_evaluated_key' => $response['data']['last_evaluated_key'] ?? null,
+        'has_more' => isset($response['data']['last_evaluated_key'])
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_fetch_tcs', 'failed', $e->getMessage());
+      throw $e;
+    }
+  }
+
+  /**
+   * ANALYTICS API - Poll TCS Analytics Job Status
+   *
+   * @param string $job_id Job ID
+   * @return array Job status with risk details
+   * @throws Exception
+   */
+  public function pollTCSAnalyticsJob($job_id) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tcs/analytics/potential-notices',
+        ['job_id' => $job_id],
+        'query'
+      );
+
+      $this->log('analytics_poll_tcs', 'success', "TCS Analytics job status: " . $response['data']['status']);
+
+      return [
+        'status' => $response['data']['status'] ?? 'unknown',
+        'job_id' => $job_id,
+        'tan' => $response['data']['tan'] ?? null,
+        'quarter' => $response['data']['quarter'] ?? null,
+        'financial_year' => $response['data']['financial_year'] ?? null,
+        'form' => '27EQ',
+        'risk_level' => $response['data']['risk_level'] ?? null,
+        'risk_score' => $response['data']['risk_score'] ?? 0,
+        'potential_notices_count' => $response['data']['potential_notices_count'] ?? 0,
+        'report_url' => $response['data']['report_url'] ?? null,
+        'error' => $response['data']['error'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('analytics_poll_tcs', 'failed', $e->getMessage());
+      throw $e;
+    }
+  }
+
+  /**
    * Log API activity to database
    *
    * @param string $stage Processing stage
