@@ -16,23 +16,26 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 ?>
 
 <!-- CHANGE PASSWORD SECTION -->
-<div class="card fade-in" style="max-width:500px">
-  <h3>Change Password</h3>
+<div class="card fade-in" style="max-width:600px;margin-right:auto">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <span class="material-symbols-rounded" style="font-size:24px;color:#1976d2">lock</span>
+    <h3 style="margin:0;flex:1">Change Password</h3>
+  </div>
   <form id="passwordForm" class="form-grid">
     <md-outlined-text-field name="current_password" label="Current Password" type="password" required></md-outlined-text-field>
     <md-outlined-text-field name="new_password" label="New Password" type="password" required></md-outlined-text-field>
     <md-outlined-text-field name="confirm_password" label="Confirm New Password" type="password" required></md-outlined-text-field>
-    <div class="span-3" style="display:flex;gap:10px;justify-content:flex-end">
+    <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
+      <span id="passwordMsg" class="badge" style="display:none;margin-right:auto"></span>
       <md-filled-button type="submit">Update Password</md-filled-button>
-      <span id="passwordMsg" class="badge" style="display:none"></span>
     </div>
   </form>
 </div>
 
-<div style="height: 30px;"></div>
+<div style="height: 40px;"></div>
 
 <!-- USER MANAGEMENT SECTION -->
-<div class="card fade-in" style="max-width:980px">
+<div class="card fade-in">
   <h3>Team Members</h3>
   <div style="margin-bottom: 20px;">
     <md-filled-button onclick="document.getElementById('addUserForm').style.display = document.getElementById('addUserForm').style.display === 'none' ? 'block' : 'none'">
