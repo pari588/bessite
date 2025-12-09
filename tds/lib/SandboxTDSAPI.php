@@ -391,7 +391,9 @@ class SandboxTDSAPI {
    */
   private function makeAuthenticatedRequest($method, $endpoint, $data = []) {
     $headers = [
-      'Authorization' => $this->accessToken,
+      'Authorization' => 'Bearer ' . $this->accessToken,
+      'x-api-key' => $this->apiKey,
+      'x-api-version' => '1.0',
       'Content-Type' => 'application/json'
     ];
 
