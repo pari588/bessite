@@ -21,9 +21,14 @@ $fy = $_GET['fy'] ?? $curFy;
 $quarter = $_GET['quarter'] ?? $curQ;
 $tab = $_GET['tab'] ?? 'tds'; // tds or tcs
 
-// Initialize API
+// Initialize API (safely handle missing API key)
 $apiKey = getenv('SANDBOX_API_KEY') ?? '';
-$api = new SandboxTDSAPI($apiKey, '', function($msg) { /* logging */ });
+try {
+    $api = new SandboxTDSAPI($apiKey, '', function($msg) { /* logging */ });
+} catch (Exception $e) {
+    // API initialization failed, but page should still render
+    $api = null;
+}
 
 // Process actions
 $actionResult = null;
@@ -32,6 +37,11 @@ $action = $_POST['action'] ?? '';
 // Handle Analytics API actions
 if (!empty($action)) {
     try {
+        // Check if API is initialized
+        if (!$api) {
+            throw new Exception("Analytics API not available. Please check SANDBOX_API_KEY configuration.");
+        }
+
         switch ($action) {
             case 'submit_tds_analytics':
                 // Submit TDS form for risk analysis
