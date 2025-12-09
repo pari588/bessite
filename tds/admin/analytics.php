@@ -120,14 +120,18 @@ if (!empty($action)) {
 
 ?>
 
+<!-- MAIN CONTENT WRAPPER - Add visible background to debug -->
+<div style="background: #f5f5f5; min-height: 500px; padding: 20px; border: 3px solid red;">
+
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-  <h2 style="margin: 0;">📊 Risk Analytics & Potential Notices</h2>
-  <div style="font-size: 12px; color: #666;">Tab: <?=htmlspecialchars($tab)?> | TAN: <?=htmlspecialchars($firm_tan)?></div>
+  <h2 style="margin: 0; color: #000;">📊 Risk Analytics & Potential Notices</h2>
+  <div style="font-size: 12px; color: #000; background: yellow; padding: 4px;">Tab: <?=htmlspecialchars($tab)?> | TAN: <?=htmlspecialchars($firm_tan)?></div>
 </div>
 
 <!-- DEBUG: Check if page is rendering -->
-<div style="background: #fff8e1; border: 2px solid #ffb74d; padding: 12px; margin-bottom: 16px; border-radius: 4px; font-size: 12px; color: #e65100;">
-  <strong>✓ Analytics Page Loaded</strong> - If you see this, the page is rendering correctly. Tab: <strong><?=htmlspecialchars($tab)?></strong>
+<div style="background: red; border: 3px solid darkred; padding: 12px; margin-bottom: 16px; border-radius: 4px; font-size: 14px; color: white;">
+  <strong>✓✓✓ ANALYTICS PAGE LOADED ✓✓✓</strong><br>
+  Tab: <strong><?=htmlspecialchars($tab)?></strong> | FY: <strong><?=htmlspecialchars($fy)?></strong> | Quarter: <strong><?=htmlspecialchars($quarter)?></strong>
 </div>
 
 <?php if ($actionResult): ?>
@@ -297,5 +301,7 @@ if (!empty($action)) {
     </div>
   </div>
 </div>
+
+</div><!-- END MAIN CONTENT WRAPPER -->
 
 <?php include __DIR__.'/_layout_bottom.php'; ?>
