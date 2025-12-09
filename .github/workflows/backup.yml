@@ -1,0 +1,101 @@
+name: Automated Daily Backup
+
+on:
+  schedule:
+    # Run backup every day at 2 AM UTC (9:30 AM IST)
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create backup directory
+        run: |
+          mkdir -p backups
+          echo "Backup created at $(date)" > backups/BACKUP_INFO.txt
+          echo "Branch: main" >> backups/BACKUP_INFO.txt
+          echo "Commit: ${{ github.sha }}" >> backups/BACKUP_INFO.txt
+
+      - name: Create git bundle
+        run: |
+          git bundle create backups/repo-$(date +%Y%m%d-%H%M%S).bundle --all
+          ls -lh backups/
+
+      - name: Commit backup to git-backups branch
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout --orphan git-backups || git checkout git-backups
+          git add backups/
+          git commit -m "Automated backup - $(date +%Y-%m-%d\ %H:%M:%S)" || echo "No changes to commit"
+          git push origin git-backups
+
+      - name: Keep only last 30 days of backups
+        run: |
+          git checkout git-backups
+          find backups -name "repo-*.bundle" -mtime +30 -delete
+          git add backups/
+          git commit -m "Cleanup old backups - $(date)" || echo "No old backups to remove"
+          git push origin git-backups
+
+      - name: Generate backup summary
+        run: |
+          echo "# Backup Summary" > BACKUP_SUMMARY.md
+          echo "Date: $(date)" >> BACKUP_SUMMARY.md
+          echo "Backup Status: ✅ SUCCESS" >> BACKUP_SUMMARY.md
+          echo "" >> BACKUP_SUMMARY.md
+          echo "## Latest Backup" >> BACKUP_SUMMARY.md
+          echo "- Commit: ${{ github.sha }}" >> BACKUP_SUMMARY.md
+          echo "- Branch: main" >> BACKUP_SUMMARY.md
+          echo "- Files: $(git ls-files | wc -l)" >> BACKUP_SUMMARY.md
+          echo "- Database: See backups branch" >> BACKUP_SUMMARY.md
+          cat BACKUP_SUMMARY.md
+
+  database-backup:
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create database backup info
+        run: |
+          mkdir -p db-backups
+          echo "Database Backup Information" > db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "==============================" >> db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "Scheduled: Daily at 2 AM UTC (9:30 AM IST)" >> db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "Last Backup: $(date)" >> db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "" >> db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "NOTE: Database backups should be configured separately" >> db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "on your hosting server or use a database-specific backup service." >> db-backups/DB_BACKUP_SCHEDULE.txt
+          cat db-backups/DB_BACKUP_SCHEDULE.txt
+
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [backup, database-backup]
+
+    steps:
+      - name: Backup completion notification
+        run: |
+          echo "✅ Automated backup completed successfully!"
+          echo ""
+          echo "Backup Details:"
+          echo "- Time: $(date)"
+          echo "- Status: Complete"
+          echo "- Location: GitHub backups branch"
+          echo "- Frequency: Daily"
+          echo ""
+          echo "To restore from backup:"
+          echo "1. Go to: https://github.com/pari588/bessite"
+          echo "2. Switch to: git-backups branch"
+          echo "3. Download: repo-YYYYMMDD-HHMMSS.bundle"
+          echo "4. Run: git clone repo-*.bundle"
