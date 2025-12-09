@@ -2,14 +2,16 @@
 require_once __DIR__.'/../lib/auth.php'; auth_require();
 require_once __DIR__.'/../lib/db.php';
 require_once __DIR__.'/../lib/ReportsAPI.php';
+require_once __DIR__.'/../lib/SandboxTDSAPI.php';
 require_once __DIR__.'/../lib/helpers.php';
 
-$page_title='Form Generation';
+$page_title='Form Generation & Reports';
 include __DIR__.'/_layout_top.php';
 
 // Get firm data
-$firm = $pdo->query('SELECT id FROM firms LIMIT 1')->fetch();
+$firm = $pdo->query('SELECT id, tan FROM firms LIMIT 1')->fetch();
 $firm_id = $firm['id'] ?? null;
+$tan = $firm['tan'] ?? null;
 
 // Get current FY and quarter
 $today = date('Y-m-d');
@@ -19,14 +21,63 @@ $today = date('Y-m-d');
 $fy = $_GET['fy'] ?? $curFy;
 $quarter = $_GET['quarter'] ?? $curQ;
 $formType = $_GET['form'] ?? '26Q';
+$tab = $_GET['tab'] ?? 'local'; // 'local' or 'sandbox'
+$action = $_GET['action'] ?? null;
 
 // Initialize reports API
 $reports = new ReportsAPI($pdo);
 $generatedForm = null;
 $error = null;
+$sandboxJobId = null;
+$sandboxJobStatus = null;
 
-// Generate form if requested
-if ($_GET['generate'] && $firm_id) {
+// Handle Sandbox Reports API requests
+if ($tab === 'sandbox' && $action === 'submit' && $firm_id && $tan) {
+    try {
+        $api = new SandboxTDSAPI($firm_id, $pdo);
+
+        // Map form type to TDS form
+        $tdsForm = $formType; // Can be 24Q, 26Q, 27Q
+        $fyFormat = "FY " . substr($fy, 0, 4) . "-" . substr($fy, 4); // Convert to FY format
+
+        if ($formType === '24Q') {
+            // For 24Q, don't use quarter
+            $result = $api->submitTDSReportsJob($tan, 'Q4', '24Q', $fyFormat);
+        } elseif ($formType === '27Q') {
+            $result = $api->submitTDSReportsJob($tan, $quarter, '27Q', $fyFormat);
+        } else {
+            // Default to 26Q
+            $result = $api->submitTDSReportsJob($tan, $quarter, '26Q', $fyFormat);
+        }
+
+        if ($result['status'] === 'success') {
+            $sandboxJobId = $result['job_id'];
+        } else {
+            $error = $result['error'] ?? 'Failed to submit report job';
+        }
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+} elseif ($tab === 'sandbox' && $action === 'poll' && isset($_GET['job_id']) && $firm_id) {
+    // Poll job status
+    try {
+        $api = new SandboxTDSAPI($firm_id, $pdo);
+        $jobId = $_GET['job_id'];
+
+        if ($formType === 'TCS') {
+            $result = $api->pollTCSReportsJob($jobId);
+        } else {
+            $result = $api->pollTDSReportsJob($jobId);
+        }
+
+        $sandboxJobStatus = $result;
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+}
+
+// Generate local form if requested
+if ($_GET['generate'] && $firm_id && $tab === 'local') {
     try {
         switch ($formType) {
             case '26Q':
@@ -104,11 +155,21 @@ try {
 </style>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-  <h2 style="margin: 0;">Form Generation</h2>
+  <h2 style="margin: 0;">Form Generation & Reports</h2>
   <md-filled-button onclick="location.href='dashboard.php'">
     <span class="material-symbols-rounded" style="margin-right: 6px;">arrow_back</span>
     Back to Dashboard
   </md-filled-button>
+</div>
+
+<!-- TABS -->
+<div style="border-bottom: 2px solid #e0e0e0; margin-bottom: 24px; display: flex; gap: 0;">
+  <button onclick="switchTab('local')" style="padding: 12px 20px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: <?= $tab === 'local' ? 600 : 400 ?>; color: <?= $tab === 'local' ? '#1976d2' : '#666' ?>; border-bottom: 3px solid <?= $tab === 'local' ? '#1976d2' : 'transparent' ?>; margin-bottom: -2px;">
+    📋 Local Forms
+  </button>
+  <button onclick="switchTab('sandbox')" style="padding: 12px 20px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: <?= $tab === 'sandbox' ? 600 : 400 ?>; color: <?= $tab === 'sandbox' ? '#1976d2' : '#666' ?>; border-bottom: 3px solid <?= $tab === 'sandbox' ? '#1976d2' : 'transparent' ?>; margin-bottom: -2px;">
+    🌐 Sandbox Reports
+  </button>
 </div>
 
 <?php
@@ -144,11 +205,13 @@ $fyList = fy_list(7); // Get 7 years span
 </div>
 <?php endif; ?>
 
-<!-- AVAILABLE FORMS -->
-<div style="margin-bottom: 24px;">
-  <h3 style="margin: 0 0 16px 0; font-size: 16px;">Available Forms</h3>
+<!-- LOCAL FORMS SECTION -->
+<div id="localTab" style="display: <?= $tab === 'local' ? 'block' : 'none' ?>;">
+  <!-- AVAILABLE FORMS -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="margin: 0 0 16px 0; font-size: 16px;">Available Forms</h3>
 
-  <div class="form-grid">
+    <div class="form-grid">
     <!-- FORM 26Q -->
     <div class="form-card" onclick="generateForm('26Q')">
       <div class="form-title">Form 26Q</div>
@@ -266,6 +329,150 @@ $fyList = fy_list(7); // Get 7 years span
   <p style="margin: 8px 0 0 0; color: #e65100;"><?=htmlspecialchars($generatedForm['message'] ?? 'Form could not be generated')?></p>
 </div>
 <?php endif; ?>
+</div><!-- End localTab -->
+
+<!-- SANDBOX REPORTS SECTION -->
+<div id="sandboxTab" style="display: <?= $tab === 'sandbox' ? 'block' : 'none' ?>;">
+  <?php if ($tan): ?>
+    <div style="padding: 12px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; margin-bottom: 16px;">
+      <strong style="color: #1565c0;">🌐 Sandbox Reports API</strong>
+      <p style="margin: 6px 0 0 0; font-size: 12px; color: #1565c0;">TAN: <?=htmlspecialchars($tan)?> | FY: <?=htmlspecialchars($fy)?> | Quarter: <?=htmlspecialchars($quarter)?></p>
+    </div>
+
+    <div class="form-grid">
+      <!-- TDS 26Q Report -->
+      <div class="form-card">
+        <div class="form-title">Form 26Q Report</div>
+        <div class="form-description">Non-Salary TDS Returns</div>
+        <div class="form-code">Quarterly Report for <?=htmlspecialchars($quarter)?></div>
+        <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
+          Generate official TDS report via Sandbox API
+        </div>
+        <button type="button" onclick="submitSandboxJob('26Q'); return false;" style="padding: 10px 16px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; width: 100%;">
+          <span class="material-symbols-rounded" style="font-size: 18px;">upload_file</span>
+          Submit to Sandbox
+        </button>
+      </div>
+
+      <!-- TCS Report -->
+      <div class="form-card">
+        <div class="form-title">Form 27EQ Report</div>
+        <div class="form-description">Tax Collected at Source</div>
+        <div class="form-code">Quarterly TCS Report for <?=htmlspecialchars($quarter)?></div>
+        <div style="font-size: 12px; color: #999; margin-bottom: 12px;">
+          Generate official TCS report via Sandbox API
+        </div>
+        <button type="button" onclick="submitSandboxJob('TCS'); return false;" style="padding: 10px 16px; background: #ff6f00; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; width: 100%;">
+          <span class="material-symbols-rounded" style="font-size: 18px;">upload_file</span>
+          Submit TCS Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Job Status Display -->
+    <?php if ($sandboxJobId): ?>
+      <div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px; margin-top: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <span class="material-symbols-rounded" style="color: #ff9800; font-size: 32px;">schedule</span>
+          <div>
+            <div style="font-weight: 600; font-size: 16px;">Report Job Submitted</div>
+            <div style="font-size: 12px; color: #666;">Job is being processed by Sandbox</div>
+          </div>
+        </div>
+
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 4px; margin-bottom: 16px; border-left: 4px solid #1976d2;">
+          <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Job ID</div>
+          <div style="font-family: monospace; font-size: 12px; color: #333; background: white; padding: 8px; border-radius: 3px; margin-bottom: 12px; word-break: break-all;">
+            <?=htmlspecialchars($sandboxJobId)?>
+          </div>
+
+          <div style="font-size: 12px; color: #666; margin-bottom: 8px; margin-top: 12px;">Form Type</div>
+          <div style="font-weight: 600; font-size: 14px; color: #1976d2;">
+            <?=htmlspecialchars($formType)?>
+          </div>
+        </div>
+
+        <div style="padding: 12px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: #1565c0;">
+            <strong>Next Step:</strong> Check job status below or refresh in a few moments to see if processing is complete.
+          </div>
+        </div>
+
+        <button type="button" onclick="pollSandboxJob('<?=htmlspecialchars($sandboxJobId)?>', '<?=htmlspecialchars($formType)?>'); return false;" style="padding: 10px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+          <span class="material-symbols-rounded" style="font-size: 18px;">refresh</span>
+          Check Status
+        </button>
+      </div>
+    <?php endif; ?>
+
+    <!-- Job Status Result -->
+    <?php if ($sandboxJobStatus): ?>
+      <div style="background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 20px; margin-top: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <?php if ($sandboxJobStatus['status'] === 'succeeded'): ?>
+            <span class="material-symbols-rounded" style="color: #4caf50; font-size: 32px;">check_circle</span>
+            <div>
+              <div style="font-weight: 600; font-size: 16px;">✓ Report Generated Successfully</div>
+              <div style="font-size: 12px; color: #666;">Download your official TDS/TCS report</div>
+            </div>
+          <?php elseif ($sandboxJobStatus['status'] === 'failed'): ?>
+            <span class="material-symbols-rounded" style="color: #d32f2f; font-size: 32px;">cancel</span>
+            <div>
+              <div style="font-weight: 600; font-size: 16px;">❌ Report Generation Failed</div>
+              <div style="font-size: 12px; color: #666;">Check validation report for details</div>
+            </div>
+          <?php else: ?>
+            <span class="material-symbols-rounded" style="color: #ff9800; font-size: 32px;">schedule</span>
+            <div>
+              <div style="font-weight: 600; font-size: 16px;">⏳ Still Processing</div>
+              <div style="font-size: 12px; color: #666;">Status: <?=htmlspecialchars($sandboxJobStatus['status'])?></div>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 4px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Status</div>
+          <div style="font-weight: 600; font-size: 14px; color: #1976d2; margin-bottom: 12px;">
+            <?=htmlspecialchars(ucfirst($sandboxJobStatus['status']))?>
+          </div>
+
+          <?php if ($sandboxJobStatus['txt_url']): ?>
+            <div style="font-size: 12px; color: #666; margin-bottom: 8px; margin-top: 12px;">Download</div>
+            <button type="button" onclick="window.open('<?=htmlspecialchars($sandboxJobStatus['txt_url'])?>', '_blank');" style="padding: 10px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+              <span class="material-symbols-rounded" style="font-size: 18px;">download</span>
+              Download Report
+            </button>
+          <?php endif; ?>
+
+          <?php if ($sandboxJobStatus['validation_report_url']): ?>
+            <div style="font-size: 12px; color: #666; margin-bottom: 8px; margin-top: 12px;">Validation Report</div>
+            <button type="button" onclick="window.open('<?=htmlspecialchars($sandboxJobStatus['validation_report_url'])?>', '_blank');" style="padding: 10px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+              <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
+              View Errors
+            </button>
+          <?php endif; ?>
+        </div>
+
+        <button type="button" onclick="pollSandboxJob('<?=htmlspecialchars($sandboxJobStatus['job_id'])?>', '<?=htmlspecialchars($formType)?>'); return false;" style="padding: 10px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+          <span class="material-symbols-rounded" style="font-size: 18px;">refresh</span>
+          Refresh Status
+        </button>
+      </div>
+    <?php endif; ?>
+  <?php else: ?>
+    <div style="padding: 16px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+      <strong style="color: #e65100;">⚠️ TAN Required</strong>
+      <p style="margin: 8px 0 0 0; color: #e65100;">Please ensure your firm TAN is configured in the system to use Sandbox Reports API.</p>
+    </div>
+  <?php endif; ?>
+</div><!-- End sandboxTab -->
+
+<?php if ($error && $tab === 'sandbox'): ?>
+<div style="padding: 16px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 4px; margin-top: 24px;">
+  <strong style="color: #d32f2f;">Error:</strong>
+  <p style="margin: 8px 0 0 0; color: #c62828;"><?=htmlspecialchars($error)?></p>
+</div>
+<?php endif; ?>
 
 <script>
 function generateForm(formType) {
@@ -306,6 +513,66 @@ function copyToClipboard(content) {
   }).catch(() => {
     alert('Failed to copy to clipboard');
   });
+}
+
+function switchTab(tabName) {
+  // Hide all tabs
+  document.getElementById('localTab').style.display = 'none';
+  document.getElementById('sandboxTab').style.display = 'none';
+
+  // Show selected tab
+  if (tabName === 'local') {
+    document.getElementById('localTab').style.display = 'block';
+  } else {
+    document.getElementById('sandboxTab').style.display = 'block';
+  }
+
+  // Update URL to reflect current tab
+  const url = new URL(location.href);
+  url.searchParams.set('tab', tabName);
+  url.searchParams.delete('action');
+  url.searchParams.delete('job_id');
+  url.searchParams.delete('form');
+  window.history.pushState({}, '', url);
+}
+
+function submitSandboxJob(formType) {
+  // Get selected financial year
+  const fy = document.getElementById('fySelect').value;
+  const quarter = document.getElementById('quarterSelect').value;
+
+  if (!fy) {
+    alert('Please select a financial year');
+    return;
+  }
+
+  if (formType !== 'TCS' && !quarter) {
+    alert('Please select a quarter');
+    return;
+  }
+
+  // Build URL with submission parameters
+  const url = new URL(location.href);
+  url.searchParams.set('action', 'submit');
+  url.searchParams.set('form', formType);
+  url.searchParams.set('fy', fy);
+  url.searchParams.set('quarter', quarter);
+  url.searchParams.set('tab', 'sandbox');
+
+  // Navigate to trigger PHP submission logic
+  location.href = url.toString();
+}
+
+function pollSandboxJob(jobId, formType) {
+  // Poll the job status by navigating to same page with poll action
+  const url = new URL(location.href);
+  url.searchParams.set('action', 'poll');
+  url.searchParams.set('job_id', jobId);
+  url.searchParams.set('form', formType);
+  url.searchParams.set('tab', 'sandbox');
+
+  // Navigate to trigger PHP polling logic
+  location.href = url.toString();
 }
 </script>
 

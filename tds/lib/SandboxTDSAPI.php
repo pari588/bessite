@@ -1057,6 +1057,369 @@ class SandboxTDSAPI {
   }
 
   /**
+   * REPORTS API - Submit TDS Reports Job (Async)
+   *
+   * Create a TDS report generation job for forms 24Q, 26Q, or 27Q
+   * This is an asynchronous operation - use pollTDSReportsJob() to check status
+   *
+   * @param string $tan TAN identifier (e.g., AHMA09719B)
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $financialYear Financial year (e.g., "FY 2024-25")
+   * @param string|null $previousReceiptNumber Previous receipt number (optional)
+   * @return array Job details including job_id and status
+   * @throws Exception
+   */
+  public function submitTDSReportsJob($tan, $quarter, $form, $financialYear, $previousReceiptNumber = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.reports.request',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'form' => $form,
+        'financial_year' => $financialYear
+      ];
+
+      if ($previousReceiptNumber) {
+        $payload['previous_receipt_number'] = $previousReceiptNumber;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/reports/txt',
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      $this->log('reports_submit_tds', 'success', "TDS Reports job submitted: $jobId",
+        json_encode(['tan' => $tan, 'form' => $form, 'quarter' => $quarter]),
+        json_encode(['job_id' => $jobId, 'status' => $status]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'form' => $form,
+        'financial_year' => $financialYear,
+        'job_status' => $status,
+        'json_url' => $response['data']['json_url'] ?? null,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'error' => null
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_submit_tds', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'form', 'financialYear')));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * REPORTS API - Poll TDS Reports Job Status (Async)
+   *
+   * Check the status of a submitted TDS reports job
+   * Job statuses: created → queued → processing → succeeded or failed
+   *
+   * @param string $jobId Job ID from submitTDSReportsJob()
+   * @return array Job status with download URL when complete
+   * @throws Exception
+   */
+  public function pollTDSReportsJob($jobId) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tds/reports/txt?job_id=' . urlencode($jobId),
+        []
+      );
+
+      $status = $response['data']['status'] ?? 'unknown';
+      $txtUrl = $response['data']['txt_url'] ?? null;
+      $validationReportUrl = $response['data']['validation_report_url'] ?? null;
+
+      $this->log('reports_poll_tds', 'success', "TDS Reports job status: $status",
+        json_encode(['job_id' => $jobId]),
+        json_encode(['status' => $status]));
+
+      return [
+        'status' => $status,
+        'job_id' => $jobId,
+        'tan' => $response['data']['tan'] ?? null,
+        'quarter' => $response['data']['quarter'] ?? null,
+        'form' => $response['data']['form'] ?? null,
+        'financial_year' => $response['data']['financial_year'] ?? null,
+        'txt_url' => $txtUrl,
+        'validation_report_url' => $validationReportUrl,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'updated_at' => $response['data']['updated_at'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_poll_tds', 'failed', $e->getMessage(),
+        json_encode(['job_id' => $jobId]));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage(),
+        'job_id' => $jobId
+      ];
+    }
+  }
+
+  /**
+   * REPORTS API - Search TDS Reports Jobs
+   *
+   * Search and retrieve historical TDS reports jobs with pagination
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1-Q4)
+   * @param string $form Form type (24Q, 26Q, 27Q)
+   * @param string $financialYear Financial year
+   * @param int $pageSize Number of records (max 50)
+   * @param string|null $lastEvaluatedKey Pagination marker
+   * @param int|null $fromDate Start date (milliseconds, optional)
+   * @param int|null $toDate End date (milliseconds, optional)
+   * @return array List of jobs with pagination info
+   * @throws Exception
+   */
+  public function searchTDSReportsJobs($tan, $quarter, $form, $financialYear, $pageSize = 50, $lastEvaluatedKey = null, $fromDate = null, $toDate = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tds.reports.jobs.search',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'form' => $form,
+        'financial_year' => $financialYear,
+        'page_size' => min($pageSize, 50)
+      ];
+
+      if ($lastEvaluatedKey) {
+        $payload['last_evaluated_key'] = $lastEvaluatedKey;
+      }
+
+      if ($fromDate) {
+        $payload['from_date'] = $fromDate;
+      }
+
+      if ($toDate) {
+        $payload['to_date'] = $toDate;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tds/reports/txt/search',
+        $payload
+      );
+
+      $items = $response['data']['items'] ?? [];
+      $nextKey = $response['data']['last_evaluated_key'] ?? null;
+
+      $this->log('reports_search_tds', 'success', "Found " . count($items) . " TDS reports jobs",
+        json_encode(['tan' => $tan, 'form' => $form]));
+
+      return [
+        'status' => 'success',
+        'count' => count($items),
+        'jobs' => $items,
+        'last_evaluated_key' => $nextKey,
+        'has_more' => $nextKey ? true : false
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_search_tds', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'form', 'financialYear')));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * REPORTS API - Submit TCS Reports Job (Async)
+   *
+   * Create a TCS report generation job (Form 27EQ)
+   * This is an asynchronous operation - use pollTCSReportsJob() to check status
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1, Q2, Q3, Q4)
+   * @param string $financialYear Financial year (e.g., "FY 2024-25")
+   * @param string|null $previousReceiptNumber Previous receipt number (optional)
+   * @return array Job details including job_id and status
+   * @throws Exception
+   */
+  public function submitTCSReportsJob($tan, $quarter, $financialYear, $previousReceiptNumber = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tcs.reports.request',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $financialYear
+      ];
+
+      if ($previousReceiptNumber) {
+        $payload['previous_receipt_number'] = $previousReceiptNumber;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tcs/reports/txt',
+        $payload
+      );
+
+      $jobId = $response['data']['job_id'] ?? null;
+      $status = $response['data']['status'] ?? 'unknown';
+
+      $this->log('reports_submit_tcs', 'success', "TCS Reports job submitted: $jobId",
+        json_encode(['tan' => $tan, 'quarter' => $quarter]),
+        json_encode(['job_id' => $jobId, 'status' => $status]));
+
+      return [
+        'status' => 'success',
+        'job_id' => $jobId,
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $financialYear,
+        'job_status' => $status,
+        'json_url' => $response['data']['json_url'] ?? null,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'error' => null
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_submit_tcs', 'failed', $e->getMessage(),
+        json_encode(compact('tan', 'quarter', 'financialYear')));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
+   * REPORTS API - Poll TCS Reports Job Status (Async)
+   *
+   * Check the status of a submitted TCS reports job
+   *
+   * @param string $jobId Job ID from submitTCSReportsJob()
+   * @return array Job status with download URL when complete
+   * @throws Exception
+   */
+  public function pollTCSReportsJob($jobId) {
+    try {
+      $this->ensureValidToken();
+
+      $response = $this->makeAuthenticatedRequest(
+        'GET',
+        '/tcs/reports/txt?job_id=' . urlencode($jobId),
+        []
+      );
+
+      $status = $response['data']['status'] ?? 'unknown';
+      $txtUrl = $response['data']['txt_url'] ?? null;
+      $validationReportUrl = $response['data']['validation_report_url'] ?? null;
+
+      $this->log('reports_poll_tcs', 'success', "TCS Reports job status: $status",
+        json_encode(['job_id' => $jobId]),
+        json_encode(['status' => $status]));
+
+      return [
+        'status' => $status,
+        'job_id' => $jobId,
+        'tan' => $response['data']['tan'] ?? null,
+        'quarter' => $response['data']['quarter'] ?? null,
+        'financial_year' => $response['data']['financial_year'] ?? null,
+        'txt_url' => $txtUrl,
+        'validation_report_url' => $validationReportUrl,
+        'created_at' => $response['data']['created_at'] ?? null,
+        'updated_at' => $response['data']['updated_at'] ?? null
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_poll_tcs', 'failed', $e->getMessage(),
+        json_encode(['job_id' => $jobId]));
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage(),
+        'job_id' => $jobId
+      ];
+    }
+  }
+
+  /**
+   * REPORTS API - Search TCS Reports Jobs
+   *
+   * Search and retrieve historical TCS reports jobs with pagination
+   *
+   * @param string $tan TAN identifier
+   * @param string $quarter Quarter (Q1-Q4)
+   * @param string $financialYear Financial year
+   * @param int $pageSize Number of records (max 50)
+   * @param string|null $lastEvaluatedKey Pagination marker
+   * @param int|null $fromDate Start date (milliseconds, optional)
+   * @param int|null $toDate End date (milliseconds, optional)
+   * @return array List of jobs with pagination info
+   * @throws Exception
+   */
+  public function searchTCSReportsJobs($tan, $quarter, $financialYear, $pageSize = 50, $lastEvaluatedKey = null, $fromDate = null, $toDate = null) {
+    try {
+      $this->ensureValidToken();
+
+      $payload = [
+        '@entity' => 'in.co.sandbox.tcs.reports.jobs.search',
+        'tan' => $tan,
+        'quarter' => $quarter,
+        'financial_year' => $financialYear,
+        'page_size' => min($pageSize, 50)
+      ];
+
+      if ($lastEvaluatedKey) {
+        $payload['last_evaluated_key'] = $lastEvaluatedKey;
+      }
+
+      if ($fromDate) {
+        $payload['from_date'] = $fromDate;
+      }
+
+      if ($toDate) {
+        $payload['to_date'] = $toDate;
+      }
+
+      $response = $this->makeAuthenticatedRequest(
+        'POST',
+        '/tcs/reports/txt/search',
+        $payload
+      );
+
+      $items = $response['data']['items'] ?? [];
+      $nextKey = $response['data']['last_evaluated_key'] ?? null;
+
+      $this->log('reports_search_tcs', 'success', "Found " . count($items) . " TCS reports jobs");
+
+      return [
+        'status' => 'success',
+        'count' => count($items),
+        'jobs' => $items,
+        'last_evaluated_key' => $nextKey,
+        'has_more' => $nextKey ? true : false
+      ];
+    } catch (Exception $e) {
+      $this->log('reports_search_tcs', 'failed', $e->getMessage());
+      return [
+        'status' => 'failed',
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  /**
    * Log API activity to database
    *
    * @param string $stage Processing stage
