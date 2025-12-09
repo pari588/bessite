@@ -55,25 +55,26 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
       <md-filled-button type="submit">Save Profile</md-filled-button>
     </div>
   </form>
-</div>
 
-<div style="height: 40px;"></div>
+  <!-- PASSWORD DIVIDER -->
+  <div style="margin:30px 0;border-top:1px solid #e0e0e0"></div>
 
-<!-- CHANGE PASSWORD SECTION -->
-<div class="card fade-in" style="max-width:600px;margin-right:auto">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-    <span class="material-symbols-rounded" style="font-size:24px;color:#1976d2">lock</span>
-    <h3 style="margin:0;flex:1">Change Password</h3>
-  </div>
-  <form id="passwordForm" class="form-grid">
-    <md-outlined-text-field name="current_password" label="Current Password" type="password" required></md-outlined-text-field>
-    <md-outlined-text-field name="new_password" label="New Password" type="password" required></md-outlined-text-field>
-    <md-outlined-text-field name="confirm_password" label="Confirm New Password" type="password" required></md-outlined-text-field>
-    <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
-      <span id="passwordMsg" class="badge" style="display:none;margin-right:auto"></span>
-      <md-filled-button type="submit">Update Password</md-filled-button>
+  <!-- PASSWORD SECTION -->
+  <div style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span class="material-symbols-rounded" style="font-size:20px;color:#1976d2">lock</span>
+      <h4 style="margin:0;flex:1;font-size:14px;font-weight:600">Change Password</h4>
     </div>
-  </form>
+    <form id="passwordForm" class="form-grid">
+      <md-outlined-text-field name="current_password" label="Current Password" type="password" required></md-outlined-text-field>
+      <md-outlined-text-field name="new_password" label="New Password" type="password" required></md-outlined-text-field>
+      <md-outlined-text-field name="confirm_password" label="Confirm New Password" type="password" required></md-outlined-text-field>
+      <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
+        <span id="passwordMsg" class="badge" style="display:none;margin-right:auto"></span>
+        <md-filled-button type="submit">Update Password</md-filled-button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div style="height: 40px;"></div>
