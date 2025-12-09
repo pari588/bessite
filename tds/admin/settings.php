@@ -20,20 +20,17 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
     <span class="material-symbols-rounded" style="font-size:24px;color:#4caf50">account_circle</span>
     <h3 style="margin:0;flex:1">Your Profile</h3>
-    <button type="button" id="editProfileToggle" style="background:none;border:none;color:#1976d2;cursor:pointer;font-size:18px;padding:0;line-height:1" title="Edit profile">
-      <span class="material-symbols-rounded">edit</span>
-    </button>
   </div>
 
-  <!-- VIEW MODE -->
-  <div id="profileViewMode">
+  <!-- PROFILE INFO -->
+  <div style="margin-bottom:24px">
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Full Name</div>
-      <div style="font-size:16px;font-weight:500" id="displayName"><?=v($user,'name')?></div>
+      <div style="font-size:16px;font-weight:500"><?=v($user,'name')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Email Address</div>
-      <div style="font-size:16px;font-weight:500" id="displayEmail"><?=v($user,'email')?></div>
+      <div style="font-size:16px;font-weight:500"><?=v($user,'email')?></div>
     </div>
     <div style="margin-bottom:16px">
       <div style="font-size:12px;color:#999;text-transform:uppercase;margin-bottom:4px">Role</div>
@@ -45,16 +42,18 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
     </div>
   </div>
 
-  <!-- EDIT MODE -->
-  <form id="profileEditForm" style="display:none" class="form-grid">
-    <md-outlined-text-field name="profile_name" label="Full Name" id="profileName" value="<?=v($user,'name')?>" required></md-outlined-text-field>
-    <md-outlined-text-field name="profile_email" label="Email Address" type="email" id="profileEmail" value="<?=v($user,'email')?>" required></md-outlined-text-field>
-    <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
-      <span id="profileMsg" class="badge" style="display:none;margin-right:auto"></span>
-      <md-filled-button type="button" onclick="toggleProfileEdit()" style="background:#999;--md-filled-button-container-color:#999">Cancel</md-filled-button>
-      <md-filled-button type="submit">Save Profile</md-filled-button>
-    </div>
-  </form>
+  <!-- EDIT PROFILE FORM -->
+  <div style="background:#f0f7ff;border-radius:8px;padding:20px;margin-bottom:20px;border-left:4px solid #1976d2">
+    <h4 style="margin-top:0;margin-bottom:16px;font-size:14px;font-weight:600">Edit Profile</h4>
+    <form id="profileEditForm" class="form-grid">
+      <md-outlined-text-field name="profile_name" label="Full Name" id="profileName" required></md-outlined-text-field>
+      <md-outlined-text-field name="profile_email" label="Email Address" type="email" id="profileEmail" required></md-outlined-text-field>
+      <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:8px">
+        <span id="profileMsg" class="badge" style="display:none;margin-right:auto"></span>
+        <md-filled-button type="submit">Save Changes</md-filled-button>
+      </div>
+    </form>
+  </div>
 
   <!-- PASSWORD DIVIDER -->
   <div style="margin:30px 0;border-top:1px solid #e0e0e0"></div>
@@ -175,36 +174,16 @@ function v($a,$k){ return htmlspecialchars($a[$k]??'', ENT_QUOTES); }
 </div>
 
 <script>
-// Toggle Profile Edit Mode
-function toggleProfileEdit() {
-  const viewMode = document.getElementById('profileViewMode');
-  const editMode = document.getElementById('profileEditForm');
-
-  const isViewHidden = viewMode.style.display === 'none';
-  viewMode.style.display = isViewHidden ? 'block' : 'none';
-  editMode.style.display = isViewHidden ? 'none' : 'block';
-}
-
-document.getElementById('editProfileToggle').addEventListener('click', function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  // Populate form fields from displayed values when entering edit mode
-  const viewMode = document.getElementById('profileViewMode');
-  if(viewMode.style.display !== 'none') {
-    // Switching to edit mode - populate fields
-    document.getElementById('profileName').value = document.getElementById('displayName').textContent;
-    document.getElementById('profileEmail').value = document.getElementById('displayEmail').textContent;
-  }
-
-  toggleProfileEdit();
-});
-
 // Profile Edit Form Submit
 document.getElementById('profileEditForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name = document.getElementById('profileName').value;
   const email = document.getElementById('profileEmail').value;
+
+  if(!name || !email) {
+    alert('Please fill in all fields');
+    return;
+  }
 
   const res = await fetch('/tds/api/update_profile.php', {
     method:'POST',
