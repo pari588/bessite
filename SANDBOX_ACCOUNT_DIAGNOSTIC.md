@@ -9,6 +9,12 @@
 
 All Sandbox API endpoints are returning **HTTP 403 Forbidden** errors, indicating the account does **not have access** to the API endpoints.
 
+**Status Update:** Even after reporting "everything is enabled", the 403 errors persist. This suggests either:
+1. The account doesn't actually have API access (still in trial/restricted mode)
+2. The API access hasn't propagated/taken effect yet
+3. There's a separate admin approval needed
+4. Account has different restrictions on Analytics API specifically
+
 ### Endpoints Tested
 
 | Endpoint | Status | Issue |
@@ -127,11 +133,33 @@ After enabling APIs:
 4. ✓ Check job status
 5. ✓ View results
 
-### Contact Support (If Needed)
-If APIs are enabled but still getting 403:
-- **Sandbox Support:** support@sandbox.co.in
-- **Issue:** "Account has API access enabled but endpoints return 403"
-- **Details:** Include API key and specific endpoint path
+### Additional Troubleshooting
+
+If still getting 403 even after enabling:
+
+1. **Wait for Propagation**
+   - Changes can take 5-15 minutes to propagate
+   - Wait at least 15 minutes after enabling
+
+2. **Clear Browser Cache**
+   - Clear cache and cookies
+   - Try in incognito/private mode
+
+3. **Check Account Type**
+   - Verify subscription is Active (not Trial)
+   - Check if you need paid plan for Analytics API
+
+4. **Contact Sandbox Support**
+   - **Email:** support@sandbox.co.in
+   - **Include:**
+     - API Key: `key_live_180292d31c9e4f6c9418d5c02898a21a`
+     - Error: "HTTP 403 on /tds/analytics/potential-notices"
+     - That you've enabled API access in dashboard
+     - Ask about: Trial limitations, quota, or account tier restrictions
+
+5. **Request Admin Approval**
+   - Some accounts need separate admin approval for APIs
+   - Check email for "API Access Approval" notifications
 
 ---
 
