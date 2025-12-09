@@ -38,7 +38,14 @@ if ($tab === 'sandbox' && $action === 'submit' && $firm_id && $tan) {
 
         // Map form type to TDS form
         $tdsForm = $formType; // Can be 24Q, 26Q, 27Q
-        $fyFormat = "FY " . substr($fy, 0, 4) . "-" . substr($fy, 4); // Convert to FY format
+        // Format financial year: handle both "202425" and "2024-25" formats
+        if (strpos($fy, '-') !== false) {
+            // Already in "2024-25" format
+            $fyFormat = (strpos($fy, 'FY ') === 0) ? $fy : "FY " . $fy;
+        } else {
+            // In "202425" format, convert to "FY 2024-25"
+            $fyFormat = "FY " . substr($fy, 0, 4) . "-" . substr($fy, 4);
+        }
 
         if ($formType === '24Q') {
             // For 24Q, don't use quarter
