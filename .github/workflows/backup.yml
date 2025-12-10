@@ -2,9 +2,12 @@ name: Automated Daily Backup
 
 on:
   schedule:
-    # Run backup every day at 2 AM UTC (9:30 AM IST)
+    # Run backup every day at 2 AM UTC (7:30 AM IST)
     - cron: '0 2 * * *'
   workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
 
 jobs:
   backup:
@@ -12,9 +15,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create backup directory
         run: |
@@ -32,18 +36,34 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git checkout --orphan git-backups || git checkout git-backups
-          git add backups/
-          git commit -m "Automated backup - $(date +%Y-%m-%d\ %H:%M:%S)" || echo "No changes to commit"
-          git push origin git-backups
 
-      - name: Keep only last 30 days of backups
+          # Try to fetch existing git-backups branch, create new orphan if it doesn't exist
+          if git ls-remote --heads origin git-backups | grep -q git-backups; then
+            git fetch origin git-backups:git-backups
+            git checkout git-backups
+            # Copy backups from main checkout
+            cp -r backups/* . 2>/dev/null || true
+          else
+            git checkout --orphan git-backups
+            git rm -rf . 2>/dev/null || true
+            mkdir -p backups
+          fi
+
+          # Move bundle files to root for easier access
+          mv backups/*.bundle . 2>/dev/null || true
+          mv backups/*.txt . 2>/dev/null || true
+
+          git add -A
+          git commit -m "Automated backup - $(date +%Y-%m-%d\ %H:%M:%S)" || echo "No changes to commit"
+          git push origin git-backups --force
+
+      - name: Keep only last 30 backups
         run: |
-          git checkout git-backups
-          find backups -name "repo-*.bundle" -mtime +30 -delete
-          git add backups/
+          # Keep only the 30 most recent bundle files
+          ls -t *.bundle 2>/dev/null | tail -n +31 | xargs rm -f 2>/dev/null || true
+          git add -A
           git commit -m "Cleanup old backups - $(date)" || echo "No old backups to remove"
-          git push origin git-backups
+          git push origin git-backups --force || true
 
       - name: Generate backup summary
         run: |
@@ -60,23 +80,19 @@ jobs:
 
   database-backup:
     runs-on: ubuntu-latest
-    if: success()
+    needs: backup
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create database backup info
+      - name: Database backup info
         run: |
-          mkdir -p db-backups
-          echo "Database Backup Information" > db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "==============================" >> db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "Scheduled: Daily at 2 AM UTC (9:30 AM IST)" >> db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "Last Backup: $(date)" >> db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "" >> db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "NOTE: Database backups should be configured separately" >> db-backups/DB_BACKUP_SCHEDULE.txt
-          echo "on your hosting server or use a database-specific backup service." >> db-backups/DB_BACKUP_SCHEDULE.txt
-          cat db-backups/DB_BACKUP_SCHEDULE.txt
+          echo "Database Backup Information"
+          echo "=============================="
+          echo "Database backups are handled separately on the hosting server."
+          echo "Schedule: Daily at 10 PM IST via crontab"
+          echo "Location: /home/bombayengg/backups/"
+          echo "Retention: 30 days"
+          echo ""
+          echo "Last check: $(date)"
 
   notify:
     runs-on: ubuntu-latest
