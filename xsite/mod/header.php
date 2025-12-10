@@ -62,16 +62,16 @@ $siteSettingInfo = getSiteInfo();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>Industrial Motors & Submersible Pumps Supplier - Mumbai & Ahmedabad</title>
-    <meta name="title" content="Industrial Motors & Submersible Pumps Supplier - Mumbai & Ahmedabad" />
-    <meta name="description" content="Leading industrial motors & submersible pumps supplier in Mumbai & Ahmedabad. Energy-efficient motors, water pumps for residential & agricultural applications. Trusted since 1957. Call +919820042210 or +919825014977." />
+    <title>Industrial Motors & Pumps Supplier | Mumbai & Ahmedabad</title>
+    <meta name="title" content="Industrial Motors & Pumps Supplier | Mumbai & Ahmedabad" />
+    <meta name="description" content="Leading industrial motors & submersible pumps supplier in Mumbai & Ahmedabad. Energy-efficient motors, water pumps. Trusted since 1957." />
     <meta name="keywords" content="industrial motors, submersible pumps, water pumps, energy-efficient motors, motor supplier, pump dealer, Mumbai, Ahmedabad, Crompton, AC motors, induction motors, electric pumps" />
 
     <!-- Language & Content -->
     <meta name="language" content="English" />
     <meta name="revisit-after" content="7" />
     <meta name="author" content="Bombay Engineering Syndicate" />
-    <meta name="copyright" content="© 2024 Bombay Engineering Syndicate. All rights reserved." />
+    <meta name="copyright" content="© <?php echo date('Y'); ?> Bombay Engineering Syndicate. All rights reserved." />
 
     <!-- Local Business Specific -->
     <meta name="geo.position" content="18.9333;72.8333" />
@@ -186,13 +186,16 @@ $siteSettingInfo = getSiteInfo();
                     "longitude": "72.5714"
                 }
             ],
-            "foundingDate": "1957",
-            "sameAs": [
-                "<?php echo !empty($siteSettingInfo['facebookUrl']) ? $siteSettingInfo['facebookUrl'] : ''; ?>",
-                "<?php echo !empty($siteSettingInfo['twitterUrl']) ? $siteSettingInfo['twitterUrl'] : ''; ?>",
-                "<?php echo !empty($siteSettingInfo['instaUrl']) ? $siteSettingInfo['instaUrl'] : ''; ?>",
-                "<?php echo !empty($siteSettingInfo['pintrestUrl']) ? $siteSettingInfo['pintrestUrl'] : ''; ?>"
-            ]
+            "foundingDate": "1957"<?php
+                $socialUrls = array_filter([
+                    $siteSettingInfo['facebookUrl'] ?? '',
+                    $siteSettingInfo['twitterUrl'] ?? '',
+                    $siteSettingInfo['instaUrl'] ?? '',
+                    $siteSettingInfo['pintrestUrl'] ?? ''
+                ]);
+                if (!empty($socialUrls)): ?>,
+            "sameAs": <?php echo json_encode(array_values($socialUrls)); ?>
+            <?php endif; ?>
         }
     </script>
 
@@ -223,12 +226,15 @@ $siteSettingInfo = getSiteInfo();
                     "areaServed": "IN",
                     "availableLanguage": "en"
                 }
-            ],
-            "sameAs": [
-                "<?php echo !empty($siteSettingInfo['facebookUrl']) ? $siteSettingInfo['facebookUrl'] : ''; ?>",
-                "<?php echo !empty($siteSettingInfo['twitterUrl']) ? $siteSettingInfo['twitterUrl'] : ''; ?>",
-                "<?php echo !empty($siteSettingInfo['instaUrl']) ? $siteSettingInfo['instaUrl'] : ''; ?>"
-            ]
+            ]<?php
+                $orgSocialUrls = array_filter([
+                    $siteSettingInfo['facebookUrl'] ?? '',
+                    $siteSettingInfo['twitterUrl'] ?? '',
+                    $siteSettingInfo['instaUrl'] ?? ''
+                ]);
+                if (!empty($orgSocialUrls)): ?>,
+            "sameAs": <?php echo json_encode(array_values($orgSocialUrls)); ?>
+            <?php endif; ?>
         }
     </script>
 

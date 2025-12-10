@@ -30,7 +30,7 @@ $MXFRM->xAction = "saveProductContactFrm";
                     <?php echo $MXFRM->getForm($arrForm); ?>
                 </ul>
                 <?php echo $MXFRM->closeForm(); ?>
-                <button type="button" class="fa-save button thm-btn" rel="frmPopupEnquiry">Send a message</button>
+                <a href="javascript:void(0)" class="fa-save button thm-btn" rel="frmPopupEnquiry">Send a message</a>
             </form>
         </div>
     </div>

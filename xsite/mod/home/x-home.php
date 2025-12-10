@@ -59,7 +59,7 @@
       <div class="container">
           <div class="process-one__inner">
               <div class="process-one__shape-1"></div>
-              <h2 class="sr-only">Our Key Features</h2>
+              <h2 class="sr-only">Why Choose Our Industrial Motors & Pumps</h2>
               <div class="row">
                   <!--Process One Single Start-->
                   <div class="col-xl-4 col-lg-4">
@@ -177,7 +177,7 @@
             <h3>Our Best Partners</h3>
         </div> -->
           <div class="section-title text-center">
-              <h2 class="section-title__title">Our Best Partners</h2>
+              <h2 class="section-title__title">Trusted Motor & Pump Brands We Supply</h2>
           </div>
           <div class="row">
               <!--partners Single Start-->
