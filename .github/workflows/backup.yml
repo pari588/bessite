@@ -20,71 +20,39 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create backup directory
+      - name: Create backup tag
         run: |
-          mkdir -p backups
-          echo "Backup created at $(date)" > backups/BACKUP_INFO.txt
-          echo "Branch: main" >> backups/BACKUP_INFO.txt
-          echo "Commit: ${{ github.sha }}" >> backups/BACKUP_INFO.txt
-
-      - name: Create git bundle
-        run: |
-          git bundle create backups/repo-$(date +%Y%m%d-%H%M%S).bundle --all
-          ls -lh backups/
-
-      - name: Commit backup to git-backups branch
-        run: |
-          set -x  # Enable debug output
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-          # Save the backup files before switching branches
-          cp -r backups /tmp/backups_temp
+          # Create a dated tag for this backup
+          TAG_NAME="backup-$(date +%Y%m%d)"
 
-          # Try to fetch existing git-backups branch, create new orphan if it doesn't exist
-          if git ls-remote --heads origin git-backups | grep -q git-backups; then
-            echo "Fetching existing git-backups branch..."
-            git fetch origin git-backups
-            git checkout -B git-backups origin/git-backups
-          else
-            echo "Creating new orphan git-backups branch..."
-            git checkout --orphan git-backups
-            git rm -rf . 2>/dev/null || true
-          fi
+          # Delete existing tag if it exists (for same-day re-runs)
+          git tag -d "$TAG_NAME" 2>/dev/null || true
+          git push origin --delete "$TAG_NAME" 2>/dev/null || true
 
-          # Restore backup files
-          cp -r /tmp/backups_temp/* . 2>/dev/null || true
+          # Create new tag
+          git tag -a "$TAG_NAME" -m "Automated backup - $(date +%Y-%m-%d %H:%M:%S)"
+          git push origin "$TAG_NAME"
 
-          # Move bundle files to root for easier access
-          mv *.bundle . 2>/dev/null || true
-          mv *.txt . 2>/dev/null || true
-          rm -rf backups 2>/dev/null || true
-
-          git add -A
-          git status
-          git commit -m "Automated backup - $(date +%Y-%m-%d\ %H:%M:%S)" || echo "No changes to commit"
-          git push origin git-backups --force
-
-      - name: Keep only last 30 backups
-        run: |
-          # Keep only the 30 most recent bundle files
-          ls -t *.bundle 2>/dev/null | tail -n +31 | xargs rm -f 2>/dev/null || true
-          git add -A
-          git commit -m "Cleanup old backups - $(date)" || echo "No old backups to remove"
-          git push origin git-backups --force || true
+          echo "✅ Created backup tag: $TAG_NAME"
 
       - name: Generate backup summary
         run: |
-          echo "# Backup Summary" > BACKUP_SUMMARY.md
-          echo "Date: $(date)" >> BACKUP_SUMMARY.md
-          echo "Backup Status: ✅ SUCCESS" >> BACKUP_SUMMARY.md
-          echo "" >> BACKUP_SUMMARY.md
-          echo "## Latest Backup" >> BACKUP_SUMMARY.md
-          echo "- Commit: ${{ github.sha }}" >> BACKUP_SUMMARY.md
-          echo "- Branch: main" >> BACKUP_SUMMARY.md
-          echo "- Files: $(git ls-files | wc -l)" >> BACKUP_SUMMARY.md
-          echo "- Database: See backups branch" >> BACKUP_SUMMARY.md
-          cat BACKUP_SUMMARY.md
+          echo "# Backup Summary"
+          echo "Date: $(date)"
+          echo "Backup Status: ✅ SUCCESS"
+          echo ""
+          echo "## Backup Details"
+          echo "- Commit: ${{ github.sha }}"
+          echo "- Branch: main"
+          echo "- Tag: backup-$(date +%Y%m%d)"
+          echo "- Files: $(git ls-files | wc -l)"
+          echo ""
+          echo "## How to Restore"
+          echo "git clone https://github.com/pari588/bessite.git"
+          echo "git checkout backup-YYYYMMDD"
 
   database-backup:
     runs-on: ubuntu-latest
