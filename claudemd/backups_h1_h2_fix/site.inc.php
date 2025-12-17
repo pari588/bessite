@@ -55,7 +55,7 @@ function getPageHeader($imageName = "")
                     <li><span>/</span></li>
                     <li><?php echo $TPL->data["categoryTitle"]; ?></li>
                 </ul>
-                <h1><?php echo $TPL->data["categoryTitle"]; ?></h1>
+                <h2><?php echo $TPL->data["categoryTitle"]; ?></h2>
             </div>
         </div>
     </section>

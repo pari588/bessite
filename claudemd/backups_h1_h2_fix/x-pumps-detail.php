@@ -33,11 +33,9 @@ echoBreadcrumbSchema($breadcrumbs);
             <ul class="thm-breadcrumb list-unstyled">
                 <li><a href="<?php echo SITEURL . '/' ?>">Home</a></li>
                 <li><span>/</span></li>
-                <li><a href="<?php echo SITEURL . '/pump/'; ?>">Pumps</a></li>
-                <li><span>/</span></li>
-                <li><?php echo $TPL->data["pumpTitle"]; ?></li>
+                <li>Pumps</li>
             </ul>
-            <h1><?php echo $TPL->data["pumpTitle"]; ?></h1>
+            <h2>Pumps Details</h2>
         </div>
     </div>
 </section>
@@ -53,7 +51,7 @@ echoBreadcrumbSchema($breadcrumbs);
             </div>
             <div class=" col-lg-6 col-xl-6">
                 <div class="product-details__top">
-                    <h2 class="product-details__title"><?php echo $TPL->data["pumpTitle"]; ?></h2>
+                    <h3 class="product-details__title"><?php echo $TPL->data["pumpTitle"]; ?></span> </h3>
                 </div>
                 <div class="product-details__content">
                     <?php echo $TPL->data["pumpFeatures"]; ?>

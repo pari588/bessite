@@ -30,7 +30,7 @@ if ($DB->numRows <= 0) {
                 <li><span>/</span></li>
                 <li><?php echo $kCenter['knowledgeCenterTitle']; ?></li>
             </ul>
-            <h1><?php echo $kCenter['knowledgeCenterTitle']; ?></h1>
+            <h2><?php echo $kCenter['knowledgeCenterTitle']; ?></h2>
         </div>
     </div>
 </section>
@@ -44,7 +44,7 @@ if ($DB->numRows <= 0) {
                 </div>
             <?php } ?>
             <!-- <span class="date">28th July 2024</span> -->
-            <h2><?php echo $kCenter['knowledgeCenterTitle']; ?></h2>
+            <h3><?php echo $kCenter['knowledgeCenterTitle']; ?></h3>
             <?php echo $kCenter['knowledgeCenterContent']; ?>
         </div>
         </div>

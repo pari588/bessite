@@ -67,7 +67,7 @@ if (function_exists('echoBreadcrumbSchema')) {
                 <li><span>/</span></li>
                 <li><?php echo $TPL->data['motorTitle']; ?></li>
             </ul>
-            <h1><?php echo $TPL->data['motorTitle']; ?></h1>
+            <h2>Motor Details</h2>
         </div>
     </div>
 </section>
@@ -83,7 +83,7 @@ if (function_exists('echoBreadcrumbSchema')) {
             </div>
             <div class="col-lg-6 col-xl-6" style="display: flex; flex-direction: column; justify-content: flex-start;">
                 <div class="product-details__top" style="margin-top: 0;">
-                    <h2 class="product-details__title"><?php echo $TPL->data["motorTitle"]; ?></h2>
+                    <h3 class="product-details__title"><?php echo $TPL->data["motorTitle"]; ?></span> </h3>
                 </div>
                 <div class="product-details__content">
                     <p class="sub-title"><?php echo $TPL->data["motorSubTitle"]; ?></p>

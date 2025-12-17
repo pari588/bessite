@@ -18,5 +18,43 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
+# AI/LLM Crawlers - Allow access for AI assistants
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
 # Primary sitemaps
 Sitemap: https://www.bombayengg.net/sitemap.xml
+
+# LLM Context File
+# For AI systems to understand this website
+# See: https://www.bombayengg.net/llms.txt
