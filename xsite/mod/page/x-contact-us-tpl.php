@@ -58,7 +58,7 @@ $MXFRM->xAction = "saveContactUsInfo";
                                 </li>
                             </ul>
                             <?php echo $MXFRM->closeForm(); ?>
-                            <a href="javascript:void(0)" class="fa-save button thm-btn" rel="contactUsForm">Send a message</a>
+                            <a href="#" class="fa-save button thm-btn" rel="contactUsForm" role="button" onclick="return false;">Send a message</a>
                         </form>
                         <div class="result"></div>
                     </div>

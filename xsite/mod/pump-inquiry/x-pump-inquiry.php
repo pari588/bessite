@@ -239,7 +239,7 @@ $arrProductPreferences = array(
 
 			<!-- Submit Button -->
 			<div class="form-actions">
-				<a href="javascript:void(0)" class="fa-save button thm-btn" rel="pumpInquiryForm">Submit Inquiry</a>
+				<a href="#" class="fa-save button thm-btn" rel="pumpInquiryForm" role="button" onclick="return false;">Submit Inquiry</a>
 				<p class="form-info">We will review your inquiry and get back to you shortly.</p>
 			</div>
 		</form>

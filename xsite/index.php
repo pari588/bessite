@@ -28,6 +28,12 @@ if ($TPL->modName == "lead" || $TPL->modName == "leave" || $TPL->pageUri == "lea
     $footerFile = $TPL->modDir . "/footer-webapp.php";
 }
 
+// Driver PWA - Use dedicated header/footer
+if (strpos($TPL->pageUri, 'driver/') === 0) {
+    $headerFile = SITEPATH . "/mod/driver/header-driver.php";
+    $footerFile = SITEPATH . "/mod/driver/footer-driver.php";
+}
+
 // Load module-specific includes first (contains getPDetail and other functions)
 if ($TPL->tplInc)
     require_once($TPL->tplInc);

@@ -2,13 +2,14 @@
 //To fix clickjacking
 header("Content-Security-Policy: frame-ancestors 'none'", false);
 header("X-Frame-Options: DENY");
+header("Content-Language: en-IN", false);
 // End.
 // To fetch header user info data.
 $siteSettingInfo = getSiteInfo();
 // End.
 ?>
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-IN">
 
 <head>
     <meta charset="UTF-8" />

@@ -6,8 +6,30 @@ function addUser()
     $_POST["imageName"] = mxGetFileName("imageName");
     $_POST["userPass"] = md5($_POST["userPass"]);
 
-    $_POST['techIlliterate']= (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0)? 0 : $_POST['techIlliterate'];
-    $_POST['isLeaveManager']= (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0)? 0 : $_POST['isLeaveManager'];
+    // Checkbox handling
+    $_POST['techIlliterate'] = (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0) ? 0 : 1;
+    $_POST['isLeaveManager'] = (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0) ? 0 : 1;
+
+    // Sanitize HR fields
+    if (isset($_POST["employeeCode"])) $_POST["employeeCode"] = cleanTitle($_POST["employeeCode"]);
+    if (isset($_POST["designation"])) $_POST["designation"] = cleanTitle($_POST["designation"]);
+    if (isset($_POST["department"])) $_POST["department"] = cleanTitle($_POST["department"]);
+    if (isset($_POST["bankName"])) $_POST["bankName"] = cleanTitle($_POST["bankName"]);
+    if (isset($_POST["bankAccountNo"])) $_POST["bankAccountNo"] = cleanTitle($_POST["bankAccountNo"]);
+    if (isset($_POST["bankIFSC"])) $_POST["bankIFSC"] = strtoupper(cleanTitle($_POST["bankIFSC"]));
+    if (isset($_POST["panNo"])) $_POST["panNo"] = strtoupper(cleanTitle($_POST["panNo"]));
+    if (isset($_POST["aadhaarNo"])) $_POST["aadhaarNo"] = cleanTitle($_POST["aadhaarNo"]);
+    if (isset($_POST["emergencyContactName"])) $_POST["emergencyContactName"] = cleanTitle($_POST["emergencyContactName"]);
+    if (isset($_POST["emergencyContact"])) $_POST["emergencyContact"] = cleanTitle($_POST["emergencyContact"]);
+    if (isset($_POST["biometricID"])) $_POST["biometricID"] = cleanTitle($_POST["biometricID"]);
+
+    // Handle empty managerID
+    if (empty($_POST['managerID'])) $_POST['managerID'] = null;
+
+    // Handle empty dates
+    if (empty($_POST['dateOfBirth'])) $_POST['dateOfBirth'] = null;
+    if (empty($_POST['dateOfJoining'])) $_POST['dateOfJoining'] = null;
+    if (empty($_POST['dateOfExit'])) $_POST['dateOfExit'] = null;
 
     $DB->table = $DB->pre . "x_admin_user";
     $DB->data = $_POST;
@@ -29,8 +51,30 @@ function updateUser()
         unset($_POST["userPass"]);
     $userID = intval($_POST["userID"]);
 
-    $_POST['techIlliterate']= (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0)? 0 : $_POST['techIlliterate'];
-    $_POST['isLeaveManager']= (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0)? 0 : $_POST['isLeaveManager'];
+    // Checkbox handling
+    $_POST['techIlliterate'] = (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0) ? 0 : 1;
+    $_POST['isLeaveManager'] = (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0) ? 0 : 1;
+
+    // Sanitize HR fields
+    if (isset($_POST["employeeCode"])) $_POST["employeeCode"] = cleanTitle($_POST["employeeCode"]);
+    if (isset($_POST["designation"])) $_POST["designation"] = cleanTitle($_POST["designation"]);
+    if (isset($_POST["department"])) $_POST["department"] = cleanTitle($_POST["department"]);
+    if (isset($_POST["bankName"])) $_POST["bankName"] = cleanTitle($_POST["bankName"]);
+    if (isset($_POST["bankAccountNo"])) $_POST["bankAccountNo"] = cleanTitle($_POST["bankAccountNo"]);
+    if (isset($_POST["bankIFSC"])) $_POST["bankIFSC"] = strtoupper(cleanTitle($_POST["bankIFSC"]));
+    if (isset($_POST["panNo"])) $_POST["panNo"] = strtoupper(cleanTitle($_POST["panNo"]));
+    if (isset($_POST["aadhaarNo"])) $_POST["aadhaarNo"] = cleanTitle($_POST["aadhaarNo"]);
+    if (isset($_POST["emergencyContactName"])) $_POST["emergencyContactName"] = cleanTitle($_POST["emergencyContactName"]);
+    if (isset($_POST["emergencyContact"])) $_POST["emergencyContact"] = cleanTitle($_POST["emergencyContact"]);
+    if (isset($_POST["biometricID"])) $_POST["biometricID"] = cleanTitle($_POST["biometricID"]);
+
+    // Handle empty managerID
+    if (empty($_POST['managerID'])) $_POST['managerID'] = null;
+
+    // Handle empty dates
+    if (empty($_POST['dateOfBirth'])) $_POST['dateOfBirth'] = null;
+    if (empty($_POST['dateOfJoining'])) $_POST['dateOfJoining'] = null;
+    if (empty($_POST['dateOfExit'])) $_POST['dateOfExit'] = null;
 
     $DB->table = $DB->pre . "x_admin_user";
     $DB->data = $_POST;

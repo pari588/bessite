@@ -59,6 +59,12 @@ function getPageHeader($imageName = "")
             </div>
         </div>
     </section>
+    <!-- Page Header Title - White color for readability -->
+    <style>
+    .page-header .page-header__inner h1 {
+        color: #ffffff !important;
+    }
+    </style>
 <?php
 }
 // End.

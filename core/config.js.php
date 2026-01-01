@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/javascript; charset=utf-8');
 require_once("../config.inc.php");
 $const = get_defined_constants(true);
 if ($const['user']) {

@@ -72,6 +72,12 @@ if (function_exists('echoBreadcrumbSchema')) {
     </div>
 </section>
 <!--Page Header End-->
+<!-- Motor Detail Header Title - White color for readability -->
+<style>
+.page-header .page-header__inner h1 {
+    color: #ffffff !important;
+}
+</style>
 <!--Product Details Start-->
 <section class="product-details">
     <div class="container">

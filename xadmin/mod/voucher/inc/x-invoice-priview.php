@@ -39,8 +39,8 @@ $siteInfoArr = $DB->dbRow();
          </tr>
          <tr>
             <td class="center">
-               <?php echo $siteInfoArr["invoiceAddr"] . " " . $siteInfoArr["pinCode"]; ?><br>
-               <?php echo "Telefax: " . $siteInfoArr["contactNo"] . " // " . $siteInfoArr["contactMail"] . " // " . $siteInfoArr["webUrl"]; ?>
+               <?php echo $siteInfoArr["invoiceAddr"]; ?><br>
+               <?php echo "Mobile: " . $siteInfoArr["contactNo"] . " // " . $siteInfoArr["contactMail"] . " // " . $siteInfoArr["webUrl"]; ?>
             </td>
          </tr>
          <tr>
@@ -64,43 +64,55 @@ $siteInfoArr = $DB->dbRow();
       </table>
       <table border="0" cellspacing="0" cellpadding="0" class="tbl-items mtl full-border">
          <tr class="full-border">
-            <th class="lp0 full-border" width="75%">PARTICULARS</th>
-            <th class="center full-border" width="25%">AMOUNT</th>
+            <th class="lp0 full-border" width="50%">PARTICULARS</th>
+            <th class="center full-border" width="30%">DETAILS</th>
+            <th class="center full-border" width="20%">AMOUNT</th>
+         </tr>
+         <tr class="full-border">
+            <td class="full-border" width="50%"><?php echo $voucherDataArr["voucherTitle"]; ?></td>
+            <td class="full-border" width="30%">&nbsp;</td>
+            <td class="right full-border pr" width="20%"><?php echo $voucherDataArr["voucherAmt"]; ?></td>
+         </tr>
+         <?php
+         // Parse overtime details from voucherDesc
+         $voucherDesc = $voucherDataArr["voucherDesc"] ?? "";
+         $descLines = array_filter(explode("\n", $voucherDesc));
+         $rowCount = 0;
 
-         </tr>
-         <tr class="full-border">
-            <td class="full-border" width="75%"><?php echo $voucherDataArr["voucherTitle"]; ?></td>
-            <td class="right full-border pr " width="25%"><?php echo $voucherDataArr["voucherAmt"]; ?></td>
+         if (!empty($descLines)) {
+            foreach ($descLines as $line) {
+               $line = trim($line);
+               if (empty($line)) continue;
 
-         </tr>
-         <tr class="full-border">
-            <td class="full-border"><?php echo $voucherDataArr["voucherDesc"]; ?></td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
-         <tr class="full-border">
-            <td class="full-border">&nbsp;</td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
-         <tr class="full-border">
-            <td class="full-border">&nbsp;</td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
-         <tr class="full-border">
-            <td class="full-border">&nbsp;</td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
-         <tr class="full-border">
-            <td class="full-border">&nbsp;</td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
-         <tr class="full-border">
-            <td class="full-border">&nbsp;</td>
-            <td class="full-border">&nbsp;</td>
-         </tr>
+               // Parse: "06-Dec-2025: 10:00 AM - 01:00 AM | OT: 5.00 hrs | Rs. 625.00"
+               if (preg_match('/^(\d{2}-\w{3}-\d{4}):\s*(.+?)\s*\|\s*OT:\s*([\d.]+)\s*hrs\s*\|\s*Rs\.\s*([\d,.]+)$/', $line, $matches)) {
+                  $date = $matches[1];
+                  $timeRange = $matches[2];
+                  $otHrs = $matches[3];
+                  $amount = $matches[4];
+                  echo '<tr class="full-border">';
+                  echo '<td class="full-border" style="font-size:11px;">' . $date . '</td>';
+                  echo '<td class="full-border" style="font-size:11px;">' . $timeRange . ' (' . $otHrs . ' hrs)</td>';
+                  echo '<td class="right full-border pr" style="font-size:11px;">Rs. ' . $amount . '</td>';
+                  echo '</tr>';
+                  $rowCount++;
+               }
+            }
+         }
 
+         // Add empty rows to fill space if less than 6 detail rows
+         $emptyRows = max(0, 6 - $rowCount);
+         for ($i = 0; $i < $emptyRows; $i++) {
+            echo '<tr class="full-border">';
+            echo '<td class="full-border">&nbsp;</td>';
+            echo '<td class="full-border">&nbsp;</td>';
+            echo '<td class="full-border">&nbsp;</td>';
+            echo '</tr>';
+         }
+         ?>
          <tr>
-            <td class="full-border right pr"><strong>TOTAL</strong></td>
-            <td class="right full-border pr "><b><?php echo $voucherDataArr["voucherAmt"]; ?></b></td>
+            <td class="full-border right pr" colspan="2"><strong>TOTAL</strong></td>
+            <td class="right full-border pr"><b><?php echo $voucherDataArr["voucherAmt"]; ?></b></td>
          </tr>
          <tr>
             <td valign="top" colspan="8">

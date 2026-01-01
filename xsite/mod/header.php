@@ -35,6 +35,9 @@ header(
     false
 );
 
+// 7. Content Language for SEO
+header("Content-Language: en-IN", false);
+
 // ────────────────────────────────────────────────────────────────────────────────
 // End of security headers
 // ────────────────────────────────────────────────────────────────────────────────
@@ -68,7 +71,7 @@ $siteSettingInfo = getSiteInfo();
     <meta name="keywords" content="industrial motors, submersible pumps, water pumps, energy-efficient motors, motor supplier, pump dealer, Mumbai, Ahmedabad, Crompton, AC motors, induction motors, electric pumps" />
 
     <!-- Language & Content -->
-    <meta name="language" content="English" />
+    <meta name="language" content="en-IN" />
     <meta name="revisit-after" content="7" />
     <meta name="author" content="Bombay Engineering Syndicate" />
     <meta name="copyright" content="© <?php echo date('Y'); ?> Bombay Engineering Syndicate. All rights reserved." />
@@ -90,8 +93,14 @@ $siteSettingInfo = getSiteInfo();
 
     <!-- Format Detection & Canonical -->
     <meta name="format-detection" content="telephone=yes" />
-    <link rel="canonical" href="<?php echo SITEURL; ?>" />
-    <link rel="alternate" hreflang="en-IN" href="<?php echo SITEURL; ?>" />
+    <?php
+    // Build current page URL for canonical and hreflang (without query strings for cleaner SEO)
+    $currentPath = strtok($_SERVER['REQUEST_URI'] ?? '', '?');
+    $currentPageUrl = rtrim(SITEURL, '/') . $currentPath;
+    ?>
+    <link rel="canonical" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="alternate" hreflang="en-IN" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="alternate" hreflang="x-default" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
 
     <?php echo mxGetMeta(); ?>
     <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(SITEURL . '/' . LIBDIR . '/js/jquery-3.3.1.min.js'); ?>"></script>

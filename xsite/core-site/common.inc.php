@@ -54,12 +54,18 @@ function createMenu($menuID = 0, $depth = 100, $level = 0) {
                 $class = '';
                 $target = '';
                 $url = '';
-                if (isset($v["seoUri"])) {
-                    if (strpos($TPL->pageUri, $v["seoUri"]) !== false) {
+                if (isset($v["seoUri"]) && $v["seoUri"] !== null && $v["seoUri"] !== '') {
+                    // Check if pageUri starts with the menu seoUri (exact segment match)
+                    // This prevents "motor" from matching "knowledge-center/motor-nameplate"
+                    $menuPath = '/' . ltrim($v["seoUri"], '/');
+                    $currentPath = '/' . ltrim($TPL->pageUri, '/');
+
+                    // Match if: exact match OR starts with menuPath followed by /
+                    if ($currentPath === $menuPath ||
+                        $currentPath === $menuPath . '/' ||
+                        strpos($currentPath, $menuPath . '/') === 0) {
                         $class = ' class="active"';
                     }
-                } else if ($TPL->pageUri == $v["seoUri"]) {
-                    $class = ' class="active"';
                 }
                 if ($v["menuType"] == 'exlink') {
                     $url = $v["seoUri"] ? $v["seoUri"] : SITEURL;

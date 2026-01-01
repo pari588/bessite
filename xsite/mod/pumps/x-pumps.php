@@ -32,6 +32,7 @@ if (!empty($TPL->dataM)) {
 // Output BreadcrumbList Schema
 echoBreadcrumbSchema($breadcrumbs);
 ?>
+
 <section class="product">
     <div class="container">
         <div class="row">

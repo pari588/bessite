@@ -35,6 +35,13 @@ if ($DB->numRows <= 0) {
     </div>
 </section>
 <!--Page Header End-->
+<!-- Knowledge Center Article Header Title - White color for readability -->
+<style>
+.page-header .page-header__inner h1 {
+    color: #ffffff !important;
+}
+</style>
+
 <?php if (is_array($kCenter) && count($kCenter) > 0) { ?>
     <section class="blog-details">
         <div class="container">

@@ -213,7 +213,7 @@ if (isset($_POST["xAction"])) {
                     else
                         $redirect = "/" . $setting["DEFAULTPAGE"] . "-list/";
 
-                    setResponse(["err" => 0, "msg" => "Login successfull", "rurl" => ADMINURL . "$redirect"]);
+                    setResponse(["err" => 0, "msg" => "Login successful", "rurl" => ADMINURL . "$redirect"]);
                 } else {
                     if (!isset($_SESSION[SITEURL]["login_attempts"]))
                         $_SESSION[SITEURL]["login_attempts"] = 0;

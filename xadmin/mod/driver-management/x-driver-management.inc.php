@@ -177,7 +177,10 @@ function overtimeManagement()
 
 
     $data["expenseAmt"] = $_POST["expenseAmt"];
-    if (isWeekend($_POST["dmDate"]) != true) {
+    $isOffDay = isWeekend($_POST["dmDate"]);
+
+    if (!$isOffDay) {
+        // NORMAL WORKING DAY
         if (date($outgoingDate . ' ' . $outgoingTime) >= date($arrivalDate . ' ' . $TOTIME)) {
             $timestamp1 = strtotime($_POST["fromTime"]);
             $timestamp2 = strtotime($_POST["toTime"]);
@@ -195,12 +198,37 @@ function overtimeManagement()
             $data["taxiAllowance"] = $TAXIALLOW;
         }
     } else {
+        // WEEKLY OFF DAY - Flat rate + overtime if crosses shift end
+        $timestamp1 = strtotime($_POST["fromTime"]);
+        $timestamp2 = strtotime($_POST["toTime"]);
+        $totalWorkingHrs = abs($timestamp2 - $timestamp1) / (60 * 60);
 
-        $workingHrs = (int) $outgoingTime - (int) $arrivalTime;
-        if (isWeekend($_POST["dmDate"]) == true && $workingHrs >= "4") {
+        // Flat rate based on hours worked
+        if ($totalWorkingHrs >= 4) {
             $data["sunAllowance"] = $SUNFOURHRSALLOW;
-            if ($workingHrs >= 6)
+            if ($totalWorkingHrs >= 6) {
                 $data["sunAllowance"] = $ABVFOURHRSALLOW;
+            }
+        }
+
+        // PLUS overtime if work extends past shift end time
+        if (date($outgoingDate . ' ' . $outgoingTime) >= date($arrivalDate . ' ' . $TOTIME)) {
+            // Calculate overtime hours beyond shift end
+            $shiftEndTimestamp = strtotime($arrivalDate . ' ' . $TOTIME);
+            $overtimeSeconds = strtotime($_POST["toTime"]) - $shiftEndTimestamp;
+            if ($overtimeSeconds > 0) {
+                $data["overtimeHrs"] = $overtimeSeconds / (60 * 60);
+                $data["totalOvertimePay"] = $OVERTIMEALLOW * $data["overtimeHrs"];
+            }
+        }
+
+        // Dinner and taxi allowance also apply on off days if working late
+        if (date($outgoingDate . ' ' . $outgoingTime) >= date($arrivalDate . ' ' . $DATIME)) {
+            $data["dinnerAllowance"] = $DINNERALLOW;
+        }
+
+        if (date($outgoingDate . ' ' . $outgoingTime) >= date($taxiAllowanceDate . ' ' . $TAXIALLOTIME)) {
+            $data["taxiAllowance"] = $TAXIALLOW;
         }
     }
     $data["totalPay"] = $data["expenseAmt"] + $data["totalOvertimePay"] + $data["dinnerAllowance"] + $data["taxiAllowance"] + $data["sunAllowance"];
@@ -284,20 +312,48 @@ function verifyMarkin()
 
 function settlePayment($settleArr = [])
 {
+    global $DB;
     $response = array("err" => 1, "param" => "", "msg" => "Something went wrong!");
     if (isset($settleArr) && count($settleArr) > 0 && isset($settleArr['totalWelfareAmount']) && $settleArr['totalWelfareAmount'] > 0 && isset($settleArr['driverArr']) && count($settleArr['driverArr']) > 0) {
-        //for add credit note 
+
+        // Fetch overtime details for narration
+        $driverIDs = implode(',', array_map('intval', $settleArr['driverArr']));
+        $DB->sql = "SELECT DM.*, U.userName FROM `" . $DB->pre . "driver_management` AS DM
+                    LEFT JOIN `" . $DB->pre . "user` AS U ON U.userID = DM.userID
+                    WHERE DM.driverManagementID IN (" . $driverIDs . ") ORDER BY DM.dmDate ASC";
+        $overtimeRecords = $DB->dbRows();
+
+        // Build detailed narration
+        $narrationLines = [];
+        $driverNames = [];
+        foreach ($DB->rows as $record) {
+            $date = date('d-M-Y', strtotime($record['dmDate']));
+            $fromTime = date('h:i A', strtotime($record['fromTime']));
+            $toTime = date('h:i A', strtotime($record['toTime']));
+            $totalPay = number_format($record['totalPay'], 2);
+            $otHrs = $record['overtimeHrs'];
+
+            $narrationLines[] = "{$date}: {$fromTime} - {$toTime} | OT: {$otHrs} hrs | Rs. {$totalPay}";
+
+            if (!in_array($record['userName'], $driverNames)) {
+                $driverNames[] = $record['userName'];
+            }
+        }
+        $voucherDesc = implode("\n", $narrationLines);
+        $driverNamesStr = implode(', ', $driverNames);
+
+        //for add credit note
         $creditData['amount'] = $debitData['amount'] =  $settleArr['totalWelfareAmount'];
         $creditData['transactionType'] = 1;
-        $creditData['pettyCashNote'] = "Added balance for driver's welfare";
+        $creditData['pettyCashNote'] = "Added balance for driver's welfare ({$driverNamesStr})";
         $creditData['paymentMode'] = 'Cash';
         $creditData['transactionDate'] = $debitData['transactionDate'] = date('Y-m-d');
         $response = addPettyCashBook($creditData);
 
         if (isset($response) && $response['err'] == 0) {
-            //for add debit note 
+            //for add debit note
             $debitData['transactionType'] = 2;
-            $debitData['pettyCashNote'] = "Settle the driver's balance";
+            $debitData['pettyCashNote'] = "Settle driver's overtime ({$driverNamesStr})";
             $debitData['pettyCashCatID'] = 15;
             $response = addPettyCashBook($debitData);
             if (isset($response) && $response['err'] == 0) {
@@ -305,21 +361,21 @@ function settlePayment($settleArr = [])
                 $param = array("tbl" => "voucher", "noCol" => "voucherNo", "dtCol" => "voucherDate", "prefix" => "V");
                 $voucherData['voucherNo'] = getNextNo($param);
                 $voucherData['voucherDate'] = date('Y-m-d');
-                $voucherData['voucherDebitTo'] = 'Dilkush Paswan';
+                $voucherData['voucherDebitTo'] = $driverNamesStr;
                 $voucherData['voucherAmt'] = $settleArr['totalWelfareAmount'];
-                $voucherData['voucherTitle'] = "Voucher for driver's welfere.";
-                $voucherData['pettyCashCatID'] = '3';  // staff welfere
-                $voucherData['voucherRef'] = "Voucher for driver's welfere.";
+                $voucherData['voucherTitle'] = "Driver Overtime Settlement";
+                $voucherData['voucherDesc'] = $voucherDesc;
+                $voucherData['pettyCashCatID'] = '3';  // staff welfare
+                $voucherData['voucherRef'] = "Overtime settlement for " . count($settleArr['driverArr']) . " record(s)";
                 $response = addVoucherData($voucherData);
                 if (isset($response) && $response['err'] == 0) {
-                    global $DB;
                     $dData['isSettled'] = 1;
                     $DB->table = $DB->pre . "driver_management";
                     $DB->data = $dData;
-                    if ($DB->dbUpdate("driverManagementID IN (" . implode(',', $settleArr['driverArr']) . ")")) {
-                        $response = array("err" => 0, "param" => "", "msg" => "Driver welfare succesfully settled.");
+                    if ($DB->dbUpdate("driverManagementID IN (" . $driverIDs . ")")) {
+                        $response = array("err" => 0, "param" => "", "msg" => "Driver welfare successfully settled.");
                     } else {
-                        $response = array("err" => 1, "msg" => "Error occured while updating status isSettled");
+                        $response = array("err" => 1, "msg" => "Error occurred while updating status isSettled");
                     }
                 }
             }
