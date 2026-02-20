@@ -83,11 +83,8 @@ echo $strSearch;
                 array("Water Source", "waterSourceID", ' width="10%" align="left"'),
                 array("Required Head (m)", "requiredHead", ' width="8%" align="right"'),
                 array("Required Discharge", "requiredDischarge", ' width="10%" align="left"'),
-                array("Pumping Distance (m)", "pumpingDistance", ' width="8%" align="right"'),
-                array("Height Difference (m)", "heightDifference", ' width="8%" align="right"'),
                 array("Pipe Size", "pipeSize", ' width="8%" align="left"'),
                 array("Power Supply", "powerSupplyID", ' width="10%" align="left"'),
-                array("Operating Hours", "operatingHours", ' width="8%" align="right"'),
                 array("Automation", "automationNeeded", ' width="8%" align="left"'),
                 array("Existing Model", "existingPumpModel", ' width="10%" align="left"'),
 
@@ -144,9 +141,6 @@ echo $strSearch;
                                             $displayValue = ($d[$v[1]] == 1) ? "Yes" : "No";
                                             break;
                                         case "requiredHead":
-                                        case "pumpingDistance":
-                                        case "heightDifference":
-                                        case "operatingHours":
                                         case "quantityRequired":
                                             // Format numeric fields
                                             $displayValue = $d[$v[1]] ?? "";

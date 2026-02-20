@@ -7,12 +7,13 @@ $dutyArr = array("1" => "S1", "2" => "S2", "3" => "S3", "4" => "S4", "5" => "Oth
 $MountingArr = array("1" => "B3 - FOOT", "2" => "B5 - FLANGE", "3" => "B35 - FOOT CUM FLANGE", "4" => "V1 - VERTICAL FLANGE", "5" => "B14 - FACE MOUNTED", "6" => "Other");
 $typeOfMotorArr = array("1" => "TEFC - SAFE AREA STANDARD", "2" => "FLAME PROOF - GAS GROUP IIA/IIB", "3" => "FLAME PROOF - GAS GROUP IIC", "4" => "INCREASED SAFETY - Ex'e'", "5" => "NON SPARKING - Ex'n'", "6" => "Other");
 $rotorTypeArr = array("1" => "SQUIRREL CAGE", "2" => "SLIP RING");
-$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "4" => "480", "5" => "Other");
+$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "5" => "480", "6" => "Other");
 $frequencyArr = array("1" => "50", "2" => "60");
+$efficiencyArr = array("1" => "IE2", "2" => "IE3", "3" => "IE4");
 $shaftExtensionArr = array("1" => "SINGLE", "2" => "DOUBLE", "3" => "Other");
 $expectedDeliveryTimeArr = array("1" => "EX.STOCK", "2" => "1-4 WEEKS", "3" => "4-8 WEEKS", "4" => "MORE THAN 8 WEEKS", "5" => "Other");
 $offerRequirementIsArr = array("1" => "Estimated", "2" => "Firm");
-$requirementForRplcArr = array("1" => "Yes", "0" => "No");
+$requirementForRplcArr = array("1" => "Yes", "2" => "No");
 $poleArr = array("1" => "2", "2" => "4", "3" => "6", "4" => "8");
 // End.
 if ($TPL->pageType == "edit" || $TPL->pageType == "view") {
@@ -45,22 +46,22 @@ $arrForm3 = array(
     array("type" => "select", "name" => "voltageID", "value" => getArrayDD(["data" => array("data" => $voltageArr), "selected" => ($D["voltageID"] ??0)]), "title" => "Voltage:", "attrp" => ' class="other" otherName="voltage-other" rel="' . $voltageArr[$D["voltageID"]] . '" id="voltageID"'),
     array("type" => "text", "name" => "voltageOther", "value" => $D["voltageOther"], "attrp" => ' class="voltage-other" style="display:none"'),
     array("type" => "text", "name" => "frequencyID", "value" => $frequencyArr[$D["frequencyID"]], "title" => "Frequency"),
+    array("type" => "text", "name" => "efficiencyID", "value" => $efficiencyArr[$D["efficiencyID"]] ?? "", "title" => "Efficiency"),
     array("type" => "select", "name" => "shaftExtensionID", "value" =>  getArrayDD(["data" => array("data" => $shaftExtensionArr), "selected" => ( $D["shaftExtensionID"] ??0)]), "title" => "Shaft Extension:", "attrp" => ' class="other" otherName="shaft-extension-other" rel="' . $shaftExtensionArr[$D["shaftExtensionID"]] . '" id="shaftExtensionID"'),
     array("type" => "text", "name" => "shaftExtensionOther", "value" => $D["shaftExtensionOther"], "attrp" => ' class="shaft-extension-other" style="display:none"'),
-    array("type" => "select", "name" => "expectedDeliveryTimeID", "value" => getArrayDD(["data" => array("data" => $expectedDeliveryTimeArr), "selected" => ( $D["expectedDeliveryTimeID"] ??0)]), "title" => "Expected Delivery Time:", "attrp" => ' class="other" otherName="expect-delivery-time" rel="' . $expectedDeliveryTimeID[$D["expectedDeliveryTimeID"]] . '" id="expectedDeliveryTimeID"'),
+    array("type" => "select", "name" => "expectedDeliveryTimeID", "value" => getArrayDD(["data" => array("data" => $expectedDeliveryTimeArr), "selected" => ( $D["expectedDeliveryTimeID"] ??0)]), "title" => "Expected Delivery Time:", "attrp" => ' class="other" otherName="expect-delivery-time" rel="' . $expectedDeliveryTimeArr[$D["expectedDeliveryTimeID"]] . '" id="expectedDeliveryTimeID"'),
     array("type" => "text", "name" => "expectedDeliveryTimeOther", "value" => $D["expectedDeliveryTimeOther"], "attrp" => ' class="expect-delivery-time" style="display:none"'),
-    array("type" => "checkbox", "name" => "offerRequirementIs", "value" => array($offerRequirementIsArr, explode(",", $D["offerRequirementIs"])), "title" => "Offer Requirement Is"),
+    array("type" => "radio", "name" => "offerRequirementIs", "value" => array($offerRequirementIsArr, $D["offerRequirementIs"] ?? 0), "title" => "Offer Requirement Is"),
     array("type" => "file", "name" => "uploadFile", "value" => array($D["uploadFile"], $id), "title" => "upload File"),
-    array("type" => "radio", "name" => "requirementIsForRplc", "value" => array($requirementForRplcArr, $D["requirementIsForRplc"]), "title" => "Requirement Is For Replacement", "attrp" => ' class="requirement-replacement" rel="' . $requirementForRplcArr[$D["requirementIsForRplc"]] . '" id="requirementIsForRplc"'),
+    array("type" => "radio", "name" => "requirementIsForRplc", "value" => array($requirementForRplcArr, $D["requirementIsForRplc"] ?? 0), "title" => "Requirement Is For Replacement", "attrp" => ' class="requirement-replacement" rel="' . ($requirementForRplcArr[$D["requirementIsForRplc"] ?? 0] ?? 'No') . '" id="requirementIsForRplc"'),
 );
 
 $arrFrom1 = array(
     array("type" => "text", "name" => "makeOfMotorD", "value" => $D["makeOfMotorD"], "title" => "Make of Motor", "attrp" => ' class="c2" ', "attr" => ' readonly'),
     array("type" => "text", "name" => "kwD", "title" => "KW", "value" => $D["kwD"], "attrp" => ' class="c2" ', "attr" => ' readonly'),
     array("type" => "text", "name" => "hpD", "title" => "HP", "value" => $D["hpD"], "attrp" => ' class="c2" ', "attr" => ' readonly'),
-    array("type" => "text", "name" => "rpmD", "title" => "RPM", "value" => $D["rpmD"], "attrp" => ' class="c2" ', "attr" => ' readonly'),
     array("type" => "text", "name" => "mounting", "title" => "Mounting", "value" => $D["mounting"], "attrp" => ' class="c2" ', "attr" => ' readonly'),
-    array("type" => "text", "name" => "poleID", "value" => $poleArr[$D["poleID"]], "title" => "Pole", "attrp" => ' class="c2" ', "attr" => ' readonly'),
+    array("type" => "text", "name" => "poleID", "value" => ($poleArr[$D["poleID"] ?? 0] ?? ''), "title" => "Pole", "attrp" => ' class="c2" ', "attr" => ' readonly'),
     array("type" => "text", "name" => "application", "title" => "Application", "value" => $D["application"], "attrp" => ' class="c2" ', "attr" => ' readonly'),
     array("type" => "file", "name" => "uploadFileD", "value" => array($D["uploadFileD"], $id), "title" => "upload File", "attrp" => ' class="c2" ', "attr" => ' readonly')
 );
@@ -88,7 +89,7 @@ $MXFRM = new mxForm();
                 echo $MXFRM->getForm($arrForm3);
                 ?>
             </ul>
-            <div class="tbl-form motor-details" style='display:none'>
+            <div class="tbl-form motor-details" style='display:<?php echo (isset($D["requirementIsForRplc"]) && $D["requirementIsForRplc"] == 1) ? "block" : "none"; ?>'>
                 <h4 class="form-head m-detail">Provide Existing Motor details</h4>
                 <ul class="tbl-form">
                     <?php

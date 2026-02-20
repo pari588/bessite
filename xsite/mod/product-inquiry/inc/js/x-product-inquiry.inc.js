@@ -14,7 +14,7 @@ $(document).ready(function () {
     });
 
     // Add numeric input validation for KW, HP, RPM fields
-    $('input[name="kw"], input[name="hp"], input[name="rpm"], input[name="kwD"], input[name="hpD"], input[name="rpmD"]').on('keypress', function(e) {
+    $('input[name="kw"], input[name="hp"], input[name="rpm"], input[name="kwD"], input[name="hpD"]').on('keypress', function(e) {
         // Allow: backspace, delete, tab, escape, enter, decimal point
         if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
             // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
@@ -39,7 +39,8 @@ $(document).ready(function () {
             { name: 'companyName', label: 'Company Name' },
             { name: 'userName', label: 'Name' },
             { name: 'userEmail', label: 'Email' },
-            { name: 'userMobile', label: 'Mobile Number' }
+            { name: 'userMobile', label: 'Mobile Number' },
+            { name: 'rpm', label: 'RPM' }
         ];
         
         for (var i = 0; i < requiredFields.length; i++) {
@@ -68,6 +69,21 @@ $(document).ready(function () {
             return false;
         }
         
+        // Validate required select fields
+        var mountingVal = $('#mountingID').val();
+        if (!mountingVal || mountingVal == '' || mountingVal == '0') {
+            $.mxalert({ msg: "Please select Mounting" });
+            $('#mountingID').focus();
+            return false;
+        }
+
+        var typeOfMotorVal = $('#typeOfMotorID').val();
+        if (!typeOfMotorVal || typeOfMotorVal == '' || typeOfMotorVal == '0') {
+            $.mxalert({ msg: "Please select Type of Motor" });
+            $('#typeOfMotorID').focus();
+            return false;
+        }
+
         // Validate required "Other" fields
         var otherFields = [
             { select: 'dutyID', other: 'dutyOther', label: 'Duty' },

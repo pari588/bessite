@@ -299,15 +299,17 @@ function sendProductInquiryAdminEmail($inquiryData)
     }
 
     try {
-        $adminEmail = defined('ADMIN_NOTIFICATION_EMAIL') ? ADMIN_NOTIFICATION_EMAIL : BREVO_SENDER_EMAIL;
-
         $htmlContent = buildProductInquiryAdminEmail($inquiryData);
 
         $emailParams = array(
             'to' => array(
                 array(
-                    'email' => $adminEmail,
-                    'name' => 'Admin'
+                    'email' => 'info@bombayengg.net',
+                    'name' => 'Bombay Engineering'
+                ),
+                array(
+                    'email' => 'manishbeskkc@gmail.com',
+                    'name' => 'Manish'
                 )
             ),
             'subject' => 'New Motor Inquiry - ' . $inquiryData['userName'],
@@ -490,8 +492,6 @@ function buildPumpInquiryAdminEmail($data)
     $powerSupplyID = isset($data['powerSupplyID']) ? htmlspecialchars($data['powerSupplyID']) : 'N/A';
     $requiredHead = isset($data['requiredHead']) ? htmlspecialchars($data['requiredHead']) : 'N/A';
     $requiredDischarge = isset($data['requiredDischarge']) ? htmlspecialchars($data['requiredDischarge']) : 'N/A';
-    $pumpingDistance = isset($data['pumpingDistance']) ? htmlspecialchars($data['pumpingDistance']) : 'N/A';
-    $operatingHours = isset($data['operatingHours']) ? htmlspecialchars($data['operatingHours']) : 'N/A';
 
     return <<<HTML
 <!DOCTYPE html>
@@ -550,8 +550,6 @@ function buildPumpInquiryAdminEmail($data)
                 <table>
                     <tr><td class="label">Required Head:</td><td>{$requiredHead}</td></tr>
                     <tr><td class="label">Required Discharge:</td><td>{$requiredDischarge}</td></tr>
-                    <tr><td class="label">Pumping Distance:</td><td>{$pumpingDistance}</td></tr>
-                    <tr><td class="label">Operating Hours:</td><td>{$operatingHours}</td></tr>
                 </table>
             </div>
 
@@ -627,7 +625,7 @@ function buildProductInquiryAdminEmail($data)
     $customerName = isset($data['userName']) ? htmlspecialchars($data['userName']) : 'Unknown';
     $customerEmail = isset($data['userEmail']) ? htmlspecialchars($data['userEmail']) : 'N/A';
 
-    // Pre-assign all variables to avoid ?? operator issues in heredoc
+    // Pre-assign all variables
     $userName = isset($data['userName']) ? htmlspecialchars($data['userName']) : 'N/A';
     $companyName = isset($data['companyName']) ? htmlspecialchars($data['companyName']) : 'N/A';
     $userEmail = isset($data['userEmail']) ? htmlspecialchars($data['userEmail']) : 'N/A';
@@ -635,9 +633,85 @@ function buildProductInquiryAdminEmail($data)
     $makeOfMotor = isset($data['makeOfMotor']) ? htmlspecialchars($data['makeOfMotor']) : 'N/A';
     $kw = isset($data['kw']) ? htmlspecialchars($data['kw']) : 'N/A';
     $hp = isset($data['hp']) ? htmlspecialchars($data['hp']) : 'N/A';
-    $typeOfMotorID = isset($data['typeOfMotorID']) ? htmlspecialchars($data['typeOfMotorID']) : 'N/A';
-    $voltageID = isset($data['voltageID']) ? htmlspecialchars($data['voltageID']) : 'N/A';
-    $mountingID = isset($data['mountingID']) ? htmlspecialchars($data['mountingID']) : 'N/A';
+    $rpm = isset($data['rpm']) ? htmlspecialchars($data['rpm']) : 'N/A';
+    $otherSpec = isset($data['otherSpec']) && $data['otherSpec'] != '' ? htmlspecialchars($data['otherSpec']) : '';
+
+    // Resolve IDs to human-readable labels
+    $dutyArr = array("1" => "S1", "2" => "S2", "3" => "S3", "4" => "S4", "5" => "Other");
+    $typeOfMotorArr = array("1" => "TEFC - SAFE AREA STANDARD", "2" => "FLAME PROOF - GAS GROUP IIA/IIB", "3" => "FLAME PROOF - GAS GROUP IIC", "4" => "INCREASED SAFETY - Ex'e'", "5" => "NON SPARKING - Ex'n'", "6" => "Other");
+    $rotorTypeArr = array("1" => "SQUIRREL CAGE", "2" => "SLIP RING");
+    $voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "5" => "480", "6" => "Other");
+    $frequencyArr = array("1" => "50 Hz", "2" => "60 Hz");
+    $efficiencyArr = array("1" => "IE2", "2" => "IE3", "3" => "IE4");
+    $MountingArr = array("1" => "B3 - FOOT", "2" => "B5 - FLANGE", "3" => "B35 - FOOT CUM FLANGE", "4" => "V1 - VERTICAL FLANGE", "5" => "B14 - FACE MOUNTED", "6" => "Other");
+    $shaftExtensionArr = array("1" => "SINGLE", "2" => "DOUBLE", "3" => "Other");
+    $expectedDeliveryTimeArr = array("1" => "EX.STOCK", "2" => "1-4 WEEKS", "3" => "4-8 WEEKS", "4" => "MORE THAN 8 WEEKS", "5" => "Other");
+    $offerRequirementIsArr = array("1" => "Estimated", "2" => "Firm");
+    $requirementForRplcArr = array("1" => "Yes", "2" => "No");
+    $poleArr = array("1" => "2", "2" => "4", "3" => "6", "4" => "8");
+
+    $duty = isset($data['dutyID']) && $data['dutyID'] ? ($dutyArr[$data['dutyID']] ?? 'N/A') : 'N/A';
+    $dutyOther = isset($data['dutyOther']) && $data['dutyOther'] != '' ? ' (' . htmlspecialchars($data['dutyOther']) . ')' : '';
+    $typeOfMotor = isset($data['typeOfMotorID']) && $data['typeOfMotorID'] ? ($typeOfMotorArr[$data['typeOfMotorID']] ?? 'N/A') : 'N/A';
+    $typeOfMotorOther = isset($data['typeOfMotorOther']) && $data['typeOfMotorOther'] != '' ? ' (' . htmlspecialchars($data['typeOfMotorOther']) . ')' : '';
+    $rotorType = isset($data['rotorTypeID']) && $data['rotorTypeID'] ? ($rotorTypeArr[$data['rotorTypeID']] ?? 'N/A') : 'N/A';
+    $voltage = isset($data['voltageID']) && $data['voltageID'] ? ($voltageArr[$data['voltageID']] ?? 'N/A') : 'N/A';
+    $voltageOther = isset($data['voltageOther']) && $data['voltageOther'] != '' ? ' (' . htmlspecialchars($data['voltageOther']) . ')' : '';
+    $frequency = isset($data['frequencyID']) && $data['frequencyID'] ? ($frequencyArr[$data['frequencyID']] ?? 'N/A') : 'N/A';
+    $efficiency = isset($data['efficiencyID']) && $data['efficiencyID'] ? ($efficiencyArr[$data['efficiencyID']] ?? 'N/A') : 'N/A';
+    $mounting = isset($data['mountingID']) && $data['mountingID'] ? ($MountingArr[$data['mountingID']] ?? 'N/A') : 'N/A';
+    $mountingOther = isset($data['mountingOther']) && $data['mountingOther'] != '' ? ' (' . htmlspecialchars($data['mountingOther']) . ')' : '';
+    $shaftExtension = isset($data['shaftExtensionID']) && $data['shaftExtensionID'] ? ($shaftExtensionArr[$data['shaftExtensionID']] ?? 'N/A') : 'N/A';
+    $shaftExtensionOther = isset($data['shaftExtensionOther']) && $data['shaftExtensionOther'] != '' ? ' (' . htmlspecialchars($data['shaftExtensionOther']) . ')' : '';
+    $expectedDeliveryTime = isset($data['expectedDeliveryTimeID']) && $data['expectedDeliveryTimeID'] ? ($expectedDeliveryTimeArr[$data['expectedDeliveryTimeID']] ?? 'N/A') : 'N/A';
+    $expectedDeliveryTimeOther = isset($data['expectedDeliveryTimeOther']) && $data['expectedDeliveryTimeOther'] != '' ? ' (' . htmlspecialchars($data['expectedDeliveryTimeOther']) . ')' : '';
+
+    // Offer requirement
+    $offerReq = 'N/A';
+    if (isset($data['offerRequirementIs']) && $data['offerRequirementIs'] != '') {
+        $offerParts = explode(',', $data['offerRequirementIs']);
+        $offerLabels = array();
+        foreach ($offerParts as $p) {
+            $p = trim($p);
+            if (isset($offerRequirementIsArr[$p])) $offerLabels[] = $offerRequirementIsArr[$p];
+        }
+        $offerReq = !empty($offerLabels) ? implode(', ', $offerLabels) : 'N/A';
+    }
+
+    // Replacement details
+    $isReplacement = isset($data['requirementIsForRplc']) && $data['requirementIsForRplc'] == '1';
+    $replacementLabel = $isReplacement ? 'Yes' : 'No';
+    $replacementHtml = '';
+    if ($isReplacement) {
+        $makeOfMotorD = isset($data['makeOfMotorD']) && $data['makeOfMotorD'] != '' ? htmlspecialchars($data['makeOfMotorD']) : 'N/A';
+        $kwD = isset($data['kwD']) && $data['kwD'] != '' ? htmlspecialchars($data['kwD']) : 'N/A';
+        $hpD = isset($data['hpD']) && $data['hpD'] != '' ? htmlspecialchars($data['hpD']) : 'N/A';
+        $mountingD = isset($data['mounting']) && $data['mounting'] != '' ? htmlspecialchars($data['mounting']) : 'N/A';
+        $pole = isset($data['poleID']) && $data['poleID'] ? ($poleArr[$data['poleID']] ?? 'N/A') : 'N/A';
+        $application = isset($data['application']) && $data['application'] != '' ? htmlspecialchars($data['application']) : 'N/A';
+
+        $replacementHtml = '
+            <div class="section">
+                <div class="section-title">EXISTING MOTOR DETAILS (REPLACEMENT)</div>
+                <table>
+                    <tr><td class="label">Make:</td><td>' . $makeOfMotorD . '</td></tr>
+                    <tr><td class="label">KW/HP:</td><td>' . $kwD . ' KW / ' . $hpD . ' HP</td></tr>
+                    <tr><td class="label">Mounting:</td><td>' . $mountingD . '</td></tr>
+                    <tr><td class="label">Pole:</td><td>' . $pole . '</td></tr>
+                    <tr><td class="label">Application:</td><td>' . $application . '</td></tr>
+                </table>
+            </div>';
+    }
+
+    // Other specification section
+    $otherSpecHtml = '';
+    if ($otherSpec != '') {
+        $otherSpecHtml = '
+            <div class="section">
+                <div class="section-title">OTHER SPECIFICATION</div>
+                <p style="margin: 0; padding: 5px 0;">' . $otherSpec . '</p>
+            </div>';
+    }
 
     return <<<HTML
 <!DOCTYPE html>
@@ -650,10 +724,10 @@ function buildProductInquiryAdminEmail($data)
         .header { background-color: #157bba; color: white; padding: 20px; text-align: center; }
         .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
         .section { margin: 20px 0; padding: 15px; background-color: white; border-left: 4px solid #157bba; }
-        .section-title { font-weight: bold; color: #157bba; margin-bottom: 10px; }
+        .section-title { font-weight: bold; color: #157bba; margin-bottom: 10px; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; }
         td { padding: 8px; border-bottom: 1px solid #eee; }
-        .label { font-weight: bold; width: 25%; color: #157bba; }
+        .label { font-weight: bold; width: 30%; color: #157bba; }
         .important { background-color: #fff3cd; padding: 15px; border-left: 4px solid #ff9800; margin: 15px 0; }
     </style>
 </head>
@@ -681,13 +755,32 @@ function buildProductInquiryAdminEmail($data)
             <div class="section">
                 <div class="section-title">MOTOR SPECIFICATIONS</div>
                 <table>
-                    <tr><td class="label">Make:</td><td>{$makeOfMotor}</td></tr>
-                    <tr><td class="label">KW/HP:</td><td>{$kw} KW / {$hp} HP</td></tr>
-                    <tr><td class="label">Type:</td><td>{$typeOfMotorID}</td></tr>
-                    <tr><td class="label">Voltage:</td><td>{$voltageID}</td></tr>
-                    <tr><td class="label">Mounting:</td><td>{$mountingID}</td></tr>
+                    <tr><td class="label">Make of Motor:</td><td>{$makeOfMotor}</td></tr>
+                    <tr><td class="label">KW / HP:</td><td>{$kw} KW / {$hp} HP</td></tr>
+                    <tr><td class="label">RPM:</td><td>{$rpm}</td></tr>
+                    <tr><td class="label">Duty:</td><td>{$duty}{$dutyOther}</td></tr>
+                    <tr><td class="label">Type of Motor:</td><td>{$typeOfMotor}{$typeOfMotorOther}</td></tr>
+                    <tr><td class="label">Rotor Type:</td><td>{$rotorType}</td></tr>
+                    <tr><td class="label">Voltage:</td><td>{$voltage}{$voltageOther}</td></tr>
+                    <tr><td class="label">Frequency:</td><td>{$frequency}</td></tr>
+                    <tr><td class="label">Efficiency:</td><td>{$efficiency}</td></tr>
+                    <tr><td class="label">Mounting:</td><td>{$mounting}{$mountingOther}</td></tr>
+                    <tr><td class="label">Shaft Extension:</td><td>{$shaftExtension}{$shaftExtensionOther}</td></tr>
                 </table>
             </div>
+
+            <div class="section">
+                <div class="section-title">COMMERCIAL</div>
+                <table>
+                    <tr><td class="label">Expected Delivery:</td><td>{$expectedDeliveryTime}{$expectedDeliveryTimeOther}</td></tr>
+                    <tr><td class="label">Offer Requirement:</td><td>{$offerReq}</td></tr>
+                    <tr><td class="label">For Replacement:</td><td>{$replacementLabel}</td></tr>
+                </table>
+            </div>
+
+            {$replacementHtml}
+
+            {$otherSpecHtml}
 
             <p style="margin-top: 20px;"><strong>Action Required:</strong> Review the motor specification inquiry and contact the customer with a quotation.</p>
         </div>
@@ -1454,6 +1547,818 @@ function buildDriverOvertimeEmail($data)
                         </td>
                     </tr>
                 </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+HTML;
+}
+
+// ============================================================================
+// LEAVE APPLICATION EMAIL NOTIFICATION
+// ============================================================================
+
+/**
+ * Send leave application notification email to approvers
+ *
+ * @param array $leaveData - Leave application data
+ *   - leaveID: Leave request ID
+ *   - employeeName: Name of employee applying for leave
+ *   - employeeEmail: Employee's email
+ *   - leaveType: Type of leave (CL, SL, EL, etc.)
+ *   - fromDate: Start date
+ *   - toDate: End date
+ *   - reason: Reason for leave
+ *   - totalDays: Number of days
+ * @param array $approverEmails - Array of approver email addresses
+ * @return bool - Success status
+ */
+function sendLeaveApplicationNotification($leaveData, $approverEmails = array())
+{
+    $brevo = getBrevoService();
+
+    if (!$brevo->isConfigured()) {
+        error_log("Brevo not configured - skipping leave application notification");
+        return true;
+    }
+
+    // Default approvers if none provided
+    if (empty($approverEmails)) {
+        $approverEmails = array(
+            array('email' => 'paritosh.ajmera@gmail.com', 'name' => 'Paritosh'),
+            array('email' => 'manishbeskkc@gmail.com', 'name' => 'Manish')
+        );
+    }
+
+    try {
+        $htmlContent = buildLeaveApplicationEmail($leaveData);
+        $employeeName = htmlspecialchars($leaveData['employeeName'] ?? 'Employee');
+        $fromDate = date('d M Y', strtotime($leaveData['fromDate']));
+        $toDate = date('d M Y', strtotime($leaveData['toDate']));
+
+        $emailParams = array(
+            'to' => $approverEmails,
+            'subject' => 'Leave Application: ' . $employeeName . ' (' . $fromDate . ' - ' . $toDate . ')',
+            'htmlContent' => $htmlContent,
+            'tags' => array('leave-application', 'approval-required')
+        );
+
+        error_log("Brevo Leave: Sending to " . json_encode($approverEmails) . " for employee: " . $employeeName);
+        $result = $brevo->sendEmail($emailParams);
+
+        if ($result['success']) {
+            error_log("Brevo: Leave application notification sent for " . $employeeName . " - messageId: " . ($result['messageId'] ?? 'N/A'));
+        } else {
+            error_log("Brevo: Failed to send leave notification for " . $employeeName . " - Error: " . ($result['error'] ?? 'Unknown error'));
+        }
+
+        return $result['success'];
+    } catch (Exception $e) {
+        error_log("Leave Application Notification Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Build HTML email template for leave application notification
+ */
+function buildLeaveApplicationEmail($data)
+{
+    $employeeName = htmlspecialchars($data['employeeName'] ?? 'Employee');
+    $employeeEmail = htmlspecialchars($data['employeeEmail'] ?? 'N/A');
+    $leaveType = htmlspecialchars($data['leaveTypeName'] ?? $data['leaveType'] ?? 'Leave');
+    $fromDate = date('l, d M Y', strtotime($data['fromDate']));
+    $toDate = date('l, d M Y', strtotime($data['toDate']));
+    $reason = htmlspecialchars($data['reason'] ?? 'No reason provided');
+    $totalDays = $data['totalDays'] ?? 1;
+    $leaveID = $data['leaveID'] ?? 'N/A';
+    $appliedOn = date('d M Y, h:i A');
+
+    // Balance warning info
+    $balanceWarning = $data['balanceWarning'] ?? null;
+    $warningHtml = '';
+
+    if ($balanceWarning) {
+        $warningType = $balanceWarning['type'] === 'over_limit' ? 'LEAVE QUOTA ALREADY EXCEEDED' : 'LEAVE QUOTA WILL BE EXCEEDED';
+        $warningMessage = htmlspecialchars($balanceWarning['message'] ?? '');
+        $warningLeaveType = htmlspecialchars($balanceWarning['leaveTypeName'] ?? $leaveType);
+        $warningAllowed = $balanceWarning['allowed'] ?? 0;
+        $warningUsed = $balanceWarning['used'] ?? 0;
+        $warningCurrent = $balanceWarning['currentBalance'] ?? 0;
+        $warningAfter = $balanceWarning['afterBalance'] ?? 0;
+
+        $warningHtml = <<<WARNING
+
+                            <!-- Balance Warning Box -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 10px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <span style="display: inline-block; background: #ef4444; color: #fff; padding: 6px 14px; border-radius: 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px;">⚠ {$warningType}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <p style="margin: 0; font-size: 14px; color: #991b1b; line-height: 1.5;">{$warningMessage}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 6px;">
+                                                        <tr>
+                                                            <td style="padding: 12px 15px; border-bottom: 1px solid #fecaca;">
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="font-size: 13px; color: #7f1d1d;">Leave Type:</td>
+                                                                        <td align="right" style="font-size: 13px; color: #7f1d1d; font-weight: 700;">{$warningLeaveType}</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 12px 15px; border-bottom: 1px solid #fecaca;">
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="font-size: 13px; color: #7f1d1d;">Allocated:</td>
+                                                                        <td align="right" style="font-size: 13px; color: #7f1d1d; font-weight: 700;">{$warningAllowed} days</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 12px 15px; border-bottom: 1px solid #fecaca;">
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="font-size: 13px; color: #7f1d1d;">Already Used:</td>
+                                                                        <td align="right" style="font-size: 13px; color: #7f1d1d; font-weight: 700;">{$warningUsed} days</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 12px 15px; border-bottom: 1px solid #fecaca;">
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="font-size: 13px; color: #7f1d1d;">Current Balance:</td>
+                                                                        <td align="right" style="font-size: 13px; color: #dc2626; font-weight: 700;">{$warningCurrent} days</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 12px 15px;">
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <td style="font-size: 13px; color: #7f1d1d;">After This Leave:</td>
+                                                                        <td align="right" style="font-size: 14px; color: #dc2626; font-weight: 800;">{$warningAfter} days</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+WARNING;
+    }
+
+    // Generate secure action URLs
+    $secret = defined('BREVO_API_KEY') ? substr(BREVO_API_KEY, 0, 16) : 'besyndicate2024';
+    $token = md5($leaveID . $secret);
+    $baseUrl = defined('SITEURL') ? SITEURL : 'https://www.bombayengg.net';
+    $approveUrl = $baseUrl . '/xadmin/mod/employee-leave/x-leave-action.php?action=approve&id=' . $leaveID . '&token=' . $token;
+    $rejectUrl = $baseUrl . '/xadmin/mod/employee-leave/x-leave-action.php?action=reject&id=' . $leaveID . '&token=' . $token;
+
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Application</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #157bba 0%, #0f5a8a 100%); border-radius: 12px 12px 0 0; padding: 30px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 8px; font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px;">HRMS Notification</p>
+                                        <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #ffffff;">Leave Application</h1>
+                                    </td>
+                                    <td align="right">
+                                        <span style="display: inline-block; background: #f59e0b; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;">PENDING APPROVAL</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="background-color: #ffffff; padding: 35px 40px;">
+
+                            <!-- Employee Info -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f8fafc; border-radius: 10px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td width="60" valign="top">
+                                                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #157bba, #0f5a8a); border-radius: 50%; text-align: center; line-height: 50px; color: #fff; font-size: 20px; font-weight: 700;">
+                                                        {$employeeName[0]}
+                                                    </div>
+                                                </td>
+                                                <td valign="middle">
+                                                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: 700; color: #1e293b;">{$employeeName}</p>
+                                                    <p style="margin: 0; font-size: 14px; color: #64748b;">{$employeeEmail}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Leave Details -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
+                                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Leave Details</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Leave Type</p>
+                                        <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: 600;">{$leaveType}</p>
+                                    </td>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Total Days</p>
+                                        <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: 600;">{$totalDays} Day(s)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">From Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$fromDate}</p>
+                                    </td>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">To Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$toDate}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Reason Box -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding: 18px 20px;">
+                                        <p style="margin: 0 0 8px; font-size: 12px; color: #a16207; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Reason for Leave</p>
+                                        <p style="margin: 0; font-size: 15px; color: #713f12; line-height: 1.6;">{$reason}</p>
+                                    </td>
+                                </tr>
+                            </table>
+{$warningHtml}
+                            <!-- Action Buttons -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="padding: 10px 0;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding-right: 10px;">
+                                                    <a href="{$approveUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 16px 36px; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);">
+                                                        ✓ APPROVE
+                                                    </a>
+                                                </td>
+                                                <td style="padding-left: 10px;">
+                                                    <a href="{$rejectUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; padding: 16px 36px; font-size: 15px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);">
+                                                        ✗ REJECT
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #1e293b; border-radius: 0 0 12px 12px; padding: 25px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 4px; font-size: 15px; color: #ffffff; font-weight: 600;">Bombay Engineering Syndicate</p>
+                                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">HRMS - Leave Management</p>
+                                    </td>
+                                    <td align="right">
+                                        <p style="margin: 0; font-size: 11px; color: #64748b;">Applied: {$appliedOn}</p>
+                                        <p style="margin: 4px 0 0; font-size: 11px; color: #64748b;">Ref: #{$leaveID}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p style="margin: 20px 0 0; font-size: 11px; color: #94a3b8; text-align: center;">This is an automated notification from the HRMS system</p>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+HTML;
+}
+
+// ============================================================================
+// LEAVE REMINDER EMAIL NOTIFICATION
+// ============================================================================
+
+/**
+ * Send leave reminder notification email to admins
+ * Sent 2 days before an approved leave starts
+ *
+ * @param array $leaveData - Leave data
+ *   - leaveID: Leave request ID
+ *   - employeeName: Name of employee on leave
+ *   - employeeEmail: Employee's email
+ *   - leaveType: Type of leave
+ *   - fromDate: Start date
+ *   - toDate: End date
+ *   - totalDays: Number of days
+ * @return bool - Success status
+ */
+function sendLeaveReminderNotification($leaveData)
+{
+    $brevo = getBrevoService();
+
+    if (!$brevo->isConfigured()) {
+        error_log("Brevo not configured - skipping leave reminder notification");
+        return true;
+    }
+
+    // Send to HR/Admin approvers (both emails)
+    $approverEmails = array(
+        array('email' => 'paritosh.ajmera@gmail.com', 'name' => 'Paritosh'),
+        array('email' => 'manishbeskkc@gmail.com', 'name' => 'Manish')
+    );
+
+    try {
+        $htmlContent = buildLeaveReminderEmail($leaveData);
+        $employeeName = htmlspecialchars($leaveData['employeeName'] ?? 'Employee');
+        $fromDate = date('d M Y', strtotime($leaveData['fromDate']));
+        $toDate = date('d M Y', strtotime($leaveData['toDate']));
+
+        $emailParams = array(
+            'to' => $approverEmails,
+            'subject' => 'Reminder: ' . $employeeName . ' on leave from ' . $fromDate,
+            'htmlContent' => $htmlContent,
+            'tags' => array('leave-reminder', 'upcoming-leave')
+        );
+
+        $result = $brevo->sendEmail($emailParams);
+
+        if ($result['success']) {
+            error_log("Brevo: Leave reminder sent for " . $employeeName . " (Leave ID: " . $leaveData['leaveID'] . ")");
+        } else {
+            error_log("Brevo: Failed to send leave reminder - " . ($result['error'] ?? 'Unknown error'));
+        }
+
+        return $result['success'];
+    } catch (Exception $e) {
+        error_log("Leave Reminder Notification Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Build HTML email template for leave reminder notification
+ */
+function buildLeaveReminderEmail($data)
+{
+    $employeeName = htmlspecialchars($data['employeeName'] ?? 'Employee');
+    $employeeEmail = htmlspecialchars($data['employeeEmail'] ?? 'N/A');
+    $leaveType = htmlspecialchars($data['leaveTypeName'] ?? $data['leaveType'] ?? 'Leave');
+    $fromDate = date('l, d M Y', strtotime($data['fromDate']));
+    $toDate = date('l, d M Y', strtotime($data['toDate']));
+    $totalDays = $data['totalDays'] ?? 1;
+    $leaveID = $data['leaveID'] ?? 'N/A';
+    $sentOn = date('d M Y, h:i A');
+
+    // Calculate days until leave starts
+    $today = new DateTime();
+    $startDate = new DateTime($data['fromDate']);
+    $daysUntil = $today->diff($startDate)->days;
+    $daysText = $daysUntil == 1 ? 'tomorrow' : 'in ' . $daysUntil . ' days';
+
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Reminder</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); border-radius: 12px 12px 0 0; padding: 30px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 8px; font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px;">HRMS Reminder</p>
+                                        <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #ffffff;">Upcoming Leave</h1>
+                                    </td>
+                                    <td align="right">
+                                        <span style="display: inline-block; background: #fbbf24; color: #78350f; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;">STARTS {$daysText}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Alert Banner -->
+                    <tr>
+                        <td style="background-color: #fef3c7; padding: 20px 40px; border-bottom: 3px solid #f59e0b;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="50" valign="middle">
+                                        <span style="font-size: 32px;">🔔</span>
+                                    </td>
+                                    <td>
+                                        <p style="margin: 0; font-size: 16px; color: #92400e; font-weight: 600;">
+                                            <strong>{$employeeName}</strong> will be on leave starting {$daysText}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="background-color: #ffffff; padding: 35px 40px;">
+
+                            <!-- Employee Info -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f8fafc; border-radius: 10px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td width="60" valign="top">
+                                                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6, #6d28d9); border-radius: 50%; text-align: center; line-height: 50px; color: #fff; font-size: 20px; font-weight: 700;">
+                                                        {$employeeName[0]}
+                                                    </div>
+                                                </td>
+                                                <td valign="middle">
+                                                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: 700; color: #1e293b;">{$employeeName}</p>
+                                                    <p style="margin: 0; font-size: 14px; color: #64748b;">{$employeeEmail}</p>
+                                                </td>
+                                                <td align="right" valign="middle">
+                                                    <span style="display: inline-block; background: #10b981; color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;">APPROVED</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Leave Details -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
+                                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Leave Details</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Leave Type</p>
+                                        <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: 600;">{$leaveType}</p>
+                                    </td>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Total Days</p>
+                                        <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: 600;">{$totalDays} Day(s)</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">From Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$fromDate}</p>
+                                    </td>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">To Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$toDate}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Info Note -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 0 8px 8px 0;">
+                                <tr>
+                                    <td style="padding: 18px 20px;">
+                                        <p style="margin: 0 0 4px; font-size: 14px; color: #1e40af; font-weight: 600;">Please Note</p>
+                                        <p style="margin: 0; font-size: 13px; color: #3b82f6; line-height: 1.5;">This is an automated reminder that the above employee will be on approved leave. Please ensure proper handover and coverage arrangements are in place.</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #1e293b; border-radius: 0 0 12px 12px; padding: 25px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 4px; font-size: 15px; color: #ffffff; font-weight: 600;">Bombay Engineering Syndicate</p>
+                                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">HRMS - Leave Management</p>
+                                    </td>
+                                    <td align="right">
+                                        <p style="margin: 0; font-size: 11px; color: #64748b;">Sent: {$sentOn}</p>
+                                        <p style="margin: 4px 0 0; font-size: 11px; color: #64748b;">Ref: #{$leaveID}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p style="margin: 20px 0 0; font-size: 11px; color: #94a3b8; text-align: center;">This is an automated reminder from the HRMS system</p>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+HTML;
+}
+
+/**
+ * Send leave status update notification to employee
+ * Called when leave is approved or rejected
+ *
+ * @param array $leaveData - Leave details including:
+ *   - employeeName: Name of employee
+ *   - employeeEmail: Employee's email address
+ *   - leaveType: Type of leave
+ *   - fromDate: Start date
+ *   - toDate: End date
+ *   - status: 'Approved' or 'Disapproved'
+ *   - remarks: Optional remarks/reason for rejection
+ * @return bool - Success status
+ */
+function sendLeaveStatusNotification($leaveData)
+{
+    $brevo = getBrevoService();
+
+    if (!$brevo->isConfigured()) {
+        error_log("Brevo not configured - skipping leave status notification");
+        return true;
+    }
+
+    $employeeEmail = $leaveData['employeeEmail'] ?? '';
+    $employeeName = $leaveData['employeeName'] ?? 'Employee';
+
+    if (empty($employeeEmail)) {
+        error_log("Brevo: No employee email provided for leave status notification");
+        return false;
+    }
+
+    try {
+        $htmlContent = buildLeaveStatusEmail($leaveData);
+        $status = $leaveData['status'] ?? 'Updated';
+        $fromDate = date('d M Y', strtotime($leaveData['fromDate']));
+        $toDate = date('d M Y', strtotime($leaveData['toDate']));
+
+        $emailParams = array(
+            'to' => array(
+                array('email' => $employeeEmail, 'name' => $employeeName)
+            ),
+            'subject' => 'Leave ' . $status . ': ' . $fromDate . ' - ' . $toDate,
+            'htmlContent' => $htmlContent,
+            'tags' => array('leave-status', strtolower($status))
+        );
+
+        error_log("Brevo Leave Status: Sending to $employeeEmail for $employeeName - Status: $status");
+        $result = $brevo->sendEmail($emailParams);
+
+        if ($result['success']) {
+            error_log("Brevo: Leave status notification sent to $employeeName ($employeeEmail) - Status: $status");
+        } else {
+            error_log("Brevo: Failed to send leave status notification - " . ($result['error'] ?? 'Unknown error'));
+        }
+
+        return $result['success'];
+    } catch (Exception $e) {
+        error_log("Leave Status Notification Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Build HTML email template for leave status notification
+ * Matches the design of buildLeaveApplicationEmail for consistency
+ */
+function buildLeaveStatusEmail($data)
+{
+    $employeeName = htmlspecialchars($data['employeeName'] ?? 'Employee');
+    $leaveType = htmlspecialchars($data['leaveType'] ?? 'Leave');
+    $fromDate = date('l, d M Y', strtotime($data['fromDate']));
+    $toDate = date('l, d M Y', strtotime($data['toDate']));
+    $status = $data['status'] ?? 'Updated';
+    $remarks = htmlspecialchars($data['remarks'] ?? '');
+    $processedOn = date('d M Y, h:i A');
+
+    $isApproved = ($status === 'Approved');
+
+    // Colors matching the existing template design system
+    $headerGradient = $isApproved
+        ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+    $statusBadgeBg = $isApproved ? '#10b981' : '#ef4444';
+    $statusIcon = $isApproved ? '✓' : '✗';
+    $statusText = $isApproved ? 'APPROVED' : 'REJECTED';
+    $statusTextLower = $isApproved ? 'Approved' : 'Rejected';
+
+    $message = $isApproved
+        ? 'Great news! Your leave request has been approved. Please ensure proper handover of your responsibilities before going on leave.'
+        : 'We regret to inform you that your leave request has been rejected. Please contact your manager or HR for more details.';
+
+    // Build remarks section if provided
+    $remarksHtml = '';
+    if (!empty($remarks)) {
+        $remarksBg = $isApproved ? '#f0fdf4' : '#fef2f2';
+        $remarksBorder = $isApproved ? '#10b981' : '#ef4444';
+        $remarksTextColor = $isApproved ? '#166534' : '#991b1b';
+        $remarksLabelColor = $isApproved ? '#15803d' : '#b91c1c';
+
+        $remarksHtml = <<<HTML
+                            <!-- Remarks Box -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: {$remarksBg}; border-left: 4px solid {$remarksBorder}; border-radius: 0 8px 8px 0; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 18px 20px;">
+                                        <p style="margin: 0 0 8px; font-size: 12px; color: {$remarksLabelColor}; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Remarks</p>
+                                        <p style="margin: 0; font-size: 15px; color: {$remarksTextColor}; line-height: 1.6;">{$remarks}</p>
+                                    </td>
+                                </tr>
+                            </table>
+HTML;
+    }
+
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave {$statusTextLower}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: {$headerGradient}; border-radius: 12px 12px 0 0; padding: 30px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 8px; font-size: 12px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px;">HRMS Notification</p>
+                                        <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #ffffff;">Leave {$statusTextLower}</h1>
+                                    </td>
+                                    <td align="right">
+                                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 50%; text-align: center; line-height: 56px;">
+                                            <span style="font-size: 28px; color: #ffffff;">{$statusIcon}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="background-color: #ffffff; padding: 35px 40px;">
+
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px; font-size: 16px; color: #1e293b; line-height: 1.6;">
+                                Dear <strong>{$employeeName}</strong>,
+                            </p>
+
+                            <!-- Message -->
+                            <p style="margin: 0 0 30px; font-size: 15px; color: #64748b; line-height: 1.7;">
+                                {$message}
+                            </p>
+
+                            <!-- Leave Details Section Header -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+                                <tr>
+                                    <td style="padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
+                                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Leave Details</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Leave Details Grid -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Leave Type</p>
+                                        <p style="margin: 0; font-size: 16px; color: #1e293b; font-weight: 600;">{$leaveType}</p>
+                                    </td>
+                                    <td width="50%" style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">Status</p>
+                                        <span style="display: inline-block; background: {$statusBadgeBg}; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;">{$statusText}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">From Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$fromDate}</p>
+                                    </td>
+                                    <td style="padding: 12px 0;">
+                                        <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">To Date</p>
+                                        <p style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">{$toDate}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            {$remarksHtml}
+
+                            <!-- Help Text -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f8fafc; border-radius: 10px;">
+                                <tr>
+                                    <td style="padding: 18px 20px;">
+                                        <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.6;">
+                                            <strong style="color: #475569;">Need help?</strong> You can view your leave history and balances on the <a href="https://www.bombayengg.net/hrms/leave/" style="color: #157bba; text-decoration: none; font-weight: 600;">HRMS Portal</a>.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #1e293b; border-radius: 0 0 12px 12px; padding: 25px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 4px; font-size: 15px; color: #ffffff; font-weight: 600;">Bombay Engineering Syndicate</p>
+                                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">HRMS - Leave Management</p>
+                                    </td>
+                                    <td align="right">
+                                        <p style="margin: 0; font-size: 11px; color: #64748b;">Processed: {$processedOn}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p style="margin: 20px 0 0; font-size: 11px; color: #94a3b8; text-align: center;">This is an automated notification from the HRMS system</p>
 
             </td>
         </tr>

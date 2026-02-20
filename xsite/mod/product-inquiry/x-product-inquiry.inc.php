@@ -9,12 +9,6 @@ function verifyRecaptcha($token)
     // Log token for debugging
     error_log("reCAPTCHA token received: " . (empty($token) ? "EMPTY" : substr($token, 0, 20) . "..."));
 
-    // Allow dummy token for testing/development
-    if ($token === 'dummy_token_for_testing') {
-        error_log("reCAPTCHA: Using dummy token (development mode)");
-        return true;
-    }
-
     if (empty($token)) {
         error_log("reCAPTCHA verification failed: Token is empty");
         return false;
@@ -94,22 +88,28 @@ function saveProductInquiry()
     $data['err'] = 1;
     $data['msg'] = "Something went wrong";
 
-    // Verify reCAPTCHA token (temporarily optional for debugging)
+    // Verify reCAPTCHA token
     $recaptchaToken = $_POST["g-recaptcha-response"] ?? '';
-    error_log("saveProductInquiry called with token: " . (empty($recaptchaToken) ? "EMPTY" : "PRESENT"));
+    if (!verifyRecaptcha($recaptchaToken)) {
+        $data['msg'] = "reCAPTCHA verification failed. Please try again.";
+        return $data;
+    }
 
-    if (!empty($recaptchaToken)) {
-        if (!verifyRecaptcha($recaptchaToken)) {
-            error_log("reCAPTCHA verification returned false");
-            $data['msg'] = "reCAPTCHA verification failed. Please try again.";
-            return $data;
-        }
-    } else {
-        error_log("reCAPTCHA token is empty - allowing submission for now");
+    if (empty($_POST["mountingID"]) || $_POST["mountingID"] == "0") {
+        $data['msg'] = "Please select Mounting";
+        return $data;
+    }
+    if (empty($_POST["typeOfMotorID"]) || $_POST["typeOfMotorID"] == "0") {
+        $data['msg'] = "Please select Type of Motor";
+        return $data;
+    }
+    if (empty($_POST["rpm"])) {
+        $data['msg'] = "Please enter RPM";
+        return $data;
     }
 
     if ($_POST["companyName"] != "" && $_POST["userName"] != "" && $_POST["userEmail"] != "" && $_POST["userMobile"] != "") {
-        $_POST["offerRequirementIs"] = implode(",", $_POST["offerRequirementIs"] ?? array());
+        $_POST["offerRequirementIs"] = $_POST["offerRequirementIs"] ?? "";
         $_POST["uploadFile"]  = mxGetFileName("uploadFile");
         $_POST["uploadFileD"]  = mxGetFileName("uploadFileD");
 

@@ -4,8 +4,9 @@ $dutyArr = array("1" => "S1", "2" => "S2", "3" => "S3", "4" => "S4", "5" => "Oth
 $MountingArr = array("1" => "B3 - FOOT", "2" => "B5 - FLANGE", "3" => "B35 - FOOT CUM FLANGE", "4" => "V1 - VERTICAL FLANGE", "5" => "B14 - FACE MOUNTED", "6" => "Other");
 $typeOfMotorArr = array("1" => "TEFC - SAFE AREA STANDARD", "2" => "FLAME PROOF - GAS GROUP IIA/IIB", "3" => "FLAME PROOF - GAS GROUP IIC", "4" => "INCREASED SAFETY - Ex'e'", "5" => "NON SPARKING - Ex'n'", "6" => "Other");
 $rotorTypeArr = array("1" => "SQUIRREL CAGE", "2" => "SLIP RING");
-$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "4" => "480", "5" => "Other");
+$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "5" => "480", "6" => "Other");
 $frequencyArr = array("1" => "50", "2" => "60");
+$efficiencyArr = array("1" => "IE2", "2" => "IE3", "3" => "IE4");
 $shaftExtensionArr = array("1" => "SINGLE", "2" => "DOUBLE", "3" => "Other");
 $expectedDeliveryTimeArr = array("1" => "EX.STOCK", "2" => "1-4 WEEKS", "3" => "4-8 WEEKS", "4" => "MORE THAN 8 WEEKS", "5" => "Other");
 $offerRequirementIsArr = array("1" => "Estimated", "2" => "Firm");
@@ -36,13 +37,13 @@ if (!$MXFRM->where && $MXTOTREC < 1)
 echo $strSearch;
 ?>
 <div class="wrap-right">
-    <?php echo getPageNav('', '', array("add"));  ?>
+    <?php echo getPageNav();  ?>
     <div class="wrap-data">
         <?php
         if ($MXTOTREC > 0) {
             $MXCOLS = array(
                 array("#ID", "productInquiryID", ' width="2%" align="center"'),
-                array("Company Name", "companyName", ' width="16%" nowrap align="left"'),
+                array("Company Name", "companyName", ' width="16%" nowrap align="left"', true),
                 array("User Name", "userName", ' width="16%" nowrap align="left"'),
                 array("User Email", "userEmail", ' width="16%" nowrap align="left"'),
                 array("User Mobile", "userMobile", '  width="16%" nowrap align="left"'),
@@ -58,6 +59,7 @@ echo $strSearch;
                 array("Rotor Type", "rotorTypeID", '  width="16%" nowrap align="left"'),
                 array("voltage", "voltageID", '  width="16%" nowrap align="left"'),
                 array("frequency", "frequencyID", '  width="16%" nowrap align="left"'),
+                array("Efficiency", "efficiencyID", '  width="16%" nowrap align="left"'),
                 array("Shaft Extension", "shaftExtensionID", '  width="16%" nowrap align="left"'),
                 array("Expected Delivery Time", "expectedDeliveryTimeID", '  width="16%" nowrap align="left"'),
                 array("Offer RequirementIs", "offerRequirementIs", '  width="16%" nowrap align="left"'),
@@ -100,6 +102,7 @@ echo $strSearch;
                         $d['rotorTypeID'] = $rotorTypeArr[$d['rotorTypeID']] ?? "";
                         $d['voltageID'] = $voltageArr[$d['voltageID']] ?? "";
                         $d['frequencyID'] = $frequencyArr[$d['frequencyID']] ?? "";
+                        $d['efficiencyID'] = $efficiencyArr[$d['efficiencyID']] ?? "";
                         $d['shaftExtensionID'] = $shaftExtensionArr[$d['shaftExtensionID']] ?? "";
                         $d['expectedDeliveryTimeID'] = $expectedDeliveryTimeArr[$d['expectedDeliveryTimeID']] ?? "";
                         $d['offerRequirementIs'] = $offerRequirementIsArr[$d['offerRequirementIs']] ?? "";

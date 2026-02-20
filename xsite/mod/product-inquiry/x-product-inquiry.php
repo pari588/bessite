@@ -22,13 +22,18 @@ $rotorTypeDD = getArrayDD(["data" => array("data" => $rotorTypeArr), "selected" 
 // End.
 
 // Preparing voltage select's dropdown.
-$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "4" => "480", "5" => "Other");
+$voltageArr = array("1" => "415", "2" => "380", "3" => "440", "4" => "460", "5" => "480", "6" => "Other");
 $voltageDD = getArrayDD(["data" => array("data" => $voltageArr), "selected" => ($D["voltageID"] ?? 0)]); //getArrayDD($voltageArr, 0);
 // End.
 
 // Preparing frequency select's dropdown.
 $frequencyArr = array("1" => "50", "2" => "60");
 $frequencyDD = getArrayDD(["data" => array("data" => $frequencyArr), "selected" => 0]); //getArrayDD($frequencyArr, 0);
+// End.
+
+// Preparing efficiency select's dropdown.
+$efficiencyArr = array("1" => "IE2", "2" => "IE3", "3" => "IE4");
+$efficiencyDD = getArrayDD(["data" => array("data" => $efficiencyArr), "selected" => ($D["efficiencyID"] ?? 0)]);
 // End.
 
 // Preparing shaft extension select's dropdown.
@@ -78,23 +83,24 @@ $arrFrom = array(
 	array("type" => "text", "name" => "hp", "title" => "HP"),
 	array("type" => "select", "name" => "dutyID", "value" => $dutyDD, "title" => "Duty", "attrp" => ' class="other" otherName="duty-other"'),
 	array("type" => "text", "name" => "dutyOther", "attrp" => ' class="duty-other"  style="display:none"'),
-	array("type" => "text", "name" => "rpm", "title" => "RPM")
+	array("type" => "text", "name" => "rpm", "title" => "RPM", "validate" => "required", "attr" => "placeholder='RPM*'")
 
 );
 $arrForm3 = array(
-	array("type" => "select", "name" => "mountingID", "value" => $MountingDD, "title" => "Mounting", "attrp" => ' class="other" otherName="mounting-other"'),
+	array("type" => "select", "name" => "mountingID", "value" => $MountingDD, "title" => "Mounting *", "validate" => "required", "attrp" => ' class="other" otherName="mounting-other"'),
 	array("type" => "text", "name" => "mountingOther", "attrp" => ' class="mounting-other" style="display:none"'),
-	array("type" => "select", "name" => "typeOfMotorID", "value" => $typeOfMotorDD, "title" => "Type of Motor", "attrp" => ' class="other" otherName="typeOfMotor-other"'),
+	array("type" => "select", "name" => "typeOfMotorID", "value" => $typeOfMotorDD, "title" => "Type of Motor *", "validate" => "required", "attrp" => ' class="other" otherName="typeOfMotor-other"'),
 	array("type" => "text", "name" => "typeOfMotorOther", "attrp" => ' class="typeOfMotor-other" style="display:none"'),
 	array("type" => "select", "name" => "rotorTypeID", "value" => $rotorTypeDD, "title" => "Rotor Type"),
 	array("type" => "select", "name" => "voltageID", "value" => $voltageDD, "title" => "Voltage", "attrp" => ' class="other" otherName="voltage-other"'),
 	array("type" => "text", "name" => "voltageOther", "attrp" => ' class="voltage-other" style="display:none"'),
 	array("type" => "select", "name" => "frequencyID", "value" => $frequencyDD, "title" => "Frequency"),
+	array("type" => "select", "name" => "efficiencyID", "value" => $efficiencyDD, "title" => "Efficiency"),
 	array("type" => "select", "name" => "shaftExtensionID", "value" => $shaftExtensionDD, "title" => "Shaft Extension", "attrp" => ' class="other" otherName="shaft-extension-other"'),
 	array("type" => "text", "name" => "shaftExtensionOther", "attrp" => ' class="shaft-extension-other" style="display:none"'),
 	array("type" => "select", "name" => "expectedDeliveryTimeID", "value" => $expectedDeliveryTimeDD, "title" => "Expected Delivery Time", "attrp" => ' class="other" otherName="expect-delivery-time"'),
 	array("type" => "text", "name" => "expectedDeliveryTimeOther", "attrp" => ' class="expect-delivery-time" style="display:none"'),
-	array("type" => "checkbox", "name" => "offerRequirementIs", "value" => array($offerRequirementIsArr), "title" => "Offer Requirement Is", "attrp" => ' class="Requirement"'),
+	array("type" => "radio", "name" => "offerRequirementIs", "value" => array($offerRequirementIsArr, 0), "title" => "Offer Requirement Is", "attrp" => ' class="Requirement"'),
 	array("type" => "file", "name" => "uploadFile", "title" => "upload File"),
 	array("type" => "radio", "name" => "requirementIsForRplc", "value" => array($requirementForRplcArr, 0), "title" => "Requirement Is For Replacement:", "attrp" => ' class="requirement-replacement"')
 );
@@ -103,7 +109,6 @@ $arrFrom1 = array(
 	array("type" => "text", "name" => "makeOfMotorD", "title" => "Make of Motor:"),
 	array("type" => "text", "name" => "kwD", "title" => "KW:"),
 	array("type" => "text", "name" => "hpD", "title" => "HP:"),
-	array("type" => "text", "name" => "rpmD", "title" => "RPM:"),
 	array("type" => "text", "name" => "mounting", "title" => "Mounting:"),
 	array("type" => "select", "name" => "poleID", "value" => $poleDD, "title" => "Pole:"),
 	array("type" => "text", "name" => "application", "title" => "Application:"),

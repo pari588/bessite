@@ -143,27 +143,6 @@ $(document).ready(function () {
             return false;
         }
 
-        var pumpingDistance = $('input[name="pumpingDistance"]').val().trim();
-        if (pumpingDistance && (isNaN(pumpingDistance) || pumpingDistance < 0)) {
-            $.mxalert({ msg: "Pumping distance must be a positive number" });
-            $('input[name="pumpingDistance"]').focus();
-            return false;
-        }
-
-        var heightDifference = $('input[name="heightDifference"]').val().trim();
-        if (heightDifference && (isNaN(heightDifference) || heightDifference < 0)) {
-            $.mxalert({ msg: "Height difference must be a positive number" });
-            $('input[name="heightDifference"]').focus();
-            return false;
-        }
-
-        var operatingHours = $('input[name="operatingHours"]').val().trim();
-        if (operatingHours && (isNaN(operatingHours) || operatingHours < 0 || operatingHours > 24)) {
-            $.mxalert({ msg: "Operating hours must be between 0 and 24" });
-            $('input[name="operatingHours"]').focus();
-            return false;
-        }
-
         var quantityRequired = $('input[name="quantityRequired"]').val().trim();
         if (quantityRequired && (isNaN(quantityRequired) || quantityRequired < 1)) {
             $.mxalert({ msg: "Quantity required must be at least 1" });
@@ -295,7 +274,7 @@ $('input[name="pinCode"]').on('input', function() {
 });
 
 // Numeric fields - allow only numbers and decimal point
-$('input[name="requiredHead"], input[name="pumpingDistance"], input[name="heightDifference"], input[name="operatingHours"], input[name="quantityRequired"]').on('input', function() {
+$('input[name="requiredHead"], input[name="quantityRequired"]').on('input', function() {
     var value = $(this).val();
     value = value.replace(/[^\d.]/g, '');
 

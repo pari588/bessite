@@ -303,27 +303,6 @@ function savePumpInquiry()
         }
     }
 
-    if (!empty($_POST["pumpingDistance"])) {
-        if (!is_numeric($_POST["pumpingDistance"]) || $_POST["pumpingDistance"] < 0) {
-            $data['msg'] = "Pumping distance must be a positive number";
-            return $data;
-        }
-    }
-
-    if (!empty($_POST["heightDifference"])) {
-        if (!is_numeric($_POST["heightDifference"]) || $_POST["heightDifference"] < 0) {
-            $data['msg'] = "Height difference must be a positive number";
-            return $data;
-        }
-    }
-
-    if (!empty($_POST["operatingHours"])) {
-        if (!is_numeric($_POST["operatingHours"]) || $_POST["operatingHours"] < 0 || $_POST["operatingHours"] > 24) {
-            $data['msg'] = "Operating hours must be between 0 and 24";
-            return $data;
-        }
-    }
-
     if (!empty($_POST["quantityRequired"])) {
         if (!is_numeric($_POST["quantityRequired"]) || $_POST["quantityRequired"] < 1) {
             $data['msg'] = "Quantity required must be at least 1";
