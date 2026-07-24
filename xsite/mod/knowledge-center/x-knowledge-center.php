@@ -1,5 +1,9 @@
 <?php
 $data = getknowledgeCenters() ?? [];
+$alt_file = dirname(__FILE__) . '/../../core-site/kc-image-alt.inc.php';
+if (file_exists($alt_file)) {
+    require_once($alt_file);
+}
 ?>
 <!--Page Header Start-->
 <section class="page-header">
@@ -31,7 +35,7 @@ $data = getknowledgeCenters() ?? [];
                             <div class="kc-card__image-wrapper">
                                 <img
                                     src="<?php echo UPLOADURL . '/knowledge-center/' . $kCenter['knowledgeCenterImage'] ?>"
-                                    alt="<?php echo htmlspecialchars($kCenter['knowledgeCenterTitle']); ?>"
+                                    alt="<?php echo htmlspecialchars(function_exists('kcImageAlt') ? kcImageAlt($kCenter['seoUri'], $kCenter['knowledgeCenterTitle']) : $kCenter['knowledgeCenterTitle']); ?>"
                                     class="kc-card__image"
                                     loading="lazy"
                                 >
@@ -48,7 +52,7 @@ $data = getknowledgeCenters() ?? [];
                         <div class="kc-card__content">
                             <!-- Card Title -->
                             <h5 class="kc-card__title">
-                                <a href="<?php echo SITEURL . '/knowledge-center/' . $kCenter['seoUri'] ?>">
+                                <a href="<?php echo SITEURL . '/knowledge-center/' . $kCenter['seoUri'] . '/' ?>">
                                     <?php echo $kCenter['knowledgeCenterTitle']; ?>
                                 </a>
                             </h5>
@@ -61,7 +65,7 @@ $data = getknowledgeCenters() ?? [];
                             <!-- Read More Link -->
                             <a
                                 class="kc-card__link"
-                                href="<?php echo SITEURL . '/knowledge-center/' . $kCenter['seoUri'] ?>"
+                                href="<?php echo SITEURL . '/knowledge-center/' . $kCenter['seoUri'] . '/' ?>"
                                 aria-label="Read more about <?php echo htmlspecialchars($kCenter['knowledgeCenterTitle']); ?>"
                             >
                                 Read More →
