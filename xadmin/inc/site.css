@@ -1,0 +1,370 @@
+div#mxloader{background-color: rgba(0,0,0,0.3);}
+div.spinner div{ background-color: rgba(255,255,255,0.9);box-shadow: inset 0 0 20px rgba(97,81,255,0.4);}
+table.calender {
+    float: left;
+    width: 100%;
+}
+
+table.calender td.months {
+    width: 25%;text-align: center;padding: 0px;background: #292c33;vertical-align: top;box-shadow: 0px 0px 4px #393d44;border: 1px solid #393d44;
+}
+
+table.calender td.months tr.month-title th {
+    padding: 10px 0px;color: #888888;background: #292c33;border-bottom: 1px solid #393d44;
+}
+
+table.calender td.months table tr.days td {
+    background: #292c33;
+}
+
+table.calender td.months table tr td {
+    background: #292c33;box-shadow: none;border-right: 1px solid #393d44;border-bottom: 1px solid #393d44;position: relative;
+}
+
+table.calender td.months table tr td div.leave-details {
+    position: absolute;top: -1px;right: -222px;width: 180px;z-index: 1;border: 1px solid #666;background: #292c33;padding: 15px;border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;
+}
+
+table.calender td.months table tr td div.leave-details:before {
+    content: "";width: 12px;height: 20px;background: url("../images/point-left.png") no-repeat center;position: absolute;left: -11px;top: 5px;
+}
+
+table.calender td.months table tr td div.leave-details div.select-field {
+    padding: 0px;
+    border: 1px solid #393d44;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+table.calender td.months table tr td div.leave-details div.select-field select {
+    width: 100%;
+    height: 30px;
+    background: #292c33;
+    appearance: none;
+}
+
+table.calender td.months table tr td div.leave-details textarea {
+    resize: none;
+}
+
+table.calender td.months table tr td div.leave-details a {
+    width: 71px;
+    height: 24px;
+    float: left;
+    margin: 10px 5px 0px 0px;
+    background: #ccc;
+    border: 1px solid #393d44;
+}
+
+table.calender td.months table tr td div.leave-details a.apply {
+    background: #23252c url("../images/correct.png") no-repeat center 5px;
+    background-size: 20%;
+}
+
+table.calender td.months table tr td div.leave-details a.apply:hover {
+    border: 1px solid #41ad49;
+    background-position: center -37px;
+}
+
+table.calender td.months table tr td div.leave-details a.cancel {
+    margin-right: 0px;
+    background: #23252c url("../images/Delete.png") no-repeat center 5px;
+    background-size: 20%;
+}
+
+table.calender td.months table tr td div.leave-details a.cancel:hover {
+    border: 1px solid #cc4439;
+    background-position: center -37px;
+}
+
+table.calender td.months.last div.leave-details {
+    left: -222px;
+}
+
+table.calender td.months.last table tr td div.leave-details:before {
+    position: absolute;
+    left: 219px;
+    background: url("../images/point-right.png") no-repeat center;
+}
+
+
+/*------------------------------------------------------*/
+
+table.calender td.months table tr td a {
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding: 5px 3px;
+    color: #fff;
+}
+
+table.calender td.months table tr td a:hover {
+    /* font-weight: 600; */
+    color: #fff;
+}
+
+table.calender td.months table tr td:hover {
+    background: #61b5ff;
+    color: #ccd1d9;
+}
+
+table.calender td.months table tr td:hover a {
+    color: #fff;
+}
+
+table.calender td.months table tr td.sun {
+    border-right: 0px;background-color: rgba(0,0,0,0.2);
+
+}
+
+
+/*table.calender td.months table tr td.sat,table.calender td.months table tr td.sun{color:red;}*/
+
+
+/*table.calender td.months table tr td.first{border-left:1px solid #ccc;}
+/*------------------------------------------------------*/
+
+
+/*table.calender td.months table tr td.last{border-right:1px solid #ccc;}*/
+
+table.calender td.months table tr td.off-holiday {
+    background: #b3e78a;
+    
+}
+
+table.calender td.months table tr td.nat-holiday {
+    background: #ffaa8e;
+}
+
+table.calender td.months table tr td.fest-holiday {
+    background: #eeea7f;
+}
+
+table.calender td.months table tr td.oth-holiday {
+    background: #88f4fb;
+}
+
+
+/*------------------------------------------------------*/
+
+table.calender td.months table tr td.sat a:hover,
+table.calender td.months table tr td.sun a:hover {
+    color: black;
+}
+
+table.calender tr.days td {
+    font-weight: 600;
+    padding: 8px 0px;
+}
+
+table.calender td.months tr.days td:hover {
+    background: none;
+}
+
+td.months table {
+    width: 100%
+}
+
+
+/* added on 12-5-23 == SUNIL  ==================================== */
+div.select-year {float: left;margin-left: 12px;flex: 1;display: flex;align-items: center;padding: 0 10px;}
+div.select-year label {float: left;max-width: 90px;line-height: 20px;text-transform: uppercase;font-weight: 600;flex: 1;}
+
+div.select-year div.select-field {width: 100%;flex: 1;float: left;}
+
+div.select-field {margin: 0px;padding: 8px 10px 8px 10px;width: 100%;max-width: 100%;background: #23252c;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-radius: 5px;}
+div.select-year div.select-field select {width: 100%;background: transparent url(../images/bg-dd.png) no-repeat right;padding: 0 20px 0 10px;}
+
+div.select-field select {width: 100%;border: none;margin: 0px;padding: 0px 5px;max-width: 100%;border-radius: 5px;}
+div.calender {padding-top: 15px;}
+div.select-year div.select-field option{background: #23252c;}
+
+body.dark textarea, body.dark select, body.dark input{color: #a7aebf;}
+
+ table.calender td.months table tr td.fest-holiday a,
+ table.calender td.months table tr td.off-holiday a,
+ table.calender td.months table tr td.nat-holiday a{color: #111111;}
+select option {padding: 2px 4px 2px 4px;}
+
+/* light them */
+body.light table.calender td.months{background: rgba(255,255,255,0.5);}
+
+body.light table.calender td.months tr.month-title th,
+body.light table.calender td.months{background:rgba(255,255,255,0.5);color: #111111;}
+
+body.light table.calender td.months tr.month-title th{
+    background:rgba(255,255,255,0.5);
+}
+
+/* body.light table.calender td.months table tr td a{ background-color: rgba(255,255,255,0.6);} */
+
+
+body.light table.calender td.months table tr td{background: rgba(255,255,255,0.5);}
+body.light table.calender td.months table tr td a{color: #111111;}
+
+body.light table.calender td.months table tr td:hover {background: #0a58ca;color: #ccd1d9;}
+body.light table.calender td.months table tr td:hover a{color: #ccd1d9;}
+body.light table.calender td.months table tr td.nat-holiday {background: #ffaa8e;}
+body.light table.calender td.months table tr td.fest-holiday {background: #eeea7f;}
+
+body.light table.calender td.months tr.days td:hover {background: rgba(255,255,255,0.5);color: #000;
+}
+body.light table.calender td.months table tr td div.leave-details{background: rgba(255,255,255);}
+body.light div.select-field, body.light div.select-field option{background: rgba(255,255,255);}
+body.light table.calender td.months table tr td div.leave-details div.select-field select{background: rgba(255,255,255,0.5);}
+body.light table.calender td.months table tr td div.leave-details a.apply{background: #fff url(../images/correct.png) no-repeat center 5px; background-size: 20%;}
+body.light table.calender td.months table tr td div.leave-details a.apply:hover {border: 1px solid #41ad49;background-position: center -37px;}
+body.light table.calender td.months table tr td div.leave-details a.cancel{background: #fff url(../images/Delete.png) no-repeat center 5px; background-size: 20%;}
+body.light table.calender td.months table tr td div.leave-details a.cancel:hover{border: 1px solid #cc4439;background-position: center -37px;}
+
+body.light table.calender td.months table tr td div.leave-details div.select-field{border: 1px solid #dddddd;}
+body.light table.calender td.months table tr td.off-holiday a,
+body.light table.calender td.months table tr td.nat-holiday a,
+body.light table.calender td.months table tr td.fest-holiday a {color: #111111;}
+body.light table.calender td.months table tr td.sun{background-color: rgba(0,0,0,0.2);}
+body.light table.calender td.months table tr td.off-holiday {background: #b3e78a;}
+/* modrate css */
+body.moderate table.calender td.months table tr.days td{color: #eeeeee;}
+body.moderate .select-field select{color: #fff;}
+body.moderate select option{background: #666666;}
+body.moderate  table.calender td.months,
+body.moderate table.calender td.months table tr.days td, 
+body.moderate table.calender td.months table tr td,
+body.moderate table.calender td.months tr.month-title th{background-color: #666666;}
+body.moderate table.calender td.months table tr td:hover {background: #61b5ff;}
+body.moderate div.select-field{background-color: #666666;}
+body.moderate table.calender td.months table tr td div.leave-details{background-color: #666666;border: 1px solid #393d44;}
+body.moderate table.calender td.months table tr td div.leave-details div.select-field select{background-color: #666666}
+body.moderate table.calender td.months table tr td.sun{background-color: #444444;}
+body.moderate table.calender td.months tr.month-title th{color: #eeeeee;}
+body.moderate table.calender td.months table tr td.nat-holiday{background: #ffaa8e;}
+body.moderate table.calender td.months table tr td.off-holiday{background: #b3e78a;}
+body.moderate table.calender td.months table tr td div.leave-details a.apply{    background: #666666 url(../images/correct.png) no-repeat center 5px; background-size: 20%;}
+body.moderate table.calender td.months table tr td div.leave-details a.apply:hover {
+    border: 1px solid #41ad49;
+    background-position: center -37px;
+}
+body.moderate table.calender td.months table tr td div.leave-details a.cancel{background: #666666 url(../images/Delete.png) no-repeat center 5px; background-size: 20%;}
+body.moderate table.calender td.months table tr td div.leave-details a.cancel:hover{border: 1px solid #cc4439;
+background-position: center -37px;}
+body.moderate table.calender td.months table tr td div.leave-details textarea{background-color: #444444; border: 0;}
+body.moderate table.calender td.months table tr td.fest-holiday{background: #eeea7f;}
+
+body.moderate table.calender td.months tr.days td:hover{
+    background: none;
+}
+/* ======  LIST EMPLOYEE LEAVE --   START   ================================================================ */
+div.mxdialog{
+    background-color: rgba(197, 197, 197, 0.85);
+}
+div.mxdialog h2{
+    padding: 10px 16px;
+}
+.fa-save:before, .fa-floppy-o:before{
+    font-family: 'FontAwesome';margin-right: 7px;
+}
+div.mxdialog ul.attndt-info li{
+    width: calc(50% - 5px);display: flex;flex-flow: row wrap;
+}
+div.mxdialog ul.attndt-info li label {
+    width: 30%;
+}
+div.mxdialog ul.attndt-info li p{
+    width: calc(70% - 5px);
+}
+div.mxdialog ul.attndt-info li:last-child{
+    width: calc(100% - 5px);
+}
+div.mxdialog ul.attndt-info li:last-child label{
+    width: calc(100% - 5px);padding: 10px 0;
+}
+div.mxdialog ul.attndt-info table th,
+div.mxdialog ul.attndt-info table td{
+    border:0;border-bottom: 1px solid;border-left: 1px solid;
+}
+div.mxdialog ul.attndt-info table th:last-child,
+div.mxdialog ul.attndt-info table td:last-child{
+    border-right: 1px solid;
+}
+div.mxdialog ul.attndt-info li:last-child label{
+    color: #0a58ca;font-weight: bold;font-size: 1.2em;
+}
+div.mxdialog ul.attndt-info table th{
+    background-color: #cccccc;border-color: #e5e5e5;
+}
+div.mxdialog ul.attndt-info table td{
+    border-color: #cccccc;
+}
+div.mxdialog ul.attndt-info {
+    margin-bottom: 12px;
+}
+@media screen and (max-width: 1023px){   
+    div.mxdialog ul.attndt-info li{
+        width: calc(100% - 5px);
+    }
+  
+    div.mxdialog ul.attndt-info li:last-child label{
+        font-size: 1em;
+    }
+}
+/* theme ----- Dark */
+body.dark div.mxdialog ul.attndt-info li:last-child label{
+    color: #61b5ff;
+}
+body.dark .tbl-list .btn{
+    background-color: #444444;
+}
+
+body.dark div.mxdialog ul.attndt-info table th{
+    background-color: #222222;border-color: #333333;
+}
+body.dark div.mxdialog ul.attndt-info table td{
+    border-color: #222222;
+}
+div.mxdialog ul.attndt-info table th:last-child,
+div.mxdialog ul.attndt-info table td:last-child{
+    border-color:#cccccc ;
+}
+/* Loght === */
+
+ 
+body.light div.mxdialog ul.attndt-info table th{
+    background-color: #cccccc;border-color: #e5e5e5;
+}
+body.light div.mxdialog ul.attndt-info table td{
+    border-color: #cccccc;
+}
+div.mxdialog.alert-popup {z-index: 10012;}
+/* ======  LIST EMPLOYEE LEAVE --   END     ================================================================ */
+
+
+/* added on 31-5-23 */
+.tbl-list div.veiw-edit div.ve-wrap{z-index: 6;}
+
+.popup-data .driver-rpt{
+    display: flex;
+    justify-content: space-around;
+    flex-flow: row wrap;
+}
+.popup-data .driver-rpt .select-box{
+    width: 30.33%;
+}
+.popup-data .driver-rpt a{
+    margin-top: 15px;
+}
+.remove-add-row a.add.add-set{ display: none;}
+.tbl-list.report .noprint{display: none;}
+div.mxdialog ul.attndt-info.export-popup li label{width: 100%;}
+/*sticky-tbl chananges === added on 23 feb 2024 ===============*/
+.sticky-tbl .tbl-wrap{width: 100% ;margin-left: 4px;background-color: rgba(255,255,255,0.6);height: calc(100% - 125px);align-items: flex-start;align-content: flex-start;display: flex;flex-flow: row wrap;    overflow-x: auto;overflow-y: auto;scrollbar-width: thin;position: relative;}
+
+body.moderate .sticky-tbl .tbl-wrap {box-shadow: 0px 0px 6px rgba(255,255,255,0.7);}
+body.dark .sticky-tbl .tbl-wrap{background-color: rgba(255,255,255,0.1);scrollbar-color: #444444 rgba(0,0,0,0.7);}
+@media screen and (max-width: 1080px){
+.sticky-tbl .tbl-wrap{height: calc(100% - 194px);}
+}
+@media screen and (max-width: 639px){
+.sticky-tbl .tbl-wrap .tbl-list:not(.no-resp) thead th, .sticky-tbl .tbl-wrap .tbl-list:not(.no-resp) td{display: table-cell;float: none;}
+}

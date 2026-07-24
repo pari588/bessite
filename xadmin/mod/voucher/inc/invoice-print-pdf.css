@@ -1,0 +1,12 @@
+body {
+    padding-right: 0px;
+    background: none;
+}
+
+#wrap-print {
+    background-color: #FFFFFF;
+    padding: 0px;
+    border: none;
+    margin-top: 0px;
+}
+.pb{padding-bottom: 5px;}

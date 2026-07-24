@@ -1,0 +1,41 @@
+[08-Sep-2023 17:10:23 Asia/Kolkata] PHP Fatal error:  Uncaught TypeError: json_decode(): Argument #1 ($json) must be of type string, array given in /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/employee-leave/x-employee-leave-list.php:107
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/employee-leave/x-employee-leave-list.php(107): json_decode(Array, 1)
+#1 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(56): require_once('/home4/paritmxt...')
+#2 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/employee-leave/x-employee-leave-list.php on line 107
+[22-Mar-2024 17:55:18 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function calculateBalanceAmount() in /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/report/x-report-list.php:21
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(56): require_once()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/report/x-report-list.php on line 21
+[22-Mar-2024 18:04:38 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stateID' in 'field list' in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:222
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(222): mysqli->prepare('SELECT stateID ...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(193): mxDb->dbExecute()
+#2 /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/sales/x-sales-add-edit.php(9): mxDb->dbRow()
+#3 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(56): require_once('/home4/paritmxt...')
+#4 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 222
+[22-Mar-2024 18:05:43 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'stateID' in 'field list' in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:222
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(222): mysqli->prepare('SELECT stateID ...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(193): mxDb->dbExecute()
+#2 /home4/paritmxt/public_html/bombayengg.net/xadmin/mod/sales/x-sales-add-edit.php(9): mxDb->dbRow()
+#3 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(56): require_once('/home4/paritmxt...')
+#4 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 222
+[03-Feb-2025 09:48:18 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:9
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(9): mysqli->__construct('localhost', 'paritmxt_dbadmi...', Object(SensitiveParameterValue), 'paritmxt_bombay...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/core.inc.php(5): mxDb->__construct('localhost', 'paritmxt_dbadmi...', 'MDEV@007', 'paritmxt_bombay...')
+#2 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(3): require_once('/home4/paritmxt...')
+#3 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 9
+[03-Feb-2025 09:48:41 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:9
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(9): mysqli->__construct('localhost', 'paritmxt_dbadmi...', Object(SensitiveParameterValue), 'paritmxt_bombay...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/core.inc.php(5): mxDb->__construct('localhost', 'paritmxt_dbadmi...', 'MDEV@007', 'paritmxt_bombay...')
+#2 /home4/paritmxt/public_html/bombayengg.net/xadmin/index.php(3): require_once('/home4/paritmxt...')
+#3 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 9

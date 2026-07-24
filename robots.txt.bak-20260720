@@ -1,0 +1,72 @@
+# Robots.txt for Bombay Engineering Syndicate
+# Allow all bots to crawl the site
+
+User-agent: *
+Allow: /
+Disallow: /xadmin/
+Disallow: /admin/
+Disallow: /config/
+Disallow: /core/
+Disallow: /lib/
+Disallow: /uploads/temp/
+# Pagination URLs — block all variants to conserve crawl budget
+# These pages have noindex meta but blocking saves crawl quota
+Disallow: /*?offset=
+Disallow: /*?showRec=
+Disallow: /*?*offset=
+Disallow: /*?*showRec=
+Disallow: /*&offset=
+Disallow: /*&showRec=
+
+# Specific rules for search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# AI/LLM Crawlers - Allow access for AI assistants
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Primary sitemaps
+Sitemap: https://www.bombayengg.net/sitemap.xml
+Sitemap: https://www.bombayengg.net/sitemap_index.xml
+
+# Knowledge Center RSS feed (for faster Google discovery of new articles)
+Sitemap: https://www.bombayengg.net/knowledge-center/feed.xml
+
+# LLM Context File
+# For AI systems to understand this website
+# See: https://www.bombayengg.net/llms.txt
+# Full content for ingestion: https://www.bombayengg.net/llms-full.txt

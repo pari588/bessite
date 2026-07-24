@@ -1,0 +1,107 @@
+[13-Jan-2025 06:17:40 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:9
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(9): mysqli->__construct('localhost', 'paritmxt_dbadmi...', Object(SensitiveParameterValue), 'paritmxt_bombay...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/core.inc.php(5): mxDb->__construct('localhost', 'paritmxt_dbadmi...', 'MDEV@007', 'paritmxt_bombay...')
+#2 /home4/paritmxt/public_html/bombayengg.net/core/robots.inc.php(2): require_once('/home4/paritmxt...')
+#3 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 9
+[02-Apr-2025 17:58:16 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 17:58:21 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 18:01:11 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 18:01:22 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 18:01:22 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 18:06:05 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[02-Apr-2025 18:06:05 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:15:43 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:17:40 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:19:03 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:19:03 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:23:27 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:24:42 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[18-Apr-2025 20:24:42 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:00 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:02 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:11 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:12 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:20 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175
+[21-Apr-2025 11:19:24 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php:175
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php(268): resizeImage->__resize()
+#1 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/image.inc.php on line 175

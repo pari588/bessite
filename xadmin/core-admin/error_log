@@ -1,0 +1,7 @@
+[18-Mar-2025 05:23:58 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php:9
+Stack trace:
+#0 /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php(9): mysqli->__construct('localhost', 'paritmxt_dbadmi...', Object(SensitiveParameterValue), 'paritmxt_bombay...')
+#1 /home4/paritmxt/public_html/bombayengg.net/core/core.inc.php(5): mxDb->__construct('localhost', 'paritmxt_dbadmi...', 'MDEV@007', 'paritmxt_bombay...')
+#2 /home4/paritmxt/public_html/bombayengg.net/xadmin/core-admin/ajax.inc.php(188): require_once('/home4/paritmxt...')
+#3 {main}
+  thrown in /home4/paritmxt/public_html/bombayengg.net/core/db.inc.php on line 9

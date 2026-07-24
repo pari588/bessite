@@ -1,0 +1,128 @@
+@media screen and ( max-width:1080px){
+/* ========== COMMON  ========== */
+ul.tbl-form li .mx-list.c2 li,
+div.grp-wrap > ul li .mx-list.c2 li{ width:auto;}
+body{font-size: 1.2rem;}
+h1.pg-ttl{font-size: 1.2rem; padding-left: 0; max-width: 146px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+a.logo{height: 32px; width: 66px;}
+/* ========== COMMON END ========== */
+
+div.header label, .fa-th{margin-top:10px;}
+.mxcon{margin-top:12px;}
+a.hamburger{margin-top: 3px; margin-right:15px;}
+div.header{height:40px;}
+div.core-nav { top: 40px; max-height: calc(100vh - 90px); overflow: auto; }
+
+/* ========== SIDEBAR ========== */
+div.wrapper{ width:100%; max-width:100%; height: calc(100% - 44px);}
+div.wrap-left{width: 220px;}
+div.page-nav{ overflow: hidden;}
+div.wrapper div.wrap-left {left: -224px;}
+div.wrapper div.wrap-right {padding-left: 4px;}
+div.wrapper div.wrap-left { top: -4px;}
+div.wrapper.active div.wrap-left { left: 0; top: -4px; background-color: #f5f5f5; z-index: 15;}
+div.wrapper.active div.wrap-right { padding-left: 4px;}
+
+body.moderate div.wrapper.active div.wrap-left { background-color: #666666;}
+body.dark div.wrapper.active div.wrap-left { background-color: #333333;}
+/* ========== SIDEBAR END ========== */
+
+/* ========== FORM AND LI FULL WIDTH CSS ========== */
+.c3,
+ul.tbl-form li.c3,
+div.grp-wrap > ul li.c3,
+ul.tbl-form li .mx-list.c3 li,
+div.grp-wrap > ul li .mx-list.c3 li,
+.c2,
+ul.tbl-form li.c2,
+div.grp-wrap > ul li.c2,
+.tbl-list
+.c4,
+ul.tbl-form li.c4,
+div.grp-wrap > ul li.c4,
+ul.tbl-form li .mx-list.c4 li,
+div.grp-wrap > ul li .mx-list.c4 li,
+div.mxdialog ul li.c2,
+div.mxdialog ul li.c3 { width: 100%;}
+
+div.wrap-form.f20, 
+div.wrap-form.f25, 
+div.wrap-form.f30, 
+div.wrap-form.f33, 
+div.wrap-form.f40, 
+div.wrap-form.f50, 
+div.wrap-form.f60, 
+div.wrap-form.f70, 
+div.wrap-form.f80 {width:calc(100% - 4px);}
+/* ========== FORM AND LI FULL WIDTH CSS END ========== */
+
+/* ========== PAGE NAV BUTTON CSS ========== */
+div.nav-right a[class^="fa-"]:before,
+div.nav-left a[class^="fa-"]:before{font-size:1.3rem}
+.page-nav div.nav-right a[class^="fa-"],
+.page-nav div.nav-left a[class^="fa-"] { text-indent: -1000px; overflow: hidden; min-width: 28px; width: 28px; position: relative;}
+.page-nav div.nav-right a[class^="fa-"]:before,
+.page-nav div.nav-left a[class^="fa-"]:before { position: absolute; top: 50%; left: 50%; text-indent: 0; transform: translateX(-50%) translateY(-50%);}
+/* ========== PAGE NAV BUTTON CSS END ========== */
+
+/* ========== FONT STYLE CSS ========== */
+.form-head {font-size: 12px; line-height: 20px;}
+.form-head span.info {font-size: 12px;}
+label {font-size: 12px; line-height: 20px;}
+
+/* ==========LIGHT THEM RESPONSIVE ========== */
+body.light div.wrap-data, 
+body.light .wrap-data.bg, body.light form.wrap-data .bg{background-color: rgba(255,255,255,0.3);}
+/* ========== FONT STYLE CSS END ========== */
+}
+
+
+@media screen and ( max-width: 639px){
+/* ========== COMMON ========== */
+.small { margin-top: 0;}
+/* ========== COMMON END ========== */
+
+/* ========== PAGE NAV ========== */
+div.no-records { height: calc(100% - 48px); }
+div.mandatory { order: 2; margin-right: 5px; display: none;}
+div.nav-right { order: 4; }
+div.nav-left{padding-right:0;}
+div.nav-left:after{width: 0;}
+div.page-nav{height:auto;}
+div.wrap-right{display:block;}
+
+div.search-data,
+div.page-nav,
+.wrap-data{float:left; width:100%;}
+.wrap-data { height: calc(100% - 48px); overflow-x: scroll; }
+div.nav-right .btn {margin: 2px 3px 2px 0; }
+div.nav-right div.mxpaging { margin: 2px 0px 2px 0; padding-left: 0; padding-right: 3px; }
+div.nav-right div.mxpaging div { font-size: 1.3rem; line-height: 28px; height: 28px; padding: 0 7px; }
+
+div.wrap-right.active.d{height: calc(100% - 44px);}
+
+div.search-data{width:calc(100% - 8px); margin-right:4px;}
+div.search-data.active, div.search-data.active.d{height:40px;}
+div.search-data ul{display: flex; width:100%; overflow: auto;}
+div.search-data li:last-child .btn{margin-right:30px;}
+div.search-data a.del{z-index: 1;}
+
+div.page-nav{width:calc(100% - 4px);}
+/* ========== PAGE NAV END ========== */
+
+/* ========== TABLE RESPONSIVE ========== */
+div.wrap-data .tbl-list:not(.no-resp) thead th:not(:first-child){display: none;}
+div.wrap-data .tbl-list:not(.no-resp) thead th{min-height:1px;}
+div.wrap-data .tbl-list:not(.no-resp) thead th,
+div.wrap-data .tbl-list:not(.no-resp) td{display: block; float:left; width:100%; text-align: left; position: relative; white-space: unset;}
+div.wrap-data .tbl-list:not(.no-resp) td:before {content: attr(title); float:left; width:35%; font-weight: 400; white-space: pre-wrap;}
+div.wrap-data .tbl-list:not(.no-resp) td p { width: 65%; float: right; white-space: normal;}
+div.wrap-data .tbl-list:not(.no-resp) thead th:after{content:"SELECT ALL"; padding-left:10px;}
+
+div.veiw-edit div.ve-wrap{left:40px;}
+
+/* ========== MXDIALOG ========== */
+div.mxdialog ul li label{text-align: left;}
+div.mxdialog h2 { font-size: 1.3rem; }
+/* ========== MXDIALOG END ========== */
+}

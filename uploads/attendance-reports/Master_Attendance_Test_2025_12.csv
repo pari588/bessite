@@ -1,0 +1,13 @@
+#,"Employee Code","Employee Name",Department,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,Present,Absent,Leave,Late,Hours
+1,,"Ananda Pawar",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+2,BES003,"Ganesh Murkute",Sales,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+3,,"Ganesh Patil",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+4,,"Manish Chandrani",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+5,BES001,"Manish Narvekar",Management,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,LT,P,LT,3,24,0,2,26.3
+6,,"National Industries",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+7,,"Paritosh Ajmera",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+8,BES000,"Paritosh Ajmera",Management,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,P,1,26,0,0,9
+9,BES002,"Pranav Gandhi",Sales,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+10,,"Pravin Jadhav",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+11,,"Reena Chandrani",,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0
+12,BES004,"Sakshi Satam",Accounts,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,A,A,A,WO,A,A,A,0,27,0,0,0

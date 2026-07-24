@@ -1,0 +1,7 @@
+{
+    "require": {
+        "mpdf/mpdf": "^8.1",
+        "setasign/tfpdf": "^1.33",
+        "phpoffice/phpspreadsheet": "^2.1"
+    }
+}

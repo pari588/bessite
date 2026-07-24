@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>Bombay Engineering Syndicate — Knowledge Center</title>
+  <link>https://www.bombayengg.net/knowledge-center/</link>
+  <atom:link href="https://www.bombayengg.net/knowledge-center/feed.xml" rel="self" type="application/rss+xml" />
+  <description>Technical articles on industrial motors, pumps, energy efficiency, and selection guides from Bombay Engineering Syndicate — authorized Crompton distributor since 1957.</description>
+  <language>en-in</language>
+  <copyright>Copyright 2026, Bombay Engineering Syndicate</copyright>
+  <lastBuildDate>Thu, 23 Jul 2026 21:50:01 +0530</lastBuildDate>
+  <generator>Bombay Engineering Syndicate KC Feed</generator>
+  <image>
+    <url>https://www.bombayengg.net/images/logo.png</url>
+    <title>Bombay Engineering Syndicate</title>
+    <link>https://www.bombayengg.net/</link>
+  </image>
+
+  <item>
+    <title>Motor Greasing Guide: How Much, How Often, Which Grease</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-greasing-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-greasing-guide/</guid>
+    <pubDate>Mon, 17 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical motor bearing greasing guide — how much grease to use, how often, which grease type, and the common greasing mistakes that destroy bearings.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-greasing-guide.webp" length="92204" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Service Factor Explained: What It Really Means</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-service-factor-explained/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-service-factor-explained/</guid>
+    <pubDate>Sun, 16 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear explanation of motor service factor — what the number on the nameplate means, how much overload it allows, and why it matters when sizing and buying motors.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-service-factor-explained.webp" length="137018" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Star vs Delta Motor Wiring: Terminal Connections Explained</title>
+    <link>https://www.bombayengg.net/knowledge-center/star-vs-delta-motor-wiring/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/star-vs-delta-motor-wiring/</guid>
+    <pubDate>Sat, 15 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical explanation of star and delta motor connections — how each is wired at the terminal box, the difference they make, and when to use which.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/star-vs-delta-motor-wiring.webp" length="168850" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motors for Cement Plants &amp; Heavy Industry</title>
+    <link>https://www.bombayengg.net/knowledge-center/motors-cement-plants-heavy-industry/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motors-cement-plants-heavy-industry/</guid>
+    <pubDate>Fri, 14 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to electric motors for cement plants and heavy industry — covering high-torque mill drives, dust protection, HV motors, and the demands of heavy-duty applications.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motors-cement-plants-heavy-industry.webp" length="248988" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Brake Motors for Cranes &amp; Hoists: Selection Guide</title>
+    <link>https://www.bombayengg.net/knowledge-center/brake-motors-cranes-hoists-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/brake-motors-cranes-hoists-guide/</guid>
+    <pubDate>Thu, 13 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to selecting brake motors for cranes, hoists, and lifting equipment — how the electromagnetic brake works, brake torque selection, and safety considerations.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/brake-motors-cranes-hoists-guide.webp" length="212588" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Selection for Air Compressors</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-selection-air-compressors/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-selection-air-compressors/</guid>
+    <pubDate>Wed, 12 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to selecting the right motor for air compressor applications — covering starting torque, duty cycle, service factor, and matching the motor to the compressor.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-selection-air-compressors.webp" length="122000" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Best Motors for the Textile Industry</title>
+    <link>https://www.bombayengg.net/knowledge-center/best-motors-textile-industry/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/best-motors-textile-industry/</guid>
+    <pubDate>Tue, 11 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to selecting electric motors for textile industry applications — spinning, weaving, processing — covering the demands of textile duty and recommended motor types.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/best-motors-textile-industry.webp" length="210596" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Why Motor Bearings Fail Early (And How to Prevent It)</title>
+    <link>https://www.bombayengg.net/knowledge-center/why-motor-bearings-fail-early/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/why-motor-bearings-fail-early/</guid>
+    <pubDate>Mon, 10 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to the causes of premature motor bearing failure — over-greasing, contamination, misalignment, electrical currents — and how to make bearings last.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/why-motor-bearings-fail-early.webp" length="129826" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Diagnose Motor Problems by Sound: A Field Guide</title>
+    <link>https://www.bombayengg.net/knowledge-center/diagnose-motor-problems-by-sound/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/diagnose-motor-problems-by-sound/</guid>
+    <pubDate>Sun, 09 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical field guide to diagnosing electric motor faults by the sounds they make — humming, grinding, squealing, knocking — and what each indicates.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/diagnose-motor-problems-by-sound.webp" length="68242" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Single Phasing: The Silent Motor Killer</title>
+    <link>https://www.bombayengg.net/knowledge-center/single-phasing-motor-killer/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/single-phasing-motor-killer/</guid>
+    <pubDate>Sat, 08 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>An explanation of single phasing in three-phase motors — what causes it, why it destroys motors, warning signs, and how to protect against it.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/single-phasing-motor-killer.webp" length="140228" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Drawing High Current: 8 Causes &amp; Solutions</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-drawing-high-current-causes/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-drawing-high-current-causes/</guid>
+    <pubDate>Fri, 07 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to diagnosing why an electric motor draws high current — covering overload, voltage problems, mechanical faults, and winding issues, with solutions.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-drawing-high-current-causes.webp" length="30268" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Keeps Tripping the Overload Relay: Diagnosis</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-tripping-overload-relay-diagnosis/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-tripping-overload-relay-diagnosis/</guid>
+    <pubDate>Thu, 06 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A diagnostic guide for motors that repeatedly trip the thermal overload relay — covering overload, wrong relay setting, single phasing, and mechanical problems.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-tripping-overload-relay-diagnosis.webp" length="72614" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Hums But Won't Start: Causes &amp; Fixes</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-hums-but-wont-start/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-hums-but-wont-start/</guid>
+    <pubDate>Wed, 05 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A troubleshooting guide for an electric motor that hums but does not start or rotate — covering capacitor failure, stuck rotor, single phasing, and low voltage.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-hums-but-wont-start.webp" length="85224" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Flameproof Motor Buying Guide for Indian Industries</title>
+    <link>https://www.bombayengg.net/knowledge-center/flameproof-motor-buying-guide-india/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/flameproof-motor-buying-guide-india/</guid>
+    <pubDate>Tue, 04 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A buyer's guide to flameproof (Ex d) motors for Indian hazardous-area industries — covering zone classification, gas groups, certification (PESO), and specification.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/flameproof-motor-buying-guide-india.webp" length="152416" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Aluminium vs Cast Iron Motor Body: Which to Choose</title>
+    <link>https://www.bombayengg.net/knowledge-center/aluminium-vs-cast-iron-motor-body/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/aluminium-vs-cast-iron-motor-body/</guid>
+    <pubDate>Mon, 03 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A comparison of aluminium and cast iron motor bodies — weight, durability, heat dissipation, corrosion resistance, and which construction suits your application.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/aluminium-vs-cast-iron-motor-body.webp" length="32296" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>IE3 vs IE4 Motors: Is the Premium Worth It?</title>
+    <link>https://www.bombayengg.net/knowledge-center/ie3-vs-ie4-motors-worth-it/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/ie3-vs-ie4-motors-worth-it/</guid>
+    <pubDate>Sun, 02 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A cost-benefit analysis of IE3 vs IE4 premium efficiency motors — how much more efficient IE4 really is, the price premium, and when the upgrade pays back.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/ie3-vs-ie4-motors-worth-it.webp" length="54500" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>How to Choose the Right Motor HP for Your Application</title>
+    <link>https://www.bombayengg.net/knowledge-center/how-to-choose-right-motor-hp/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/how-to-choose-right-motor-hp/</guid>
+    <pubDate>Sat, 01 Aug 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to selecting the correct motor horsepower (HP) for your application — avoiding oversizing and undersizing, with method and examples.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/how-to-choose-right-motor-hp.webp" length="92360" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Crompton vs CG vs ABB vs Siemens: Industrial Motor Brands Compared</title>
+    <link>https://www.bombayengg.net/knowledge-center/crompton-cg-abb-siemens-motor-brands-compared/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/crompton-cg-abb-siemens-motor-brands-compared/</guid>
+    <pubDate>Fri, 31 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>An honest comparison of major industrial motor brands in India — Crompton, CG Power, ABB, and Siemens — covering range, quality, price, availability, and which to choose.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/crompton-cg-abb-siemens-motor-brands-compared.webp" length="27644" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>BEE Star Rating &amp; Labels on Pumps: What They Mean</title>
+    <link>https://www.bombayengg.net/knowledge-center/bee-star-rating-pumps-explained/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/bee-star-rating-pumps-explained/</guid>
+    <pubDate>Thu, 30 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to BEE star ratings and energy labels on water pumps in India — what the stars mean, how they affect running cost, and why they matter when buying.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/bee-star-rating-pumps-explained.webp" length="25852" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Monsoon Motor &amp; Pump Care: Preventing Water Damage</title>
+    <link>https://www.bombayengg.net/knowledge-center/monsoon-motor-pump-care/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/monsoon-motor-pump-care/</guid>
+    <pubDate>Wed, 29 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A seasonal maintenance guide for protecting electric motors and pumps during the Indian monsoon — covering moisture protection, earthing, and pre-monsoon checks.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/monsoon-motor-pump-care.webp" length="225548" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>PM-KUSUM Solar Pump Subsidy: How to Apply (2026)</title>
+    <link>https://www.bombayengg.net/knowledge-center/pm-kusum-solar-pump-subsidy-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/pm-kusum-solar-pump-subsidy-guide/</guid>
+    <pubDate>Tue, 28 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A 2026 guide to the PM-KUSUM solar pump subsidy scheme for Indian farmers — covering eligibility, subsidy amount, the application process, and how to get started.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/pm-kusum-solar-pump-subsidy-guide.webp" length="261788" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>VFD Energy Savings: Real Payback Examples for Indian Industry</title>
+    <link>https://www.bombayengg.net/knowledge-center/vfd-energy-savings-calculator-payback/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/vfd-energy-savings-calculator-payback/</guid>
+    <pubDate>Mon, 27 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to calculating variable frequency drive (VFD) energy savings and payback period, with worked examples for pumps and fans in Indian industry.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/vfd-energy-savings-calculator-payback.webp" length="99192" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Pump Selection Guide for Farmhouses &amp; Weekend Homes</title>
+    <link>https://www.bombayengg.net/knowledge-center/pump-selection-farmhouse-weekend-home/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/pump-selection-farmhouse-weekend-home/</guid>
+    <pubDate>Sun, 26 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to choosing pumps for farmhouses and weekend homes in India — covering borewell supply, garden irrigation, and pressure needs for intermittently-used properties.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/pump-selection-farmhouse-weekend-home.webp" length="249732" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>How to Calculate Water Tank Pump Capacity for Your Home</title>
+    <link>https://www.bombayengg.net/knowledge-center/calculate-water-tank-pump-capacity/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/calculate-water-tank-pump-capacity/</guid>
+    <pubDate>Sat, 25 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to calculating the right pump capacity for filling your home water tank — covering flow rate, head, fill time, and worked examples.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/calculate-water-tank-pump-capacity.webp" length="35020" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Low Water Pressure in the House: Causes &amp; Pump Solutions</title>
+    <link>https://www.bombayengg.net/knowledge-center/low-water-pressure-house-solutions/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/low-water-pressure-house-solutions/</guid>
+    <pubDate>Fri, 24 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to fixing low water pressure in Indian homes — covering the common causes and how a pressure booster pump solves weak flow in showers, taps, and geysers.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/low-water-pressure-house-solutions.webp" length="67648" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Why Does My Motor Get Too Hot? Overheating Diagnosis</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-overheating-causes-diagnosis/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-overheating-causes-diagnosis/</guid>
+    <pubDate>Thu, 23 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A diagnostic guide to electric motor overheating — covering the main causes from overload and poor ventilation to voltage problems and bearing failure, with solutions.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-overheating-causes-diagnosis.webp" length="120210" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Submersible Pump Runs But No Water: Troubleshooting Guide</title>
+    <link>https://www.bombayengg.net/knowledge-center/submersible-pump-runs-but-no-water/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/submersible-pump-runs-but-no-water/</guid>
+    <pubDate>Wed, 22 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A step-by-step troubleshooting guide for submersible borewell pumps that run but deliver no water — covering water level, check valve, impeller wear, and rotation issues.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/submersible-pump-runs-but-no-water.webp" length="229322" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Keeps Tripping the MCB: Causes &amp; Solutions</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-tripping-mcb-causes-solutions/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-tripping-mcb-causes-solutions/</guid>
+    <pubDate>Tue, 21 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A troubleshooting guide for motors that repeatedly trip the MCB or circuit breaker — covering overload, short circuit, wrong MCB rating, and other causes with fixes.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-tripping-mcb-causes-solutions.webp" length="61978" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Why Is My Water Pump Not Pumping Water? 9 Causes &amp; Fixes</title>
+    <link>https://www.bombayengg.net/knowledge-center/water-pump-not-pumping-water-causes/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/water-pump-not-pumping-water-causes/</guid>
+    <pubDate>Mon, 20 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A troubleshooting guide for when your water pump runs but delivers no water — covering the 9 most common causes from air lock to worn impeller, with practical fixes.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/water-pump-not-pumping-water-causes.webp" length="76324" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>How Much Does a Borewell Pump Cost in India? (2026 Guide)</title>
+    <link>https://www.bombayengg.net/knowledge-center/borewell-pump-cost-india-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/borewell-pump-cost-india-guide/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical 2026 price guide for borewell submersible pumps in India — cost by HP rating, what affects price, and total installation cost including cable, panel, and pipe.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/borewell-pump-cost-india-guide.webp" length="31802" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Submersible vs Monoblock Pump: Which One Do You Need?</title>
+    <link>https://www.bombayengg.net/knowledge-center/submersible-vs-monoblock-pump/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/submersible-vs-monoblock-pump/</guid>
+    <pubDate>Sat, 18 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear comparison of submersible and monoblock pumps — how each works, where each is best used, and how to choose the right type for your water source.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/submersible-vs-monoblock-pump.webp" length="28264" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Best Water Pump for a 2, 3, or 4-Storey Building in India</title>
+    <link>https://www.bombayengg.net/knowledge-center/best-water-pump-for-multistorey-building/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/best-water-pump-for-multistorey-building/</guid>
+    <pubDate>Fri, 17 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A guide to selecting the right water pump for multi-storey homes and buildings in India — covering pump types, head calculation, and recommendations by number of floors.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/best-water-pump-for-multistorey-building.webp" length="30268" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Crompton vs Kirloskar Pumps: Which One Should You Choose?</title>
+    <link>https://www.bombayengg.net/knowledge-center/crompton-vs-kirloskar-pumps/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/crompton-vs-kirloskar-pumps/</guid>
+    <pubDate>Thu, 16 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical comparison of Crompton and Kirloskar pumps — covering product range, efficiency, pricing, applications, and after-sales support to help Indian buyers choose the right brand.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/crompton-vs-kirloskar-pumps.webp" length="46286" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>ATEX, IECEx, and PESO Certifications: A Guide for Hazardous Area Motor Buyers</title>
+    <link>https://www.bombayengg.net/knowledge-center/atex-iecex-peso-certifications/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/atex-iecex-peso-certifications/</guid>
+    <pubDate>Wed, 15 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to the three major certifications for hazardous-area motors — ATEX (European), IECEx (international), and PESO (Indian). Explains zone classifications, gas/dust groups, certification marking, and how to specify the right motor for Indi</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/atex-iecex-peso-certifications.webp" length="218696" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Vibration Analysis: Causes &amp; Corrective Actions</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-vibration-analysis/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-vibration-analysis/</guid>
+    <pubDate>Tue, 14 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to diagnosing motor vibration problems — covering measurement methods, frequency analysis, common causes (imbalance, misalignment, bearing wear, electrical issues), and step-by-step corrective actions.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-vibration-analysis.webp" length="62672" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Choosing the Right Pump for Agricultural Irrigation</title>
+    <link>https://www.bombayengg.net/knowledge-center/agricultural-irrigation-pumps/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/agricultural-irrigation-pumps/</guid>
+    <pubDate>Mon, 13 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide for Indian farmers and agricultural contractors on selecting irrigation pumps — covering pump types, sizing for different crops and irrigation methods, energy considerations, and government subsidy schemes.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/agricultural-irrigation-pumps.webp" length="320476" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Borewell Pump Installation Guide: Step-by-Step</title>
+    <link>https://www.bombayengg.net/knowledge-center/borewell-pump-installation-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/borewell-pump-installation-guide/</guid>
+    <pubDate>Sun, 12 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical step-by-step guide to installing a submersible borewell pump — covering pump selection, accessories, lowering procedure, electrical connection, commissioning, and safety. For homeowners, plumbers, and small contractors.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/borewell-pump-installation-guide.webp" length="223332" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Pump Maintenance Checklist: Daily, Monthly, Annual Tasks</title>
+    <link>https://www.bombayengg.net/knowledge-center/pump-maintenance-checklist/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/pump-maintenance-checklist/</guid>
+    <pubDate>Sat, 11 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical preventive maintenance checklist for centrifugal pumps — covering daily checks, monthly tasks, and annual overhaul items. Helps extend pump lifespan, prevent surprises, and reduce energy waste.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/pump-maintenance-checklist.webp" length="129480" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Rewinding vs Replacement: A Cost-Decision Guide</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-rewinding-vs-replacement/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-rewinding-vs-replacement/</guid>
+    <pubDate>Fri, 10 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>When a motor fails, should you rewind it or buy new? This guide gives practical cost and efficiency thresholds, explains the hidden energy penalty of rewinding, and helps you make the right long-term decision.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-rewinding-vs-replacement.webp" length="68996" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Power Factor in Motors: Why It Matters &amp; How to Improve It</title>
+    <link>https://www.bombayengg.net/knowledge-center/power-factor-in-motors/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/power-factor-in-motors/</guid>
+    <pubDate>Thu, 09 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear explanation of motor power factor — what it is, why utilities penalise low PF, how to measure it, and the practical methods (capacitor banks, APFC panels, IE3/IE4 motors) for improving plant power factor.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/power-factor-in-motors.webp" length="152908" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Solar Pump Systems: Components, Sizing &amp; ROI for Indian Users</title>
+    <link>https://www.bombayengg.net/knowledge-center/solar-pump-systems-india/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/solar-pump-systems-india/</guid>
+    <pubDate>Wed, 08 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to solar-powered pump systems for Indian agriculture and rural applications — covering system components, sizing methodology, panel and pump matching, government subsidies, and return-on-investment calculations.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/solar-pump-systems-india.webp" length="288642" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>NEMA vs IEC Motor Standards: Key Differences for Indian Users</title>
+    <link>https://www.bombayengg.net/knowledge-center/nema-vs-iec-motor-standards/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/nema-vs-iec-motor-standards/</guid>
+    <pubDate>Tue, 07 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear comparison of NEMA (USA) and IEC (European/Indian) motor standards. Covers frame size, voltage, efficiency classes, mounting, and how to select interchangeable motors when working with imported equipment.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/nema-vs-iec-motor-standards.webp" length="49606" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Protection Devices Explained: MPCBs, Overload Relays &amp; Thermistors</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-protection-devices-mpcb-overload-relay/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-protection-devices-mpcb-overload-relay/</guid>
+    <pubDate>Mon, 06 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A practical guide to motor protection devices — MPCBs (Motor Protection Circuit Breakers), thermal overload relays, and thermistor-based PTC protection. Explains what each protects against, when to use which, and how to size them correctly.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/motor-protection-devices-mpcb-overload-relay.webp" length="55860" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Single Phase vs Three Phase Motors: When to Choose Which</title>
+    <link>https://www.bombayengg.net/knowledge-center/single-phase-vs-three-phase-motors/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/single-phase-vs-three-phase-motors/</guid>
+    <pubDate>Sun, 05 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear, practical comparison of single-phase and three-phase motors — covering supply requirements, power range, efficiency, starting torque, cost, and typical applications. Helps you choose the right motor for residential, commercial, or industrial us</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/single-phase-vs-three-phase-motors.webp" length="40886" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Pump Head Calculation: A Practical Guide with Examples</title>
+    <link>https://www.bombayengg.net/knowledge-center/pump-head-calculation-guide/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/pump-head-calculation-guide/</guid>
+    <pubDate>Sat, 04 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>Total Dynamic Head (TDH) is the most important number when sizing a pump. This practical guide breaks down the four components of head — static, friction, pressure, and velocity — with worked examples for residential and industrial applications.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/pump-head-calculation-guide.webp" length="35274" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Pump Cavitation: Causes, Symptoms, and Prevention</title>
+    <link>https://www.bombayengg.net/knowledge-center/pump-cavitation-causes-prevention/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/pump-cavitation-causes-prevention/</guid>
+    <pubDate>Fri, 03 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>Cavitation is the silent killer of centrifugal pumps. This guide explains what cavitation is, why it happens, how to spot it, and the practical steps to prevent it from destroying your impeller and seals.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/pump-cavitation-causes-prevention.webp" length="115834" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>NPSH (Net Positive Suction Head) Explained — Why Your Pump is Cavitating</title>
+    <link>https://www.bombayengg.net/knowledge-center/npsh-net-positive-suction-head/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/npsh-net-positive-suction-head/</guid>
+    <pubDate>Thu, 02 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear explanation of Net Positive Suction Head (NPSH) — the most misunderstood concept in pump engineering. Learn what NPSHr and NPSHa mean, how to calculate the margin, and how to fix cavitation issues.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/npsh-net-positive-suction-head.webp" length="27970" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Star-Delta vs DOL vs Soft Starter vs VFD: Motor Starting Methods Compared</title>
+    <link>https://www.bombayengg.net/knowledge-center/starting-methods-comparison/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/starting-methods-comparison/</guid>
+    <pubDate>Wed, 01 Jul 2026 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A clear comparison of motor starting methods — Direct-On-Line (DOL), Star-Delta, Soft Starter, and Variable Frequency Drive (VFD). Helps engineers and buyers choose the right starting method for cost, energy efficiency, and equipment protection.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/starting-methods-comparison.webp" length="91296" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Motor Mounting Types Explained (B3, B5, B14, V1, etc.)</title>
+    <link>https://www.bombayengg.net/knowledge-center/motor-mounting-types-explained-b3-b5-b14-v1-etc/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/motor-mounting-types-explained-b3-b5-b14-v1-etc/</guid>
+    <pubDate>Thu, 27 Nov 2025 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A simple guide to motor mounting types like B3, B5, B14, B35, V1, and V3—explaining where each is used, how to choose the right one, and how CG Power offers all major mounting options with support from Bombay Engineering Syndicate.</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/mount.webp" length="78104" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+  <item>
+    <title>Synchronous vs Induction Motors: Key Differences Explained</title>
+    <link>https://www.bombayengg.net/knowledge-center/synchronous-vs-induction-motors-key-differences-explained/</link>
+    <guid isPermaLink="true">https://www.bombayengg.net/knowledge-center/synchronous-vs-induction-motors-key-differences-explained/</guid>
+    <pubDate>Thu, 27 Nov 2025 00:00:00 +0530</pubDate>
+    <dc:creator>Bombay Engineering Syndicate</dc:creator>
+    <description>A technical comparison of synchronous vs induction motors—covering working principles, speed, efficiency, power factor, construction, applications, and cost. Helps users understand which motor type is ideal for their requirement, supported by solutions</description>
+    <enclosure url="https://www.bombayengg.net/uploads/knowledge-center/syncro.webp" length="215318" type="image/webp" />
+    <category>Industrial Motors</category>
+    <category>Pumps</category>
+  </item>
+
+</channel>
+</rss>

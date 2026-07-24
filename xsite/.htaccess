@@ -1,0 +1,33 @@
+<IfModule mod_rewrite.c>
+    Options -Indexes
+    RewriteEngine On
+
+    # Add this line to ensure any redirects from this point use 301
+    # This attempts to override the CMS's 302 redirects
+    RewriteRule .* - [E=REDIRECT_STATUS:301]
+
+    # Bypass rewriting for sitemap and robots files (SEO)
+    RewriteCond %{REQUEST_URI} ^/sitemap\.xml$ [OR]
+    RewriteCond %{REQUEST_URI} ^/sitemap_index\.xml$ [OR]
+    RewriteCond %{REQUEST_URI} ^/robots\.txt$
+    RewriteRule ^ - [L]
+
+    # Bypass rewriting for diagnostic/debugging tools
+    RewriteCond %{REQUEST_URI} ^/check_handler_logs_now\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/test_handler_endpoint\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/diagnose_ocr_handler\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/ocr-debug\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/get_ocr_logs\.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^/test_ocr_direct\.php$
+    RewriteRule ^ - [L]
+
+    # Serve /knowledge-center/feed.xml from kc-feed.xml in xsite root
+    # (we can't put it in xsite/knowledge-center/ because that conflicts with the CMS route)
+    RewriteRule ^knowledge-center/feed\.xml$ kc-feed.xml [L]
+
+    # Your original CMS rules
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !/llms\.txt$ [NC]
+    RewriteRule . index.php [L]
+</IfModule>

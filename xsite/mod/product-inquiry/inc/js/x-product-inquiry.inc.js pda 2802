@@ -1,0 +1,46 @@
+$(document).ready(function () {
+    //Start: To submit product inquiry form
+    var frm = $("form#productInquiryForm");
+    frm.mxinitform({ callback: callbackProductInquiry });
+    localStorage.removeItem(SITEURL);
+    // End.
+
+    // Start: To show and hide on requirement replacement value.
+    $(".requirement-replacement input[type='radio']").click(function () {
+        if ($(this).val() == 1) {
+            $('.motor-details').show();
+        } else {
+            $('.motor-details').hide();
+        }
+    });
+    // End.
+    //Start: To show and hide hidden other input.
+    $('#dutyID,#mountingID,#typeOfMotorID,#voltageID,#shaftExtensionID,#expectedDeliveryTimeID').change(function () {
+        var parentLi = $(this).closest("li.other");
+        var classNm = parentLi.attr("otherName");
+        var text = $(this).find("option:selected").text();
+        
+        if (text == "Other") {
+            $('.' + classNm ).show();
+        } else {
+            $('.' + classNm ).hide();
+        }
+    });
+    // End.
+});
+// Start: product inquiry submit form callback
+function callbackProductInquiry(response) {
+    console.log(response);
+    hideMxLoader();
+    if (response.err == 0) {
+        $("#productInquiryForm").trigger('reset');
+        $.mxalert({ msg: response.msg });
+        setTimeout(function () {
+            window.location.reload(1);
+        }, 3000);
+    } else {
+        $.mxalert({ msg: response.msg });
+    }
+    
+}
+// End

@@ -1,0 +1,34 @@
+{
+    "Shift_Attendance": {
+        "shift_hours": [
+            {
+                "label": "Morning Shift",
+                "start_time": "07:00",
+                "end_time": "15:00",
+                "break_start": "11:00",
+                "break_end": "11:30"
+            },
+            {
+                "label": "Evening Shift",
+                "start_time": "15:00",
+                "end_time": "23:00",
+                "break_start": "19:00",
+                "break_end": "19:30"
+            },
+            {
+                "label": "Night Shift",
+                "start_time": "23:00",
+                "end_time": "07:00",
+                "break_start": "03:00",
+                "break_end": "03:30"
+            }
+        ],
+        "overtime_slab_minute": 30,
+        "Overlook_time": 30,
+        "minimum_working_hours": 3,
+        "threshold_start_time": 10,
+        "threshold_end_time": 10,
+        "policy": "strict"
+    },
+    "generated_at": "2026-01-07 17:18:04"
+}
