@@ -18,3 +18,7 @@ info.php
 phpinfo.php
 info.txt
 .git-credentials-info.txt
+
+# User uploads: served from disk, preserved in the weekly "backup" branch.
+# Kept out of the code branch (contains business docs; also large & binary).
+uploads/
