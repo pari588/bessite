@@ -24,11 +24,37 @@ WHERE DM.status=? " . $MXFRM->where;
 $DB->dbQuery();
 $MXTOTREC = $DB->numRows;
 
+/**
+ * OUTSTANDING for the current filter set.
+ *
+ * The footer "Total" row sums whatever rows are on the page — settled and unsettled
+ * alike — so unfiltered it shows a driver's LIFETIME total, not what is still owed.
+ * This uses the same rule the settle checkbox uses (isSettled=0 AND totalPay>0):
+ * records with totalPay<=0 are book-keeping notes, not payables, and can never be settled.
+ */
+$DB->vals = $MXFRM->vals;
+array_unshift($DB->vals, $MXSTATUS);
+$DB->types = "i" . $MXFRM->types;
+$DB->sql = "SELECT COUNT(*) AS cnt, COALESCE(SUM(DM.totalPay),0) AS outstanding
+            FROM `" . $DB->pre . $MXMOD["TBL"] . "` AS DM
+            LEFT JOIN `" . $DB->pre . "user` AS U ON U.userID=DM.userID
+            WHERE DM.status=? AND DM.isSettled=0 AND DM.totalPay>0 " . $MXFRM->where;
+$outRow = $DB->dbRow();
+$mxOutstanding    = (float)($outRow['outstanding'] ?? 0);
+$mxOutstandingCnt = (int)($outRow['cnt'] ?? 0);
+
 if (!$MXFRM->where && $MXTOTREC < 1) {
     $strSearch = "";
 }
 echo $strSearch;
 ?>
+<div class="wrap-right" style="padding-bottom:0;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 12px;padding:12px 18px;background:#f7fafd;border:1px solid #e3eaf2;border-left:4px solid <?php echo $mxOutstanding > 0 ? '#c8811a' : '#1c7a3e'; ?>;border-radius:8px;">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7a8695;">Outstanding (unsettled)</span>
+        <span style="font-size:22px;font-weight:700;color:<?php echo $mxOutstanding > 0 ? '#c8811a' : '#1c7a3e'; ?>;">&#8377; <?php echo number_format($mxOutstanding, 2); ?></span>
+        <span style="font-size:12px;color:#8a939e;"><?php echo $mxOutstandingCnt; ?> record<?php echo $mxOutstandingCnt == 1 ? '' : 's'; ?> pending settlement<?php echo $MXFRM->where ? ' (current filter)' : ''; ?></span>
+    </div>
+</div>
 <div class="wrap-right">
     <?php echo getPageNav('<a href="javascript:void(0)" class="button" id="download-report">Download Report</a>,<a href="javascript:void(0)" class="button" id="settleDriverWelfare">Settle Payment</a>'); ?>
     <div class="wrap-data">
@@ -50,12 +76,13 @@ echo $strSearch;
                 array("TA", "taxiAllowance", ' align="right"', false, 'nosort'),
                 array("Off Day Allowance", "sunAllowance", ' align="right"', false, 'nosort'),
                 array("Total Pay", "totalPay", ' align="right"', false, 'nosort'),
+                array("Location", "locFlagged", ' align="center"', false, 'nosort'),
                 array("Action", "action", ' align="center"', false, 'nosort'),
             );
             $DB->vals = $MXFRM->vals;
             array_unshift($DB->vals, $MXSTATUS);
             $DB->types = "i" . $MXFRM->types;
-            $DB->sql = "SELECT DM.*,U.userName FROM `" . $DB->pre . $MXMOD["TBL"] . "` AS DM 
+            $DB->sql = "SELECT DM.*, DM.markOutLat, DM.markOutLng, DM.markOutDistM, DM.locFlagged,U.userName FROM `" . $DB->pre . $MXMOD["TBL"] . "` AS DM 
             LEFT JOIN `" . $DB->pre . "user` AS U ON U.userID=DM.userID
             WHERE DM.status=? " . $MXFRM->where . mxOrderBy(" DM.driverManagementID DESC ") . mxQryLimit();
             $DB->dbRows();
@@ -97,6 +124,20 @@ echo $strSearch;
                         $totalPay += $d["totalPay"];
                         $totalwelfarePay = $d["totalPay"];
                         $d["totalPay"] =  number_format($d["totalPay"], 2) ?? 0.00;
+                        // Geofence indicator: was the mark-out taken at the vehicle?
+                        if (!empty($d['markOutLat']) && !empty($d['markOutLng'])) {
+                            $dist = (int)$d['markOutDistM'];
+                            $far  = ($dist > (defined('DRIVER_PARK_RADIUS_M') ? DRIVER_PARK_RADIUS_M : 250));
+                            $lbl  = $far ? (number_format($dist / 1000, 1) . ' km away') : 'at vehicle';
+                            $col  = $far ? '#b3541e' : '#1c7a3e';
+                            $bg   = $far ? '#fdf0e6' : '#e9f7ee';
+                            $d['locFlagged'] = '<a href="https://maps.google.com/?q=' . urlencode($d['markOutLat'] . ',' . $d['markOutLng'])
+                                . '" target="_blank" style="display:inline-block;padding:2px 8px;border-radius:10px;background:' . $bg
+                                . ';color:' . $col . ';border:1px solid ' . $col . '33;font-size:11px;font-weight:600;text-decoration:none;" title="Open in Google Maps">'
+                                . ($far ? '&#9888; ' : '&#128205; ') . $lbl . '</a>';
+                        } else {
+                            $d['locFlagged'] = '<span style="color:#b9c0c8;font-size:11px;" title="No location shared (portal mark-out or pre-dates this feature)">&mdash;</span>';
+                        }
                         $d['action'] = "--";
                         if (intval($d['recordType']) == 1 && $d['isVerify'] == 0 && $d['toTime'] != "") {
                             $d['action'] = "<a href='javascript:void(0);' class='btn verify-btn' rel='" . $d['driverManagementID'] . "'>Verify</a>";
@@ -142,6 +183,7 @@ echo $strSearch;
                         <th>" . number_format($taxiAllowance, 2) . "</th>
                         <th>" . number_format($sunAllowance, 2) . "</th>
                         <th>" . number_format($totalPay, 2) . "</th>
+                        <th></th>
                         <th></th>
                     </tr>";
                     ?>

@@ -128,17 +128,63 @@ if (isset($_POST["xAction"])) {
 function addFuelExpense() {
     global $DB, $MXRES;
 
-    // Validate required fields
-    if (empty($_POST["vehicleID"]) || empty($_POST["billDate"]) || empty($_POST["expenseAmount"])) {
+    // Validate required fields (date is optional - defaults to today)
+    if (empty($_POST["vehicleID"]) || empty($_POST["expenseAmount"])) {
         $MXRES["err"] = 1;
-        $MXRES["msg"] = "Vehicle, date, and amount are required";
+        $MXRES["msg"] = "Vehicle and amount are required";
         return;
     }
 
     // Clean input
     $_POST["vehicleID"] = intval($_POST["vehicleID"]);
-    $_POST["billDate"] = $_POST["billDate"];
+
+    // Default to today's date, but allow override if valid date provided
+    $rawDate = isset($_POST["billDate"]) ? trim($_POST["billDate"]) : "";
+    $parsedDate = date('Y-m-d'); // Default to today
+
+    // Only parse if a date was actually provided
+    if (!empty($rawDate)) {
+        if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $rawDate, $matches)) {
+            // MM/DD/YYYY format from datepicker
+            $parsedDate = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
+        } elseif (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $rawDate)) {
+            // Already in YYYY-MM-DD format
+            $parsedDate = $rawDate;
+        } elseif (preg_match('/^(\d{1,2})-(\d{1,2})-(\d{4})$/', $rawDate, $matches)) {
+            // DD-MM-YYYY format
+            $parsedDate = sprintf('%04d-%02d-%02d', $matches[3], $matches[2], $matches[1]);
+        }
+        // If parsing fails, keep today's date as default
+    }
+
+    // Final validation - ensure we never store 0000-00-00
+    if ($parsedDate === '0000-00-00' || empty($parsedDate)) {
+        $parsedDate = date('Y-m-d');
+    }
+
+    $_POST["billDate"] = $parsedDate;
     $_POST["expenseAmount"] = floatval($_POST["expenseAmount"]);
+
+    // =====================================================================
+    // DUPLICATE CHECK: Prevent same vehicle + date + amount within 5 minutes
+    // =====================================================================
+    $vehicleID = intval($_POST["vehicleID"]);
+    $expenseAmount = $_POST["expenseAmount"];
+
+    $DB->sql = "SELECT fuelExpenseID FROM `" . $DB->pre . "fuel_expense`
+                WHERE vehicleID = ? AND billDate = ? AND expenseAmount = ? AND status = 1
+                AND createdDate >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
+    $DB->vals = array($vehicleID, $parsedDate, $expenseAmount);
+    $DB->types = "isd";
+    $existing = $DB->dbRow();
+
+    if (!empty($existing['fuelExpenseID'])) {
+        $MXRES["err"] = 1;
+        $MXRES["msg"] = "Duplicate entry detected. This expense was already added in the last 5 minutes.";
+        error_log("[Fuel Expense] Duplicate blocked: Vehicle=$vehicleID, Date=$parsedDate, Amount=$expenseAmount");
+        return;
+    }
+
     // Fuel quantity removed as per request
     $_POST["paymentStatus"] = "Unpaid"; // Default to Unpaid
     $_POST["paidDate"] = NULL;

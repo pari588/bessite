@@ -103,7 +103,7 @@ function markIn()
             $response['err'] = 0;
             $response['msg'] = "Markin Successfully";
         }
-    } elseif ($driverManagement['recordType'] == 1 && ($driverManagement['toTime'] == '' || $driverManagement['toTime'] == NULL || $driverManagement['toTime'] == '0000-00-00 00:00:00')) {
+    } elseif ($driverManagement['recordType'] == 1 && ($driverManagement['toTime'] == '' || $driverManagement['toTime'] == NULL || $driverManagement['toTime'] == '0000-00-00 00:00:00' || strtotime($driverManagement['toTime']) <= strtotime($driverManagement['fromTime']))) {
         // Cron-created record exists (recordType=1) with no toTime - UPDATE it with early check-in time
         $driverManagementID = $driverManagement['driverManagementID'];
         $DB->table = $DB->pre . "driver_management";
@@ -156,7 +156,7 @@ function markOut()
 {
     global $DB;
     $response['err'] = 1;
-    error_reporting(0);
+    // (error suppression removed - failures must surface in the log)
     $response['msg'] = "Markout Failed.";
     $driverManagementID = intval($_POST['driverManagementID'] ?? 0);
     $toTime = date("Y-m-d H:i:s");
@@ -187,9 +187,12 @@ function markOut()
     // VALIDATION: On normal days, Mark Out should only be allowed in late overtime window (after shift end or before 6 AM)
     // On off days, Mark Out is allowed anytime (if driver has an open shift)
     $isLateOvertimeWindow = ($currentTime >= $driverShiftEnd || $currentHour < 6);
-    if (!$isOffDay && !$isLateOvertimeWindow && $driverManagementID == 0) {
-        // If trying to mark out before shift end without an existing open shift,
-        // this is not allowed - Mark Out is only for late overtime
+    // Enforced for ALL mark-outs on a normal working day, with or without an existing
+    // record id. The previous `&& $driverManagementID == 0` let this through whenever a
+    // record already existed — and autoMarkin() creates a baseline record every working
+    // day at shift start, so in practice the time window was never enforced and a driver
+    // could mark out mid-shift. Off days are exempt (the whole day is overtime).
+    if (!$isOffDay && !$isLateOvertimeWindow) {
         $response['msg'] = "Mark Out is only available after " . date('g:i A', strtotime($driverShiftEnd)) . " for late overtime.";
         return $response;
     }
@@ -209,6 +212,14 @@ function markOut()
             // Validate that toTime is after fromTime
             if (strtotime($toTime) < strtotime($fromTime)) {
                 $response['msg'] = "Error: Checkout time cannot be before check-in time. Please contact admin.";
+                return $response;
+            }
+
+            // Validate minimum 30-minute gap between Mark In and Mark Out
+            $minutesWorked = (strtotime($toTime) - strtotime($fromTime)) / 60;
+            if ($minutesWorked < 30) {
+                $remainingMins = ceil(30 - $minutesWorked);
+                $response['msg'] = "Mark Out not allowed yet. Please wait at least 30 minutes after Mark In. ($remainingMins minutes remaining)";
                 return $response;
             }
         } else {
@@ -235,6 +246,14 @@ function markOut()
                 $response['msg'] = "Error: Checkout time cannot be before check-in time. Please contact admin.";
                 return $response;
             }
+
+            // Validate minimum 30-minute gap between Mark In and Mark Out
+            $minutesWorked = (strtotime($toTime) - strtotime($fromTime)) / 60;
+            if ($minutesWorked < 30) {
+                $remainingMins = ceil(30 - $minutesWorked);
+                $response['msg'] = "Mark Out not allowed yet. Please wait at least 30 minutes after Mark In. ($remainingMins minutes remaining)";
+                return $response;
+            }
         } else {
             // Create new record with fromTime = driver's shift end time (for late overtime)
             // This ensures logical flow: they worked until now, overtime starts from shift end
@@ -259,18 +278,18 @@ function markOut()
         }
     }
 
-    // Now update the record with toTime
-    $ch = curl_init();
-    $requestParam = "xAction=UPDATE&driverManagementID=" . $driverManagementID . "&toTime=" . urlencode($toTime) . "&fromTime=" . urlencode($fromTime) . "&expenseAmt=" . $expenseAmt . "&dmDate=" . $dmDate . "&userID=" . $userID;
-    curl_setopt($ch, CURLOPT_URL, SITEURL . "/xadmin/mod/driver-management/x-driver-management.inc.php");
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $requestParam);
-    $result = curl_exec($ch);
-    curl_close($ch);
-
-    $resultArr = json_decode($result, true);
+    // Save via the shared engine, IN PROCESS. This used to be a cURL POST to
+    // /xadmin/mod/driver-management/x-driver-management.inc.php — an HTTP request from the
+    // server to itself, which meant a mark-out could fail whenever the site was not
+    // reachable from its own network (the failure mode that broke the CAMS callback), and
+    // which is why that admin endpoint had to run with authentication disabled.
+    require_once dirname(__FILE__) . "/../../../core/driver-overtime.inc.php";
+    $resultArr = dvSaveOvertime($driverManagementID, array(
+        "fromTime"   => $fromTime,
+        "toTime"     => $toTime,
+        "dmDate"     => $dmDate,
+        "expenseAmt" => $expenseAmt,
+    ));
 
     if (isset($resultArr['err']) && $resultArr['err'] == 0) {
         // Send overtime notification via Brevo

@@ -22,12 +22,15 @@ if ($TPL->pageType == "edit" || $TPL->pageType == "view") {
 $whrArr = array("sql" => "status=?", "types" => "i", "vals" => array(1));
 $vehicleDD = getTableDD(array("table" => $DB->pre . "vehicle", "key" => "vehicleID", "val" => "vehicleName", "selected" => ($D["vehicleID"] ?? ""), "where" => $whrArr));
 
+// Default date to today for new entries, or use existing date for edits
+$defaultDate = !empty($D["billDate"]) ? $D["billDate"] : date('m/d/Y');
+
 $MXFRM = new mxForm();
 
 $arrForm = array(
     array("type" => "file", "name" => "billImage", "value" => array($D["billImage"] ?? "", $id ?? ""), "title" => "Bill Image (JPG/PNG/PDF)", "params" => array("EXT" => "jpg|jpeg|png|pdf"), "attrp" => ' width="30%"'),
     array("type" => "select", "name" => "vehicleID", "value" => $vehicleDD, "title" => "Vehicle", "validate" => "required", "attrp" => ' width="30%"'),
-    array("type" => "date", "name" => "billDate", "value" => $D["billDate"] ?? "", "title" => "Bill Date", "validate" => "required", "attrp" => ' width="30%"', "params" => array("changeMonth" => true, "changeYear" => true, "yearRange" => "-100y:+1", "maxDate" => "0d")),
+    array("type" => "date", "name" => "billDate", "value" => $defaultDate, "title" => "Bill Date (defaults to today)", "attrp" => ' width="30%"', "params" => array("changeMonth" => true, "changeYear" => true, "yearRange" => "-100y:+1", "maxDate" => "0d")),
     array("type" => "text", "name" => "expenseAmount", "value" => $D["expenseAmount"] ?? "", "title" => "Amount (₹)", "validate" => "required,number", "attrp" => ' width="30%"'),
     array("type" => "textarea", "name" => "remarks", "value" => $D["remarks"] ?? "", "title" => "Remarks", "attrp" => ' width="30%"'),
 );

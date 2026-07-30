@@ -6,6 +6,13 @@
 (function() {
     'use strict';
 
+    // Prevent double initialization
+    if (window._fuelExpenseOCRInitialized) {
+        console.log('[OCR] Already initialized, skipping');
+        return;
+    }
+    window._fuelExpenseOCRInitialized = true;
+
     // Helper to show messages - uses mxMsg if available, otherwise uses browser alert
     function showMessage(msg, type) {
         console.log('[OCR] Message (' + type + '):', msg);
@@ -221,8 +228,15 @@
 
             for (var j = 0; j < inputs.length; j++) {
                 if (inputs[j].name === 'billImage' || inputs[j].getAttribute('name') === 'billImage') {
+                    // Prevent duplicate handler attachment
+                    if (inputs[j]._ocrHandlerAttached) {
+                        console.log('[OCR] Handler already attached to this input, skipping');
+                        found = true;
+                        continue;
+                    }
                     console.log('[OCR] Found billImage input, attaching handler');
                     inputs[j].addEventListener('change', handleBillImageChange);
+                    inputs[j]._ocrHandlerAttached = true;
                     found = true;
                 }
             }

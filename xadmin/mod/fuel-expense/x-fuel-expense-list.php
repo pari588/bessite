@@ -1,4 +1,3 @@
-<div style="position:fixed;top:0;left:0;width:10px;height:10px;background:red;z-index:99999;" title="LIST FILE"></div>
 <?php
 /**
  * Fuel Expense List & Report Page
@@ -28,18 +27,23 @@ $vehicleDD = getArrayDD(array("data" => array("data" => $vehicleOptions), "selec
 $statusOptions = array("" => "All Status", "Paid" => "Paid", "Unpaid" => "Unpaid");
 $statusDD = getArrayDD(array("data" => array("data" => $statusOptions), "selected" => ($_GET["paymentStatus"] ?? "")));
 
-// Define search fields
+// Define search fields.
+// NOTE: these WHERE fragments are shared by BOTH queries below (the count query
+// and the JOINed list query), so every column MUST be qualified with the `fe`
+// alias — `vehicleID` exists in both fuel_expense and vehicle, and an unqualified
+// reference is ambiguous once the LEFT JOIN is in play. Both queries alias the
+// fuel_expense table as `fe` for exactly this reason.
 $arrSearch = array(
     array("type" => "select", "name" => "vehicleID",
           "value" => $vehicleDD,
-          "title" => "Vehicle", "where" => "AND vehicleID=?", "dtype" => "s"),
+          "title" => "Vehicle", "where" => "AND fe.vehicleID=?", "dtype" => "s"),
     array("type" => "select", "name" => "paymentStatus",
           "value" => $statusDD,
-          "title" => "Payment Status", "where" => "AND paymentStatus=?", "dtype" => "s"),
+          "title" => "Payment Status", "where" => "AND fe.paymentStatus=?", "dtype" => "s"),
     array("type" => "date", "name" => "fromDate", "value" => $_GET["fromDate"] ?? "",
-          "title" => "From Date", "where" => "AND billDate >= ?", "dtype" => "s"),
+          "title" => "From Date", "where" => "AND fe.billDate >= ?", "dtype" => "s"),
     array("type" => "date", "name" => "toDate", "value" => $_GET["toDate"] ?? "",
-          "title" => "To Date", "where" => "AND billDate <= ?", "dtype" => "s"),
+          "title" => "To Date", "where" => "AND fe.billDate <= ?", "dtype" => "s"),
 );
 
 // Generate search form
@@ -50,8 +54,8 @@ $DB->vals = $MXFRM->vals;
 array_unshift($DB->vals, $MXSTATUS);
 $DB->types = "i" . $MXFRM->types;
 
-$DB->sql = "SELECT fuelExpenseID FROM `" . $DB->pre . "fuel_expense`
-            WHERE status=?" . $MXFRM->where;
+$DB->sql = "SELECT fe.fuelExpenseID FROM `" . $DB->pre . "fuel_expense` fe
+            WHERE fe.status=?" . $MXFRM->where;
 $DB->dbRows();
 $MXTOTREC = $DB->numRows;
 

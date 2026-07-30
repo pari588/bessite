@@ -5,17 +5,32 @@ $(document).ready(function () {
 
     // Start: MarkIn Functionality
     $('#mark-in').click(function () {
+        var $btn = $(this);
+
+        // Prevent double-click
+        if ($btn.hasClass('disabled')) {
+            return false;
+        }
+
+        $btn.addClass('disabled');
         showMxLoader();
+
         $.mxajax({
             url: SITEURL + "/mod/driver/x-driver.inc.php",
             data: { xAction: "markIn" },
             type: 'post',
             dataType: "json"
-        }).then(function (resp) {  
+        }).then(function (resp) {
             hideMxLoader();
             $.mxalert({ msg: resp.msg });
-            setTimeout(function () { window.location.href = SITEURL + "/driver/home/"; }, 1000);
+            setTimeout(function () { window.location.href = SITEURL + "/driver/home/"; }, 1500);
             return false;
+        }).catch(function (error) {
+            // Handle AJAX errors - network failure, server error, etc.
+            hideMxLoader();
+            $btn.removeClass('disabled');
+            console.error('Mark In Error:', error);
+            $.mxalert({ msg: 'Network error. Please check your connection and try again.' });
         });
     });
     // End.
@@ -29,8 +44,11 @@ $(document).ready(function () {
             return false;
         }
 
+        $btn.addClass('disabled');
         showMxLoader();
+
         var driverManagementID = $btn.attr("rel");
+
         $.mxajax({
             url: SITEURL + "/mod/driver/x-driver.inc.php",
             data: { xAction: "markOut", "driverManagementID": driverManagementID },
@@ -41,8 +59,7 @@ $(document).ready(function () {
             $.mxalert({ msg: resp.msg });
 
             if (resp.err == 0) {
-                // Disable button for 60 seconds
-                $btn.addClass('disabled');
+                // Success - show countdown and reload
                 $btn.find('h4').text('Please wait...');
                 $btn.find('.hindi-text').text('60 seconds');
 
@@ -57,8 +74,16 @@ $(document).ready(function () {
                     }
                 }, 1000);
             } else {
-                setTimeout(function () { window.location.href = SITEURL + "/driver/home/"; }, 1000);
+                // Error from server - re-enable button and reload after showing message
+                $btn.removeClass('disabled');
+                setTimeout(function () { window.location.href = SITEURL + "/driver/home/"; }, 2000);
             }
+        }).catch(function (error) {
+            // Handle AJAX errors - network failure, server error, etc.
+            hideMxLoader();
+            $btn.removeClass('disabled');
+            console.error('Mark Out Error:', error);
+            $.mxalert({ msg: 'Network error. Please check your connection and try again.' });
         });
     });
     // End.
@@ -76,6 +101,11 @@ $(document).ready(function () {
                 hideMxLoader();
                 $.mxalert({ msg: resp.msg });
                 setTimeout(function () { window.location.href = SITEURL + "/driver/login/"; }, 1000);
+            }).catch(function (error) {
+                // Handle AJAX errors
+                hideMxLoader();
+                console.error('Logout Error:', error);
+                $.mxalert({ msg: 'Network error. Please try again.' });
             });
         }
     });

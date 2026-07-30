@@ -84,16 +84,20 @@ $siteInfoArr = $DB->dbRow();
                $line = trim($line);
                if (empty($line)) continue;
 
-               // Parse: "06-Dec-2025: 10:00 AM - 01:00 AM | OT: 5.00 hrs | Rs. 625.00"
+               // Format 1 (OT): "06-Dec-2025: 10:00 AM - 01:00 AM | OT: 5.00 hrs | Rs. 625.00"
+               // Format 2 (flat): "15-May-2026: Karjat travel with manager (flat) | Rs. 600.00"
                if (preg_match('/^(\d{2}-\w{3}-\d{4}):\s*(.+?)\s*\|\s*OT:\s*([\d.]+)\s*hrs\s*\|\s*Rs\.\s*([\d,.]+)$/', $line, $matches)) {
-                  $date = $matches[1];
-                  $timeRange = $matches[2];
-                  $otHrs = $matches[3];
-                  $amount = $matches[4];
                   echo '<tr class="full-border">';
-                  echo '<td class="full-border" style="font-size:11px;">' . $date . '</td>';
-                  echo '<td class="full-border" style="font-size:11px;">' . $timeRange . ' (' . $otHrs . ' hrs)</td>';
-                  echo '<td class="right full-border pr" style="font-size:11px;">Rs. ' . $amount . '</td>';
+                  echo '<td class="full-border" style="font-size:11px;">' . $matches[1] . '</td>';
+                  echo '<td class="full-border" style="font-size:11px;">' . $matches[2] . ' (' . $matches[3] . ' hrs)</td>';
+                  echo '<td class="right full-border pr" style="font-size:11px;">Rs. ' . $matches[4] . '</td>';
+                  echo '</tr>';
+                  $rowCount++;
+               } elseif (preg_match('/^(\d{2}-\w{3}-\d{4}):\s*(.+?)\s*\|\s*Rs\.\s*([\d,.]+)$/', $line, $matches)) {
+                  echo '<tr class="full-border">';
+                  echo '<td class="full-border" style="font-size:11px;">' . $matches[1] . '</td>';
+                  echo '<td class="full-border" style="font-size:11px;">' . $matches[2] . '</td>';
+                  echo '<td class="right full-border pr" style="font-size:11px;">Rs. ' . $matches[3] . '</td>';
                   echo '</tr>';
                   $rowCount++;
                }
@@ -118,26 +122,38 @@ $siteInfoArr = $DB->dbRow();
             <td valign="top" colspan="8">
                <!-- <p>GST Payable on Reverse Charge: N/A</p> -->
                <p>
-                  <strong>RECEIVED THE SUM OF RS, </strong> <span class="bb-line"><?php echo numberToWord(filter_var($voucherDataArr["voucherAmt"])); ?></span>
+                  <strong>RECEIVED THE SUM OF </strong> <span class="bb-line"><?php echo numberToWord(filter_var($voucherDataArr["voucherAmt"])); ?></span>
                   <!-- <strong>TCS(1%): </strong>  Only<br/>						 -->
                </p>
             </td>
          </tr>
       </table>
       <!-- <div class="black-line"></div> -->
+      <?php
+      // Signature image - stored in xsite/images/
+      $pariSignature = ROOTPATH . "/xsite/images/pari-sign.jpg";
+      $pariSignatureUrl = SITEURL . "/xsite/images/pari-sign.jpg";
+      ?>
       <table border="0" cellspacing="0" cellpadding="0" class="">
          <tr>
-            <td width="33.33%" class="center pb0">
-               <br /><br /><br /><br /><br />
+            <td width="33.33%" class="center pb0" valign="bottom">
+               <?php if (file_exists($pariSignature)): ?>
+               <img src="<?php echo $pariSignatureUrl; ?>" style="height:50px;margin-bottom:5px;" />
+               <?php else: ?>
+               <br /><br /><br /><br />
+               <?php endif; ?>
                <h4 class="center">PREPARED BY</h4>
             </td>
-            <td width="33.33%" class="center pl pb0">
-               <br /><br /><br /><br /><br />
+            <td width="33.33%" class="center pl pb0" valign="bottom">
+               <?php if (file_exists($pariSignature)): ?>
+               <img src="<?php echo $pariSignatureUrl; ?>" style="height:50px;margin-bottom:5px;" />
+               <?php else: ?>
+               <br /><br /><br /><br />
+               <?php endif; ?>
                <h4 class="center">AUTHORISED BY</h4>
             </td>
-            <td width="33.33%" valign="top" class=" pl center pb0">
-
-               <br /><br /><br /><br /><br />
+            <td width="33.33%" valign="bottom" class=" pl center pb0">
+               <br /><br /><br /><br />
                <h4 class="center">RECEIVED</h4>
             </td>
          </tr>

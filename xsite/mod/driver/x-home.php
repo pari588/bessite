@@ -61,21 +61,44 @@ $isLateOvertimeWindow = ($currentTime >= $driverShiftEnd || $currentHour < 6);  
 // - After 6 AM: Today's shift
 $relevantDate = ($currentHour < 6) ? date('Y-m-d', strtotime('-1 day')) : $checkDate;
 
+// "Open" = no toTime, or placeholder, or toTime <= fromTime (invalid/corrupt)
+// "Completed" = toTime > fromTime (real closed shift)
+$OPEN_CLAUSE      = "(toTime IS NULL OR toTime = '' OR toTime = '0000-00-00 00:00:00' OR toTime <= fromTime)";
+$COMPLETED_CLAUSE = "(toTime IS NOT NULL AND toTime != '' AND toTime != '0000-00-00 00:00:00' AND toTime > fromTime)";
+
 // Check for open shift ONLY for the relevant date (today or yesterday if before 6 AM)
-// An "open shift" means the driver manually marked in (recordType=2) and hasn't marked out yet
-// Cron-created records (recordType=1) with toTime=NULL are NOT considered open shifts
+// An "open shift" means the driver marked in (recordType=2) and hasn't marked out yet
 $DB->vals = array(1, $_SESSION['USER_ID'], $relevantDate);
 $DB->types = "iis";
-$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? AND (toTime IS NULL OR toTime = '' OR toTime = '0000-00-00 00:00:00') AND recordType = 2 ORDER BY driverManagementID DESC LIMIT 1";
+$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? AND $OPEN_CLAUSE AND recordType = 2 ORDER BY driverManagementID DESC LIMIT 1";
 $openShift = $DB->dbRow();
 $hasOpenShift = ($DB->numRows > 0);
+
+// Also check for cron-created records (recordType=1) that need Mark Out
+// These are records where driver didn't mark in early but needs to mark out late
+$DB->vals = array(1, $_SESSION['USER_ID'], $relevantDate);
+$DB->types = "iis";
+$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? AND $OPEN_CLAUSE AND recordType = 1 ORDER BY driverManagementID DESC LIMIT 1";
+$cronRecordNeedingMarkOut = $DB->dbRow();
+$hasCronRecordNeedingMarkOut = ($DB->numRows > 0);
 
 // Check if already completed overtime for the relevant date
 $DB->vals = array(1, $_SESSION['USER_ID'], $relevantDate);
 $DB->types = "iis";
-$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? AND toTime IS NOT NULL AND toTime != '' AND toTime != '0000-00-00 00:00:00' ORDER BY driverManagementID DESC LIMIT 1";
+$DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND userID=? AND dmDate=? AND $COMPLETED_CLAUSE ORDER BY driverManagementID DESC LIMIT 1";
 $completedRecord = $DB->dbRow();
 $hasCompletedRecord = ($DB->numRows > 0);
+
+// Check if the completed record was auto-marked out by cron (toTime = shift end time exactly)
+// If so, driver can override it with actual late checkout time
+$isAutoMarkout = false;
+if ($hasCompletedRecord && !empty($completedRecord['toTime'])) {
+    $completedToTime = date('H:i', strtotime($completedRecord['toTime']));
+    // If toTime equals shift end time exactly (e.g., 20:00), it's an auto-markout that can be overridden
+    if ($completedToTime == $driverShiftEnd) {
+        $isAutoMarkout = true;
+    }
+}
 
 // Also check today's date specifically for Mark In logic
 $DB->vals = array(1, $_SESSION['USER_ID'], $checkDate);
@@ -88,32 +111,60 @@ $hasTodayRecord = ($DB->numRows > 0);
 $isCronRecordWithoutManualUpdate = ($hasTodayRecord && $todayRecord['recordType'] == 1 &&
     ($todayRecord['toTime'] == '' || $todayRecord['toTime'] == NULL || $todayRecord['toTime'] == '0000-00-00 00:00:00'));
 
-// Determine what to show
-$driverManagement = $hasOpenShift ? $openShift : ($hasCompletedRecord ? $completedRecord : $todayRecord);
+// Determine which record to use for Mark Out
+// Priority: open shift > cron record needing markout > completed record (for override) > today's record
+$driverManagement = null;
+if ($hasOpenShift) {
+    $driverManagement = $openShift;
+} elseif ($hasCronRecordNeedingMarkOut) {
+    $driverManagement = $cronRecordNeedingMarkOut;
+} elseif ($hasCompletedRecord) {
+    $driverManagement = $completedRecord;
+} elseif ($hasTodayRecord) {
+    $driverManagement = $todayRecord;
+}
 $driverManagementID = intval($driverManagement['driverManagementID'] ?? 0);
 
 // Status flags - only show "Marked In" card if there's an actually open shift for relevant date
 $hasActiveOpenShift = $hasOpenShift;
 
-if ($isOffDay) {
-    // WEEKLY OFF DAY - Different logic
-    // Show Mark In if: No record for today OR has open shift that needs marking out
-    // Show Mark Out if: Has open shift (marked in but not out yet) OR it's past shift end time
+// Define $isMarkedIn for status dot display
+$isMarkedIn = $hasActiveOpenShift || $hasCronRecordNeedingMarkOut;
 
-    $showMarkIn = !$hasOpenShift && !$hasCompletedRecord && ($currentHour >= 6);
-    $showMarkOut = $hasOpenShift || ($isLateOvertimeWindow && $hasTodayRecord && !$hasCompletedRecord);
+// Determine if driver can override auto-markout
+// Allow override if: completed record exists BUT it's an auto-markout AND we're in late overtime window
+$canOverrideAutoMarkout = $hasCompletedRecord && $isAutoMarkout && $isLateOvertimeWindow;
+
+if ($isOffDay) {
+    // WEEKLY OFF DAY - No time window restrictions
+    // On off days, driver can Mark In anytime after 6 AM (if no open shift exists)
+    // On off days, driver can Mark Out anytime (if they have an open shift)
+
+    // Show Mark In if: No open shift AND no cron record needing markout AND no completed record AND after 6 AM
+    $showMarkIn = !$hasOpenShift && !$hasCronRecordNeedingMarkOut && !$hasCompletedRecord && ($currentHour >= 6);
+
+    // Show Mark Out if: Has open shift OR cron record needing markout OR can override auto-markout
+    // Note: On off days, we don't require $isLateOvertimeWindow - driver can mark out anytime after marking in
+    $showMarkOut = $hasOpenShift || $hasCronRecordNeedingMarkOut || $canOverrideAutoMarkout;
+    $markOutLocked = false;   // no time gate on an off day
 } else {
     // NORMAL WORKING DAY
-    // Show Mark Out button if:
-    // 1. There's an open shift for the relevant date (marked in but not out yet), OR
-    // 2. It's late overtime window AND no completed record exists for the relevant date
-    $showMarkOut = $hasOpenShift || ($isLateOvertimeWindow && !$hasCompletedRecord);
+    // Mark Out records LATE overtime, so it must only be usable AFTER the shift ends
+    // (or before 6 AM, closing the previous day). The time gate now wraps every case:
+    // autoMarkin() creates a baseline record at shift start, which made
+    // $hasCronRecordNeedingMarkOut true all day and previously allowed a mid-shift mark-out.
+    $markOutRelevant = $hasOpenShift || $hasCronRecordNeedingMarkOut || !$hasCompletedRecord || $canOverrideAutoMarkout;
+    $showMarkOut = $isLateOvertimeWindow && $markOutRelevant;
 
     // Show Mark In button if:
     // 1. It's early overtime window (6 AM - shift start), AND
     // 2. Either no record exists for today, OR a cron-created record exists that can be updated, AND
     // 3. Not showing Mark Out
     $showMarkIn = !$showMarkOut && $isEarlyOvertimeWindow && (!$hasTodayRecord || $isCronRecordWithoutManualUpdate);
+
+    // During the shift itself, show Mark Out greyed out with the unlock time rather than
+    // hiding it — the driver can see the button exists and when it becomes usable.
+    $markOutLocked = !$showMarkOut && !$showMarkIn && $markOutRelevant && !$isLateOvertimeWindow;
 }
 
 // For display - only show if there's an active open shift
@@ -593,6 +644,16 @@ $markInDate = $hasActiveOpenShift ? date('D, M d', strtotime($openShift['dmDate'
                         <span class="hindi-text">ओवर टाइम मार्क-आउट करे</span>
                     </div>
                 </a>
+            <?php elseif ($markOutLocked): ?>
+                <span class="btn1 action-btn mark-out disabled" aria-disabled="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <div class="btn-content">
+                        <h4>Mark Out &mdash; available after <?php echo date('g:i A', strtotime($driverShiftEnd)); ?></h4>
+                        <span class="hindi-text">शिफ्ट खत्म होने के बाद ओवर टाइम मार्क-आउट करे (<?php echo date('g:i A', strtotime($driverShiftEnd)); ?> के बाद)</span>
+                    </div>
+                </span>
             <?php elseif ($showMarkIn): ?>
                 <a href="javascript:void(0);" class="btn1 action-btn" id="mark-in">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
