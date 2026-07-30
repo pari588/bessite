@@ -48,9 +48,11 @@ POSTS = [
  'hl':56, 'hl_story':68, 'shot':430, 'shot_story':690, 'key_w':205, 'val':28,
  'caption':"""Where safety is not optional.
 
-In a zoned area the motor is not just a machine, it is part of the safety case. Get the protection concept wrong and no amount of efficiency or price matters — it should not be in that room at all.
+In a Hazardous area the motor is not just a machine, it is part of the safety case. Choose the right motor for the right kind of Hazardous area. Use our expertise to select the right motor.
 
-We supply the full hazardous area range: Flameproof Ex "db", Increased Safety Ex "eb" and Non-Sparking Ex "ec", for Zone 1 and Zone 2.
+We supply the Hazardous area motors:
+For Zone 1 and 2: Flameproof Ex "db"
+For Zone 2: Increased Safety Ex "eb" and Non-Sparking Ex "ec"
 
 ⚙️ Protection — Ex "db", Ex "eb", Ex "ec"
 🧪 Gas groups — IIA / IIB, IIC
@@ -58,11 +60,11 @@ We supply the full hazardous area range: Flameproof Ex "db", Increased Safety Ex
 🔌 Voltage — 415 V, other voltages on request
 📋 Certification — PESO, ATEX, IECEx
 
-Built for refineries, chemical plants, pharmaceutical plants and paint shops — anywhere a flammable atmosphere is a normal part of the working day.
+Built for Refineries, Chemical Plants, Pharmaceutical Plants and Paint Shops — anywhere a flammable atmosphere is a normal part of the working day.
 
 🔧 Genuine spares available.
 
-Zone, gas group, temperature class and ambient all change the answer. Tell us those four and we will tell you what is compliant — not just what is available.
+Please specify your requirement: Application, Zone, Gas Group, Temp Class, Motor driven by VFD or DOL start and run. We will select and offer the best motor for the given application.
 
 📞 98200 42210
 ✉️ besyndicate@gmail.com
@@ -153,7 +155,7 @@ So: photograph the plate, straight on, in good light. Send it to us. We will tel
            'instead of jamming on them.',
  'plate_title':'Sewage &amp; drainage', 'plate_ref':'Ex-stock',
  'rows':[('Handles','Effluent · solids · dirty water',0),
-         ('Built for','Basements · societies · industry',0),
+         ('Built for','Basements · Societies · Industry',0),
          ('Supply','Single and three phase',0),
          ('Backup','Genuine spares',0)],
  'cta':'Tell us the sump depth and discharge',
@@ -165,7 +167,7 @@ Every monsoon it is the same call: the sump pump has stopped, and when it comes 
 Sewage and drainage pumps are built differently — wider passages, cutter or vortex impellers, and mechanical seals meant for dirty water. They pass what would jam an ordinary pump.
 
 ⚙️ Handles — effluent, solids, dirty water
-🏢 Built for — basements, housing societies, commercial buildings, industry
+🏢 Built for — Basements, Housing Societies, Commercial Buildings, Industry
 ⚡ Supply — single and three phase
 🔧 Backup — genuine spares held in stock
 
