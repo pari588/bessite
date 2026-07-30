@@ -29,8 +29,12 @@ The Driver Management module handles driver attendance tracking, overtime calcul
 ## Business Logic
 
 ### Standard Work Hours
-- **Shift Time:** 10:00 AM - 8:00 PM (10 hours)
-- **Working Hours:** Configurable per driver in `mx_user` table
+Configurable per driver in `mx_user` table:
+
+| Driver | Shift Start | Shift End | Off Day | OT Rate |
+|--------|-------------|-----------|---------|---------|
+| Dilkhush | 10:00 AM | 8:00 PM | Sunday | Rs. 75/hr |
+| Suraj | 9:00 AM | 7:00 PM | Saturday | Rs. 75/hr |
 
 ### Overtime Types
 
@@ -80,7 +84,7 @@ The Driver Management module handles driver attendance tracking, overtime calcul
 | dmDate | DATE | Date of record |
 | fromTime | DATETIME | Check-in time |
 | toTime | DATETIME | Check-out time |
-| recordType | INT | 1=Manual, 2=App |
+| recordType | INT | 1=Cron (auto), 2=Manual (app) |
 | overtimeHrs | DECIMAL | Calculated OT hours |
 | totalOvertimePay | DECIMAL | OT hours × rate |
 | dinnerAllowance | DECIMAL | Dinner amount |
@@ -181,20 +185,36 @@ if ($outgoingTime >= $TAXIALLOTIME) {
 ## Frontend UI Logic (x-home.php)
 
 ```php
-// Determine time windows
+// Determine time windows (uses driver-specific shift times)
 $currentHour = (int)date('H');
 $currentTime = date('H:i');
+$driverShiftStart = $userData['userFromTime']; // e.g., "10:00" or "09:00"
+$driverShiftEnd = $userData['userToTime'];     // e.g., "20:00" or "19:00"
 
 $isBeforeMorningCutoff = ($currentHour < 6);
-$isEarlyOvertimeWindow = ($currentHour >= 6 && $currentTime < '10:00');
-$isLateOvertimeWindow = ($currentTime >= '20:00' || $currentHour < 6);
+$isEarlyOvertimeWindow = ($currentHour >= 6 && $currentTime < $driverShiftStart);
+$isLateOvertimeWindow = ($currentTime >= $driverShiftEnd || $currentHour < 6);
 
 // Determine relevant date for overtime
+// Before 6 AM = previous day's shift still active
 $relevantDate = ($currentHour < 6) ? date('Y-m-d', strtotime('-1 day')) : date('Y-m-d');
 
+// Check for open shifts (manual records with no toTime)
+$hasOpenShift = /* recordType=2 with toTime=NULL for relevantDate */;
+
+// Check for cron records needing Mark Out (cron records with no toTime)
+$hasCronRecordNeedingMarkOut = /* recordType=1 with toTime=NULL for relevantDate */;
+
 // Button Display Logic
-$showMarkOut = $hasOpenShift || ($isLateOvertimeWindow && !$hasCompletedRecord);
-$showMarkIn = !$showMarkOut && $isEarlyOvertimeWindow && !$hasTodayRecord;
+if ($isOffDay) {
+    // Off day logic
+    $showMarkIn = !$hasOpenShift && !$hasCronRecordNeedingMarkOut && !$hasCompletedRecord && ($currentHour >= 6);
+    $showMarkOut = $hasOpenShift || $hasCronRecordNeedingMarkOut || ($isLateOvertimeWindow && $hasTodayRecord && !$hasCompletedRecord);
+} else {
+    // Normal working day
+    $showMarkOut = $hasOpenShift || $hasCronRecordNeedingMarkOut || ($isLateOvertimeWindow && !$hasCompletedRecord);
+    $showMarkIn = !$showMarkOut && $isEarlyOvertimeWindow && (!$hasTodayRecord || $isCronRecordWithoutManualUpdate);
+}
 ```
 
 ## Email Notifications
@@ -218,6 +238,39 @@ Triggered on:
    - Voucher with detailed narration
 5. Records marked as settled (`isSettled = 1`)
 
+## Cron Jobs
+
+**File:** `/xsite/mx-crons.php`
+**Schedule:** Both run `@hourly`
+
+### autoMarkin
+Creates daily attendance records for drivers.
+- Runs every hour but only creates records **after driver's shift start time**
+- Dilkhush: Record created after 10:00 AM IST
+- Suraj: Record created after 9:00 AM IST
+- Skips driver's configured off-days
+- Creates record with `fromTime = shift start`, `toTime = NULL`, `recordType = 1`
+
+```php
+// Only create record after driver's shift start time
+$userFromTime = date("H:i:s", strtotime($v["userFromTime"]));
+if ($currentTime < $userFromTime) {
+    continue; // Too early, skip
+}
+```
+
+### autoMarkout
+Sets default checkout time for records not manually marked out.
+- Checks **previous day's** records
+- If `toTime` is empty/NULL, sets it to driver's shift end time (e.g., 20:00)
+- Calls the overtime calculation endpoint to update totals
+
+**Cron URLs:**
+```
+https://www.bombayengg.net/xsite/mx-crons.php?xAction=autoMarkin
+https://www.bombayengg.net/xsite/mx-crons.php?xAction=autoMarkout
+```
+
 ## Related Modules
 
 - **Petty Cash Book:** `/xadmin/mod/petty-cash-book/`
@@ -230,6 +283,16 @@ Triggered on:
 - Check `$isLateOvertimeWindow` logic includes `$currentHour < 6`
 - Verify `$relevantDate` calculation for overnight shifts
 
+### Mark Out Not Showing When Crossing Into Off Day
+- **Cause:** Off day logic checked for "today's" record instead of "relevant date" record
+- **Fix:** Added `$hasCronRecordNeedingMarkOut` check that uses `$relevantDate`
+- Example: Mark Out at 12:20 AM on Sunday (off day) for Saturday's shift
+
+### Cron Records Not Showing Mark Out Button
+- **Cause:** Open shift query only checked `recordType = 2` (manual records)
+- **Fix:** Added separate check for `recordType = 1` (cron records) with NULL toTime
+- Both manual and cron records now show Mark Out button when needed
+
 ### Old Mark-In Showing Next Day
 - Query must scope to `$relevantDate` only
 - Check for completed records (toTime not null) for that date
@@ -238,6 +301,11 @@ Triggered on:
 - Verify `fromTime` is set to actual arrival or 10:00 AM
 - Check `toTime` is properly recorded
 - Ensure driver's rates are configured in mx_user
+
+### Cron Creating Records Too Early (Midnight)
+- **Cause:** autoMarkin ran at midnight creating next day's record
+- **Fix:** autoMarkin now checks if current time >= driver's shift start time
+- Records only created after 10 AM for Dilkhush, 9 AM for Suraj
 
 ### Cached PDF Shows Old Data
 - Delete PDF from `/uploads/voucher/`
@@ -259,6 +327,11 @@ Update in mx_user table or via User edit form:
 - `offDayPriceBelow4Hr` / `offDayPriceAbove4Hr` - Sunday rates
 
 ## Change History
+- **Jan 2026:** Fixed Mark Out not showing when crossing midnight into off day
+- **Jan 2026:** Added `$hasCronRecordNeedingMarkOut` for cron records needing Mark Out
+- **Jan 2026:** Fixed autoMarkin to only create records after driver's shift start time
+- **Dec 2025:** Driver-specific shift timings (Dilkhush 10AM-8PM, Suraj 9AM-7PM)
+- **Dec 2025:** Weekly off day support with flat rate + overtime calculation
 - **Dec 2024:** Fixed overnight shift handling (Mark Out after midnight)
 - **Dec 2024:** Added time window logic for Mark In/Mark Out buttons
 - **Dec 2024:** Fixed `fromTime` to always be 10:00 AM for late-only overtime

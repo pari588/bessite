@@ -251,20 +251,225 @@ $MXFRM = new mxForm();
 
 ---
 
-## 4. REGISTERING THE MODULE
+## 4. REGISTERING THE MODULE & MENU ACCESS CONTROL
 
-To make the module appear in the sidebar, you must insert a record into the `mx_admin_menu` table.
+### 4.1 Menu Structure
 
-**SQL:**
+The admin sidebar menu is stored in `mx_x_admin_menu` table.
+
+**Table Structure:**
+| Column | Type | Description |
+|--------|------|-------------|
+| `adminMenuID` | int | Primary key |
+| `menuTitle` | varchar(100) | Display name in sidebar |
+| `seoUri` | varchar(100) | **MUST match directory name** (e.g., `events`) |
+| `parentID` | int | 0 = top-level, or parent menu's adminMenuID |
+| `xOrder` | int | Sort order (lower = higher in menu) |
+| `hideMenu` | tinyint | 0 = show, 1 = hide from sidebar |
+| `forceNav` | varchar(10) | Force page type: `list`, `add`, `edit`, or empty |
+| `params` | varchar(100) | Extra URL parameters |
+| `status` | tinyint | 1 = active, 0 = inactive |
+
+**Insert Menu SQL:**
 ```sql
-INSERT INTO `mx_admin_menu` 
-(`menuTitle`, `seoUri`, `parentID`, `xOrder`, `status`, `hideMenu`) 
-VALUES 
+-- Top-level menu item
+INSERT INTO `mx_x_admin_menu`
+(`menuTitle`, `seoUri`, `parentID`, `xOrder`, `status`, `hideMenu`)
+VALUES
 ('Events', 'events', 0, 99, 1, 0);
+
+-- Sub-menu item (under a parent)
+INSERT INTO `mx_x_admin_menu`
+(`menuTitle`, `seoUri`, `parentID`, `xOrder`, `status`, `hideMenu`)
+VALUES
+('Event Categories', 'event-category', 123, 1, 1, 0);  -- 123 = parent's adminMenuID
 ```
 
-*   `seoUri`: Must match the directory name (`events`).
-*   `parentID`: 0 for top-level, or the ID of a parent menu item.
+### 4.2 Role-Based Access Control (RBAC)
+
+The system uses three tables for access control:
+
+```
+┌─────────────────┐      ┌─────────────────────┐      ┌─────────────────┐
+│ mx_x_admin_user │      │ mx_x_admin_role_    │      │ mx_x_admin_menu │
+│                 │      │       access        │      │                 │
+│ userID          │      │                     │      │ adminMenuID     │
+│ roleID ─────────┼──┐   │ accessID            │   ┌──┼ menuTitle       │
+│ userName        │  │   │ roleID ◄────────────┼───┤  │ seoUri          │
+│ ...             │  │   │ adminMenuID ◄───────┼───┘  │ parentID        │
+└─────────────────┘  │   │ accessType (JSON)   │      │ ...             │
+                     │   │ status              │      └─────────────────┘
+┌─────────────────┐  │   └─────────────────────┘
+│ mx_x_admin_role │  │
+│                 │  │
+│ roleID ◄────────┼──┘
+│ roleName        │
+│ rolePage        │ (default landing page for this role)
+│ ...             │
+└─────────────────┘
+```
+
+**Access Types (JSON array in `accessType` column):**
+```json
+["view"]                    // Read-only access
+["view", "add"]             // Can view and add
+["view", "add", "edit"]     // Can view, add, and edit
+["view", "add", "edit", "delete"]  // Full access
+```
+
+### 4.3 Creating a Role
+
+**Step 1: Insert Role**
+```sql
+INSERT INTO `mx_x_admin_role`
+(`roleName`, `roleEmail`, `rolePage`, `status`)
+VALUES
+('Event Manager', 'events@company.com', 'events', 1);
+-- Note: rolePage = default landing page after login (must match seoUri)
+```
+
+**Step 2: Assign Menu Access to Role**
+```sql
+-- Get the roleID from previous insert (e.g., 16)
+-- Get the adminMenuID for the module (e.g., 99 for 'events')
+
+INSERT INTO `mx_x_admin_role_access`
+(`roleID`, `adminMenuID`, `accessType`, `status`)
+VALUES
+(16, 99, '["view", "add", "edit", "delete"]', 1);
+```
+
+**Step 3: Assign Role to User**
+```sql
+UPDATE `mx_x_admin_user`
+SET roleID = 16
+WHERE userID = 25;
+```
+
+### 4.4 How Menu Access Works
+
+The menu rendering happens in `xadmin/core-admin/common.inc.php`:
+
+```php
+// getAdminSMenu() function - simplified logic
+foreach ($menuItems as $menuItem) {
+    // Check if user has access to this menu item
+    if (isset($TPL->mAccess[$menuItem["seoUri"]])) {
+        // User has access - show menu item
+        echo '<li><a href="...">' . $menuItem["menuTitle"] . '</a></li>';
+
+        // Show "Add" button only if user has "add" permission
+        if (in_array("add", $TPL->mAccess[$menuItem["seoUri"]])) {
+            echo '<a href="...-add/" class="add">+</a>';
+        }
+    }
+    // If no access, menu item is NOT displayed
+}
+```
+
+**Access is loaded in `tpl.class.inc.php`:**
+```php
+// For SUPER admin (roleID = 'SUPER')
+$this->mAccess[$seoUri] = $MXACCESS;  // Full access to everything
+
+// For regular roles
+$sql = "SELECT A.adminMenuID, A.accessType, M.seoUri
+        FROM mx_x_admin_role_access AS A
+        LEFT JOIN mx_x_admin_menu AS M ON M.adminMenuID = A.adminMenuID
+        WHERE A.roleID = ?";
+// Result: $this->mAccess['events'] = ['view', 'add', 'edit', 'delete']
+```
+
+### 4.5 Complete Example: Adding Module with Role Access
+
+**Scenario:** Create "Events" module accessible only to "Event Managers"
+
+```sql
+-- 1. Create the menu entry
+INSERT INTO `mx_x_admin_menu`
+(`menuTitle`, `seoUri`, `parentID`, `xOrder`, `status`, `hideMenu`)
+VALUES ('Events', 'events', 0, 50, 1, 0);
+
+-- Get the adminMenuID (let's say it's 99)
+
+-- 2. Create a new role for Event Managers
+INSERT INTO `mx_x_admin_role`
+(`roleName`, `roleEmail`, `rolePage`, `xOrder`, `status`)
+VALUES ('Event Manager', NULL, 'events', 0, 1);
+
+-- Get the roleID (let's say it's 16)
+
+-- 3. Grant full access to the Events module for this role
+INSERT INTO `mx_x_admin_role_access`
+(`roleID`, `adminMenuID`, `accessType`, `status`)
+VALUES (16, 99, '["view", "add", "edit", "delete"]', 1);
+
+-- 4. Also grant Dashboard access so they can login
+INSERT INTO `mx_x_admin_role_access`
+(`roleID`, `adminMenuID`, `accessType`, `status`)
+VALUES (16, 1, '["view"]', 1);  -- adminMenuID 1 = Dashboard
+
+-- 5. Assign a user to this role
+UPDATE `mx_x_admin_user` SET roleID = 16 WHERE userID = 25;
+```
+
+### 4.6 Special Roles
+
+| roleID | Role Type | Access Level |
+|--------|-----------|--------------|
+| `SUPER` | Super Admin | Full access to ALL modules (hardcoded in `tpl.class.inc.php`) |
+| `1` | Admin | Typically full access (configured via role_access) |
+| `2+` | Custom Roles | Access based on `mx_x_admin_role_access` entries |
+
+**Super Admin Check:**
+```php
+// In tpl.class.inc.php
+if ($roleID == "SUPER") {
+    // Grant access to ALL menus with ALL permissions
+    foreach ($MXADMINMENU as $v) {
+        $this->mAccess[$v["seoUri"]] = $MXACCESS;  // ['view','add','edit','delete']
+    }
+}
+```
+
+### 4.7 Hiding Menu Items
+
+To hide a menu from sidebar but keep it accessible via direct URL:
+```sql
+UPDATE `mx_x_admin_menu` SET hideMenu = 1 WHERE seoUri = 'events';
+```
+
+To completely disable a menu:
+```sql
+UPDATE `mx_x_admin_menu` SET status = 0 WHERE seoUri = 'events';
+```
+
+### 4.8 Sub-Menu (Grouped Modules)
+
+Create a parent menu and assign children:
+
+```sql
+-- Parent (no actual module, just a grouping header)
+INSERT INTO `mx_x_admin_menu`
+(`menuTitle`, `seoUri`, `parentID`, `xOrder`, `status`, `hideMenu`)
+VALUES ('HR Management', 'hrms', 0, 60, 1, 0);
+
+-- Get parent's adminMenuID (e.g., 100)
+
+-- Children under HRMS
+INSERT INTO `mx_x_admin_menu` VALUES
+(NULL, 0, 'Attendance', 'attendance', 1, 100, '', 0, '', 1),
+(NULL, 0, 'Salary Slip', 'salary-slip', 2, 100, '', 0, '', 1),
+(NULL, 0, 'Leave Management', 'employee-leave', 3, 100, '', 0, '', 1);
+```
+
+**Result in sidebar:**
+```
+▼ HR Management
+    ├── Attendance
+    ├── Salary Slip
+    └── Leave Management
+```
 
 ---
 
