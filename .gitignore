@@ -22,3 +22,15 @@ info.txt
 # User uploads: served from disk, preserved in the weekly "backup" branch.
 # Kept out of the code branch (contains business docs; also large & binary).
 uploads/
+
+# Cleanup staging area — deletion candidates moved aside (safe to remove after review)
+junk/
+
+# Session notes & docs — carry credentials by design; never commit
+CLAUDE.md
+claudemd/
+# Timestamped backups (e.g. *.bak-20260730) and image/SQL snapshots
+*.bak-*
+motor-image-backups/
+# Legacy CAMS integration kit config — holds DB password
+cams-integration/cams.conf
