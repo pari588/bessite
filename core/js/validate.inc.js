@@ -5,7 +5,10 @@
  add in php code after initializing form class
  */
 var $MXFUNCV, FLGERR;
-$(document).ready(function (e) {
+/* Definitions only — no DOM access at define-time. Must NOT wait for
+   document.ready: form.inc.js / x-site.inc.js call these plugins from their
+   own ready handlers, which can queue ahead of this file's (defer ordering). */
+(function (e) {
     $MXFUNCV = {
         required: function ($value, el) {
             return $value.length > 0;
@@ -299,4 +302,4 @@ $(document).ready(function (e) {
         else
             return true;
     };
-});
+})();

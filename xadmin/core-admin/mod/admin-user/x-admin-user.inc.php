@@ -9,6 +9,8 @@ function addUser()
     // Checkbox handling
     $_POST['techIlliterate'] = (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0) ? 0 : 1;
     $_POST['isLeaveManager'] = (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0) ? 0 : 1;
+    $_POST['autoAttendance'] = (!isset($_POST['autoAttendance']) || $_POST['autoAttendance'] <= 0) ? 0 : 1;
+    $_POST['whatsappOptIn'] = (!isset($_POST['whatsappOptIn']) || $_POST['whatsappOptIn'] <= 0) ? 0 : 1;
 
     // Sanitize HR fields
     if (isset($_POST["employeeCode"])) $_POST["employeeCode"] = cleanTitle($_POST["employeeCode"]);
@@ -23,6 +25,11 @@ function addUser()
     if (isset($_POST["emergencyContact"])) $_POST["emergencyContact"] = cleanTitle($_POST["emergencyContact"]);
     if (isset($_POST["biometricID"])) $_POST["biometricID"] = cleanTitle($_POST["biometricID"]);
 
+    // Sanitize WhatsApp number (strip non-digits)
+    if (isset($_POST["whatsappNumber"])) $_POST["whatsappNumber"] = preg_replace('/[^0-9]/', '', $_POST["whatsappNumber"]);
+    if (empty($_POST["whatsappNumber"])) $_POST["whatsappNumber"] = null;
+    if ($_POST['whatsappOptIn'] == 1 && empty($_POST['whatsappOptInDate'])) $_POST['whatsappOptInDate'] = date('Y-m-d H:i:s');
+
     // Handle empty managerID
     if (empty($_POST['managerID'])) $_POST['managerID'] = null;
 
@@ -31,10 +38,24 @@ function addUser()
     if (empty($_POST['dateOfJoining'])) $_POST['dateOfJoining'] = null;
     if (empty($_POST['dateOfExit'])) $_POST['dateOfExit'] = null;
 
+    // Store biometricID for CAMS sync
+    $biometricID = $_POST['biometricID'] ?? null;
+    $displayName = $_POST['displayName'] ?? '';
+
     $DB->table = $DB->pre . "x_admin_user";
     $DB->data = $_POST;
     if ($DB->dbInsert()) {
         $userID = $DB->insertID;
+
+        // Sync to CAMS biometric device if biometricID is set
+        if (!empty($biometricID) && empty($_POST['autoAttendance'])) {
+            require_once(COREPATH . '/cams-api.inc.php');
+            $nameParts = explode(' ', $displayName, 2);
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+            camsAddUser($biometricID, $firstName, $lastName);
+        }
+
         setResponse(["err" => 0, "param" => "id=$userID"]);
     } else {
         setResponse(["err" => 1]);
@@ -54,6 +75,8 @@ function updateUser()
     // Checkbox handling
     $_POST['techIlliterate'] = (!isset($_POST['techIlliterate']) || $_POST['techIlliterate'] <= 0) ? 0 : 1;
     $_POST['isLeaveManager'] = (!isset($_POST['isLeaveManager']) || $_POST['isLeaveManager'] <= 0) ? 0 : 1;
+    $_POST['autoAttendance'] = (!isset($_POST['autoAttendance']) || $_POST['autoAttendance'] <= 0) ? 0 : 1;
+    $_POST['whatsappOptIn'] = (!isset($_POST['whatsappOptIn']) || $_POST['whatsappOptIn'] <= 0) ? 0 : 1;
 
     // Sanitize HR fields
     if (isset($_POST["employeeCode"])) $_POST["employeeCode"] = cleanTitle($_POST["employeeCode"]);
@@ -68,6 +91,11 @@ function updateUser()
     if (isset($_POST["emergencyContact"])) $_POST["emergencyContact"] = cleanTitle($_POST["emergencyContact"]);
     if (isset($_POST["biometricID"])) $_POST["biometricID"] = cleanTitle($_POST["biometricID"]);
 
+    // Sanitize WhatsApp number (strip non-digits)
+    if (isset($_POST["whatsappNumber"])) $_POST["whatsappNumber"] = preg_replace('/[^0-9]/', '', $_POST["whatsappNumber"]);
+    if (empty($_POST["whatsappNumber"])) $_POST["whatsappNumber"] = null;
+    if ($_POST['whatsappOptIn'] == 1 && empty($_POST['whatsappOptInDate'])) $_POST['whatsappOptInDate'] = date('Y-m-d H:i:s');
+
     // Handle empty managerID
     if (empty($_POST['managerID'])) $_POST['managerID'] = null;
 
@@ -76,9 +104,37 @@ function updateUser()
     if (empty($_POST['dateOfJoining'])) $_POST['dateOfJoining'] = null;
     if (empty($_POST['dateOfExit'])) $_POST['dateOfExit'] = null;
 
+    // Get current biometricID before update (for CAMS sync)
+    $DB->vals = array($userID);
+    $DB->types = "i";
+    $DB->sql = "SELECT biometricID, displayName FROM " . $DB->pre . "x_admin_user WHERE userID = ?";
+    $oldUser = $DB->dbRow();
+    $oldBiometricID = $oldUser['biometricID'] ?? null;
+    $newBiometricID = $_POST['biometricID'] ?? null;
+    $displayName = $_POST['displayName'] ?? $oldUser['displayName'] ?? '';
+
     $DB->table = $DB->pre . "x_admin_user";
     $DB->data = $_POST;
     if ($DB->dbUpdate("userID='$userID'")) {
+
+        // Sync to CAMS biometric device if biometricID changed
+        if ($newBiometricID != $oldBiometricID && empty($_POST['autoAttendance'])) {
+            require_once(COREPATH . '/cams-api.inc.php');
+
+            // Delete old biometric ID from device
+            if (!empty($oldBiometricID)) {
+                camsDeleteUser($oldBiometricID);
+            }
+
+            // Add new biometric ID to device
+            if (!empty($newBiometricID)) {
+                $nameParts = explode(' ', $displayName, 2);
+                $firstName = $nameParts[0];
+                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+                camsAddUser($newBiometricID, $firstName, $lastName);
+            }
+        }
+
         setResponse(["err" => 0, "param" => "id=$userID"]);
     } else {
         setResponse(["err" => 1]);

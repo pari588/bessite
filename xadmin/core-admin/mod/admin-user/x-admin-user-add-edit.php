@@ -74,6 +74,8 @@ $arrPersonalForm = array(
     array("type" => "select", "name" => "bloodGroup", "value" => $bloodGroupOpt, "title" => "Blood Group"),
     array("type" => "text", "name" => "emergencyContactName", "value" => ($D["emergencyContactName"] ?? ""), "title" => "Emergency Contact Name"),
     array("type" => "text", "name" => "emergencyContact", "value" => ($D["emergencyContact"] ?? ""), "title" => "Emergency Contact No"),
+    array("type" => "text", "name" => "whatsappNumber", "value" => ($D["whatsappNumber"] ?? ""), "title" => "WhatsApp Number", "attr" => 'placeholder="e.g. 919867212135"'),
+    array("type" => "checkbox", "name" => "whatsappOptIn", "value" => $D["whatsappOptIn"] ?? 0, "title" => "WhatsApp Opt-In", "nolabel" => true, "attrp" => ' class="c1"'),
 );
 
 // Employment Details
@@ -86,11 +88,17 @@ $arrEmploymentForm = array(
     array("type" => "text", "name" => "biometricID", "value" => ($D["biometricID"] ?? ""), "title" => "Biometric ID (Camsunit)"),
 );
 
-// Bank Details
+// Bank Details - Using custom HTML for IFSC with lookup
 $arrBankForm = array(
-    array("type" => "text", "name" => "bankName", "value" => ($D["bankName"] ?? ""), "title" => "Bank Name"),
+    array("type" => "text", "name" => "bankName", "value" => ($D["bankName"] ?? ""), "title" => "Bank Name", "attr" => 'id="bankName" readonly style="background:#f5f5f5;"'),
     array("type" => "text", "name" => "bankAccountNo", "value" => ($D["bankAccountNo"] ?? ""), "title" => "Account Number"),
-    array("type" => "text", "name" => "bankIFSC", "value" => ($D["bankIFSC"] ?? ""), "title" => "IFSC Code"),
+    array("type" => "text", "name" => "bankBranch", "value" => ($D["bankBranch"] ?? ""), "title" => "Branch", "attr" => 'id="bankBranch" readonly style="background:#f5f5f5;"'),
+);
+
+// IFSC field with lookup button
+$ifscValue = htmlspecialchars($D["bankIFSC"] ?? "");
+$arrBankFormIFSC = array(
+    array("type" => "text", "name" => "bankIFSC", "value" => $ifscValue, "title" => "IFSC Code", "attr" => 'id="bankIFSC" maxlength="11" placeholder="e.g., ICIC0001234" style="text-transform:uppercase;" onkeyup="this.value=this.value.toUpperCase()"'),
 );
 
 // ID Proofs
@@ -120,9 +128,12 @@ $arrLeaveForm = array(
 
 // Work Timing (Employee-specific overrides)
 $arrWorkTimingForm = array(
-    array("type" => "time", "name" => "workStartTime", "value" => ($D["workStartTime"] ?? ""), "title" => "Work Start Time", "attrp" => ' placeholder="Leave blank to use default"'),
-    array("type" => "time", "name" => "workEndTime", "value" => ($D["workEndTime"] ?? ""), "title" => "Work End Time", "attrp" => ' placeholder="Leave blank to use default"'),
-    array("type" => "text", "name" => "lateGraceMinutes", "value" => ($D["lateGraceMinutes"] ?? ""), "title" => "Late Grace (minutes)", "validate" => "number,min:0,max:60", "attrp" => ' placeholder="Leave blank to use default"'),
+    array("type" => "time", "name" => "workStartTime", "value" => ($D["workStartTime"] ?? ""), "title" => "Mon-Fri Start Time", "attrp" => ' placeholder="e.g. 10:00"'),
+    array("type" => "time", "name" => "workEndTime", "value" => ($D["workEndTime"] ?? ""), "title" => "Mon-Fri End Time", "attrp" => ' placeholder="e.g. 18:00"'),
+    array("type" => "time", "name" => "saturdayStartTime", "value" => ($D["saturdayStartTime"] ?? ""), "title" => "Saturday Start Time", "attrp" => ' placeholder="e.g. 10:00"'),
+    array("type" => "time", "name" => "saturdayEndTime", "value" => ($D["saturdayEndTime"] ?? ""), "title" => "Saturday End Time", "attrp" => ' placeholder="e.g. 16:00"'),
+    array("type" => "text", "name" => "lateGraceMinutes", "value" => ($D["lateGraceMinutes"] ?? ""), "title" => "Late Grace (minutes)", "validate" => "number,min:0,max:60", "attrp" => ' placeholder="Default: 15"'),
+    array("type" => "checkbox", "name" => "autoAttendance", "value" => $D["autoAttendance"] ?? 0, "title" => "No Biometric Device Access", "nolabel" => true, "attrp" => ' class="c1"'),
 );
 
 // Exit Details (only show for edit mode)
@@ -178,6 +189,7 @@ $MXFRM = new mxForm();
                         <?php echo $MXFRM->getForm($arrWorkTimingForm); ?>
                     </ul>
                     <small style="color:#666; display:block; margin-top:5px;">Leave blank to use system defaults</small>
+                    <small style="color:#0066cc; display:block; margin-top:3px;"><strong>No Biometric Device Access:</strong> Auto-marks attendance daily at shift time. Manager can edit if late/absent.</small>
                 </fieldset>
             </div>
         </div>
@@ -208,6 +220,13 @@ $MXFRM = new mxForm();
                 <fieldset>
                     <p>BANK DETAILS</p>
                     <ul class="tbl-form">
+                        <?php echo $MXFRM->getForm($arrBankFormIFSC); ?>
+                        <li style="margin-top:-8px; margin-bottom:16px;">
+                            <button type="button" id="ifscLookupBtn" onclick="lookupIFSC()" class="btn" style="padding:6px 12px;">
+                                <i class="fa fa-search"></i> Lookup IFSC
+                            </button>
+                            <span id="ifscStatus" style="margin-left:10px; font-size:12px;"></span>
+                        </li>
                         <?php echo $MXFRM->getForm($arrBankForm); ?>
                     </ul>
                 </fieldset>

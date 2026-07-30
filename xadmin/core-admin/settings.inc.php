@@ -4,9 +4,9 @@ $MXSET["TOKENID"] = "CSRF_TOKEN"; $MXDBLOG = true;
 $MXTHEMES = array("D" => "dark", "M" => "moderate", "L" => "light");
 $MXFONTS = array("L" => "large", "M" => "medium", "S" => "small");
 $MXACCESS = array("view", "add", "edit", "delete", "trash", "restore");
-$MXACTION = array("view" => array("view"), "add" => array("add"), "edit" => array("edit"), "trash" => array("view"), "list" => array("view"), "report" => array("view"));
-$MXMACTION = array("list" => array("trash"), "trash" => array("restore", "delete"), "report" => array());
-$MXPGFILE = array("view" => "add-edit", "add" => "add-edit", "edit" => "add-edit", "list" => "list", "trash" => "list", "report" => "report");
+$MXACTION = array("view" => array("view"), "add" => array("add"), "edit" => array("edit"), "trash" => array("view"), "list" => array("view"), "report" => array("view"), "dashboard" => array("view"));
+$MXMACTION = array("list" => array("trash"), "trash" => array("restore", "delete"), "report" => array(), "dashboard" => array());
+$MXPGFILE = array("view" => "add-edit", "add" => "add-edit", "edit" => "add-edit", "list" => "list", "trash" => "list", "report" => "report", "dashboard" => "dashboard");
 $MXPGMENU = array("view" => array("list", "trash", "add"), "add" => array("list", "trash"), "edit" => array("add", "list", "trash"), "list" => array("add", "trash"), "trash" => array("add", "list"), "report" => array("list", "trash"));
 $MXADMINMENU = array(
     '100000' => array("menuTitle" => "organization", "seoUri" => "organization", "dUri" => "organization-list", "class" => "fa-group"),

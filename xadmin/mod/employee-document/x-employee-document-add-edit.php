@@ -80,7 +80,7 @@ $MXFRM = new mxForm();
     </div>
     <?php } ?>
 
-    <form class="wrap-data" name="frmAddEdit" id="frmAddEdit" action="" method="post" enctype="multipart/form-data" auto="false">
+    <form class="wrap-data" name="frmAddEdit" id="frmAddEdit" action="" method="post" enctype="multipart/form-data">
         <ul class="tbl-form">
             <?php echo $MXFRM->getForm($arrForm); ?>
         </ul>
