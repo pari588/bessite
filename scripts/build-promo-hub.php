@@ -79,8 +79,18 @@ foreach ($ITEMS as [$slug, $name, $desc, $postFile]) {
     if ($hit) { $nLive++;  $badge = 'live';  $bt = 'Published ' . date('j M', strtotime($hit['timestamp'])); }
     else      { $nReady++; $badge = 'ready'; $bt = 'Ready — not published'; }
 
+    /**
+     * The five batch posts live under posts/ and share ONE review page with
+     * anchors — they have no index.html of their own, so linking to the folder
+     * returns 403 (directory listing is off, and should stay off). Link to the
+     * anchor instead.
+     */
+    $review = str_starts_with($slug, 'posts/')
+            ? 'posts/#' . substr($slug, 6)
+            : $slug . '/';
+
     $links = [];
-    $links[] = '<a class="b" href="' . $slug . '/">Review page</a>';
+    $links[] = '<a class="b" href="' . $review . '">Review page</a>';
     if ($jpg)   $links[] = '<a href="' . $jpg . '" download>Feed JPG</a>';
     if ($story) $links[] = '<a href="' . $story . '" download>Story</a>';
     if ($pdf)   $links[] = '<a href="' . $pdf . '" download>PDF</a>';
