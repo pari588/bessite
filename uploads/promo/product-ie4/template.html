@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BES — Super Premium IE4 · Product Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BES — PRODUCT POST · SUPER PREMIUM IE4
+   ------------------------------------------------------------
+   Built off the competitor scan. SC Industrial writes the best
+   captions in the category — benefit first, product second — and
+   gets 1 like a post because they use no hashtags at all. Jain
+   posts plainer content, tags it properly, and earns the highest
+   engagement on the board. So: SC's copy discipline, Jain's
+   distribution discipline, on BES's own visual system.
+
+   A real product photograph, not a render. Every spec on the
+   plate is confirmed by the client — the database rows for this
+   series were sample data only.
+
+   Export :  template.html#post   1080x1350
+             template.html#story  1080x1920
+   Render :  ./render.sh
+
+   Locked: no pricing.
+   ============================================================ */
+
+:root{
+  --ink:#1a1a2e; --ink-2:#5a6068; --brand:#157bba; --brand-2:#4b8db6;
+  --tint:#eaf4fb; --tint-2:#f8fafb; --line:#e4ebf1; --white:#fff;
+  --display:"Archivo Black",system-ui,sans-serif;
+  --stamp:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#c9d6de;display:flex;flex-wrap:wrap;gap:48px;padding:48px;
+  align-items:flex-start;font-family:var(--body)}
+body.export{padding:0;gap:0;background:none;display:block}
+
+.canvas{width:1080px;flex:0 0 1080px;background:var(--white);position:relative;
+  overflow:hidden;display:flex;flex-direction:column;color:var(--ink)}
+.canvas--post{height:1350px}
+.canvas--story{height:1920px}
+
+/* header — same banner as the monsoon artwork so the grid holds together */
+.head{flex:0 0 auto;position:relative;text-align:center;padding:22px 60px 20px;
+  border-bottom:1px solid var(--line)}
+.head__bes{position:absolute;left:56px;top:50%;transform:translateY(-50%);height:54px;width:auto}
+.head__deal{position:absolute;right:56px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px}
+.head__deal span{font-family:var(--stamp);font-weight:600;font-size:13px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.head__deal img{height:46px;width:auto;display:block}
+.canvas--story .head{padding:126px 60px 22px}
+/* On the story the head carries 126px of safe-zone padding, so centring the
+   logos on the whole box floats them up under Instagram's profile bar.
+   Anchor them to the text block instead. */
+.canvas--story .head__bes,
+.canvas--story .head__deal{top:auto;bottom:20px;transform:none}
+.head__label{display:block;font-family:var(--stamp);font-weight:700;font-size:27px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.head__num{display:block;margin-top:5px;font-family:var(--display);font-size:54px;
+  line-height:1;letter-spacing:-.015em;color:var(--brand)}
+.canvas--story .head__num{font-size:60px}
+
+/* the product, on a tint so the white-background cutout has an edge */
+.shot{position:relative;flex:0 0 auto;overflow:hidden;background:var(--tint-2);
+  display:flex;align-items:center;justify-content:center}
+.canvas--post .shot{height:512px}
+.canvas--story .shot{height:760px}
+.shot img{max-width:88%;max-height:86%;width:auto;height:auto;display:block;
+  mix-blend-mode:multiply}
+.badge{position:absolute;left:44px;top:34px;display:inline-flex;align-items:center;gap:11px;
+  background:var(--brand);color:#fff;font-family:var(--stamp);font-weight:700;font-size:23px;
+  letter-spacing:.19em;text-transform:uppercase;padding:12px 20px}
+.badge::before{content:"";width:11px;height:11px;border-radius:50%;background:#fff}
+
+.rule{flex:0 0 auto;height:6px;background:var(--brand)}
+
+.body{flex:1 1 auto;padding:38px 60px 38px;display:flex;flex-direction:column}
+.canvas--story .body{padding:52px 60px 192px}
+
+.headline{font-family:var(--display);font-size:62px;line-height:1.0;
+  letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
+.headline em{font-style:normal;color:var(--brand)}
+.canvas--story .headline{font-size:74px}
+
+.subline{margin-top:16px;font-family:var(--body);font-weight:500;font-size:31px;
+  line-height:1.3;color:var(--ink-2)}
+.canvas--story .subline{font-size:35px}
+
+/* the rating plate, carried over from the monsoon artwork */
+.plate{margin-top:22px;position:relative;background:var(--tint);
+  border:1px solid #cfe2f2;border-left:8px solid var(--brand);padding:16px 32px 14px}
+.canvas--story .plate{margin-top:34px;padding:22px 34px 18px}
+.rivet{position:absolute;width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fff 0%,#b6c9d6 52%,#7f96a6 100%)}
+.rivet--tr{top:12px;right:12px} .rivet--br{bottom:12px;right:12px}
+.plate__head{display:flex;align-items:baseline;justify-content:space-between;
+  border-bottom:2px solid #bcd8ee;padding-bottom:9px}
+.plate__title{font-family:var(--stamp);font-weight:700;font-size:27px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.plate__ref{font-family:var(--stamp);font-weight:600;font-size:19px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--brand)}
+.plate__row{display:flex;align-items:baseline;gap:20px;padding:8px 0;
+  border-bottom:1px solid #d7e7f4}
+.plate__row:last-child{border-bottom:0;padding-bottom:2px}
+.plate__k{font-family:var(--stamp);font-weight:600;font-size:22px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-2);flex:0 0 210px}
+.plate__v{font-family:var(--stamp);font-weight:700;font-size:31px;letter-spacing:.02em;
+  text-transform:uppercase;line-height:1.05;color:var(--ink)}
+/* kW and V are SI symbols — the plate's uppercasing must not eat their case */
+.plate__v.si{text-transform:none}
+
+.call{margin-top:auto;padding-top:20px;display:flex;align-items:center;gap:24px}
+.call__label{font-family:var(--stamp);font-weight:700;font-size:24px;letter-spacing:.20em;
+  text-transform:uppercase;color:var(--ink-2);writing-mode:vertical-rl;
+  transform:rotate(180deg);border-left:5px solid var(--brand);padding-right:12px}
+.call__num{font-family:var(--display);font-size:76px;line-height:.94;
+  letter-spacing:-.015em;color:var(--brand)}
+.canvas--story .call__num{font-size:88px}
+.call__sub{margin-top:8px;font-family:var(--stamp);font-weight:600;font-size:23px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+<!-- ===================== THE ARTWORK — EDIT HERE ===================== -->
+<template id="art">
+  <div class="head">
+    <img class="head__bes" src="assets/logo-blue.png" alt="Bombay Engineering Syndicate">
+    <span class="head__label">Motors on ex-stock basis</span>
+    <span class="head__num">98200 42210</span>
+    <span class="head__deal">
+      <span>Authorised dealer</span>
+      <img src="assets/cg-logo.png" alt="CG Power">
+    </span>
+  </div>
+
+  <div class="shot">
+    <img src="assets/product.jpg" alt="Super Premium IE4 energy efficient motor">
+    <span class="badge">Energy efficient</span>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="body">
+    <h1 class="headline">Same shaft output.<br><em>Less power drawn.</em></h1>
+    <p class="subline">Super Premium IE4 efficiency, held in stock.</p>
+
+    <div class="plate">
+      <span class="rivet rivet--tr"></span><span class="rivet rivet--br"></span>
+      <div class="plate__head">
+        <span class="plate__title">Energy efficient motors</span>
+        <span class="plate__ref">Ex-stock</span>
+      </div>
+      <div class="plate__row"><span class="plate__k">Efficiency</span><span class="plate__v">IE4 Super Premium</span></div>
+      <div class="plate__row"><span class="plate__k">Supply</span><span class="plate__v si">415 V · others on request</span></div>
+      <div class="plate__row"><span class="plate__k">Frames</span><span class="plate__v">80 to 355</span></div>
+      <div class="plate__row"><span class="plate__k">Standard</span><span class="plate__v si">IEC 60034-1</span></div>
+    </div>
+
+    <div class="call">
+      <span class="call__label">Call</span>
+      <div>
+        <div class="call__num">98200 42210</div>
+        <div class="call__sub">Send us the nameplate and we will size it</div>
+      </div>
+    </div>
+  </div>
+</template>
+<!-- =================================================================== -->
+
+<script>
+(function () {
+  var SIZES = [{id:'post',cls:'canvas canvas--post'},{id:'story',cls:'canvas canvas--story'}];
+  var art = document.getElementById('art');
+  var only = location.hash ? location.hash.slice(1) : null;
+  if (only) document.body.classList.add('export');
+  SIZES.forEach(function (s) {
+    if (only && s.id !== only) return;
+    var el = document.createElement('div');
+    el.id = s.id; el.className = s.cls;
+    el.appendChild(art.content.cloneNode(true));
+    document.body.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

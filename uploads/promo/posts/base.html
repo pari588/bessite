@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BES — {{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BES SOCIAL POST — GENERATED, DO NOT EDIT BY HAND
+   Source of truth is ../build.py. Edit the post's entry there
+   and re-run it, or your changes will be overwritten.
+
+   The approved layout: header bar (BES left, message centred,
+   dealership mark right) → product image on a tint → blue rule
+   → benefit-first headline → rating plate → call block.
+
+   BRAND RULE: the right-hand mark follows the product type.
+   Motor post = CG monogram. Pump post = Crompton wordmark.
+   Never the wrong mark, never both.
+   ============================================================ */
+
+:root{
+  --ink:#1a1a2e; --ink-2:#5a6068; --brand:#157bba; --brand-2:#4b8db6;
+  --tint:#eaf4fb; --tint-2:#f8fafb; --line:#e4ebf1; --white:#fff;
+  --display:"Archivo Black",system-ui,sans-serif;
+  --stamp:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#c9d6de;display:flex;flex-wrap:wrap;gap:48px;padding:48px;
+  align-items:flex-start;font-family:var(--body)}
+body.export{padding:0;gap:0;background:none;display:block}
+
+.canvas{width:1080px;flex:0 0 1080px;background:var(--white);position:relative;
+  overflow:hidden;display:flex;flex-direction:column;color:var(--ink)}
+.canvas--post{height:1350px}
+.canvas--story{height:1920px}
+
+/* header — logos are absolutely positioned so they cost no vertical height */
+.head{flex:0 0 auto;position:relative;text-align:center;padding:22px 60px 20px;
+  border-bottom:1px solid var(--line)}
+.canvas--story .head{padding:126px 60px 22px}
+.head__bes{position:absolute;left:56px;top:50%;transform:translateY(-50%);height:54px;width:auto}
+.head__deal{position:absolute;right:56px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px}
+.head__deal span{font-family:var(--stamp);font-weight:600;font-size:13px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.head__deal img{height:{{BRAND_H}}px;width:auto;display:block}
+/* the story head has 126px of safe-zone padding — centring on the whole box
+   would float the logos up under Instagram's profile bar */
+.canvas--story .head__bes,
+.canvas--story .head__deal{top:auto;bottom:20px;transform:none}
+.head__label{display:block;font-family:var(--stamp);font-weight:700;font-size:27px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.head__num{display:block;margin-top:5px;font-family:var(--display);font-size:54px;
+  line-height:1;letter-spacing:-.015em;color:var(--brand)}
+.canvas--story .head__num{font-size:60px}
+
+.shot{position:relative;flex:0 0 auto;overflow:hidden;background:var(--tint-2);
+  display:flex;align-items:center;justify-content:center}
+.canvas--post .shot{height:{{SHOT_H}}px}
+.canvas--story .shot{height:{{SHOT_H_STORY}}px}
+.shot img{max-width:86%;max-height:86%;width:auto;height:auto;display:block;
+  mix-blend-mode:multiply}
+.badge{position:absolute;left:44px;top:34px;display:inline-flex;align-items:center;gap:11px;
+  background:var(--brand);color:#fff;font-family:var(--stamp);font-weight:700;font-size:23px;
+  letter-spacing:.19em;text-transform:uppercase;padding:12px 20px}
+.badge::before{content:"";width:11px;height:11px;border-radius:50%;background:#fff}
+
+.rule{flex:0 0 auto;height:6px;background:var(--brand)}
+
+.body{flex:1 1 auto;padding:36px 60px 36px;display:flex;flex-direction:column}
+.canvas--story .body{padding:48px 60px 192px}
+
+.headline{font-family:var(--display);font-size:{{HL}}px;line-height:1.0;
+  letter-spacing:-.025em;text-transform:uppercase;color:var(--ink)}
+.headline em{font-style:normal;color:var(--brand)}
+.canvas--story .headline{font-size:{{HL_STORY}}px}
+
+.subline{margin-top:15px;font-family:var(--body);font-weight:500;font-size:29px;
+  line-height:1.3;color:var(--ink-2)}
+.canvas--story .subline{font-size:33px}
+
+.plate{margin-top:20px;position:relative;background:var(--tint);
+  border:1px solid #cfe2f2;border-left:8px solid var(--brand);padding:15px 30px 13px}
+.canvas--story .plate{margin-top:32px;padding:22px 34px 18px}
+.rivet{position:absolute;width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fff 0%,#b6c9d6 52%,#7f96a6 100%)}
+.rivet--tr{top:12px;right:12px} .rivet--br{bottom:12px;right:12px}
+.plate__head{display:flex;align-items:baseline;justify-content:space-between;
+  border-bottom:2px solid #bcd8ee;padding-bottom:9px}
+.plate__title{font-family:var(--stamp);font-weight:700;font-size:26px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.plate__ref{font-family:var(--stamp);font-weight:600;font-size:18px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--brand)}
+.plate__row{display:flex;align-items:baseline;gap:18px;padding:7px 0;
+  border-bottom:1px solid #d7e7f4}
+.plate__row:last-child{border-bottom:0;padding-bottom:2px}
+.plate__k{font-family:var(--stamp);font-weight:600;font-size:21px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-2);flex:0 0 {{KEY_W}}px}
+.plate__v{font-family:var(--stamp);font-weight:700;font-size:{{VAL}}px;letter-spacing:.02em;
+  text-transform:uppercase;line-height:1.06;color:var(--ink)}
+/* SI symbols and standard designations must keep their case */
+.plate__v.si{text-transform:none}
+
+.note{margin-top:11px;display:flex;align-items:center;gap:10px;
+  font-family:var(--stamp);font-weight:700;font-size:22px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--brand)}
+.note::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--brand);flex:0 0 auto}
+.call{margin-top:auto;padding-top:18px;display:flex;align-items:center;gap:22px}
+.call__label{font-family:var(--stamp);font-weight:700;font-size:23px;letter-spacing:.20em;
+  text-transform:uppercase;color:var(--ink-2);writing-mode:vertical-rl;
+  transform:rotate(180deg);border-left:5px solid var(--brand);padding-right:12px}
+.call__num{font-family:var(--display);font-size:74px;line-height:.94;
+  letter-spacing:-.015em;color:var(--brand)}
+.canvas--story .call__num{font-size:86px}
+.call__sub{margin-top:7px;font-family:var(--stamp);font-weight:600;font-size:22px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+<template id="art">
+  <div class="head">
+    <img class="head__bes" src="../brand/logo-blue.png" alt="Bombay Engineering Syndicate">
+    <span class="head__label">{{HEADBAR}}</span>
+    <span class="head__num">98200 42210</span>
+    <span class="head__deal">
+      <span>Authorised dealer</span>
+      <img src="../brand/{{BRAND_LOGO}}" alt="{{BRAND_ALT}}">
+    </span>
+  </div>
+
+  <div class="shot">
+    <img src="assets/product.jpg" alt="{{IMG_ALT}}">
+    <span class="badge">{{BADGE}}</span>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="body">
+    <h1 class="headline">{{HEADLINE}}</h1>
+    <p class="subline">{{SUBLINE}}</p>
+
+    <div class="plate">
+      <span class="rivet rivet--tr"></span><span class="rivet rivet--br"></span>
+      <div class="plate__head">
+        <span class="plate__title">{{PLATE_TITLE}}</span>
+        <span class="plate__ref">{{PLATE_REF}}</span>
+      </div>
+{{PLATE_ROWS}}
+    </div>
+
+{{NOTE}}
+    <div class="call">
+      <span class="call__label">Call</span>
+      <div>
+        <div class="call__num">98200 42210</div>
+        <div class="call__sub">{{CTA}}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+(function () {
+  var SIZES = [{id:'post',cls:'canvas canvas--post'},{id:'story',cls:'canvas canvas--story'}];
+  var art = document.getElementById('art');
+  var only = location.hash ? location.hash.slice(1) : null;
+  if (only) document.body.classList.add('export');
+
+  // PDF export: Chromium's --print-to-pdf takes its page size from @page, which
+  // cannot be conditional in static CSS — so inject the right one at runtime.
+  // Printing (rather than screenshotting) keeps the type as real text, which is
+  // what makes the PDF land in Canva as editable text boxes instead of a picture.
+  if (only) {
+    var dims = { post: [1080, 1350], story: [1080, 1920] }[only];
+    if (dims) {
+      var st = document.createElement('style');
+      st.textContent = '@page{size:' + dims[0] + 'px ' + dims[1] + 'px;margin:0}' +
+                       '@media print{body{background:none}.canvas{box-shadow:none}}';
+      document.head.appendChild(st);
+    }
+  }
+  SIZES.forEach(function (s) {
+    if (only && s.id !== only) return;
+    var el = document.createElement('div');
+    el.id = s.id; el.className = s.cls;
+    el.appendChild(art.content.cloneNode(true));
+    document.body.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

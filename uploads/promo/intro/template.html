@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BES — Introduction Post · Social Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BES — INTRODUCTION POST · SOCIAL TEMPLATE
+   ------------------------------------------------------------
+   The first post on @besyndicate. Its job is to say who this is,
+   what they supply, where, and for how long — nothing is being
+   sold here, so there is no offer block and no urgency device.
+
+   Export :  template.html#post   1080x1350  Instagram feed
+             template.html#story  1080x1920  Story
+   Render :  ./render.sh
+
+   Same palette and type system as the monsoon artwork so the grid
+   reads as one brand. Unlike that ad, the logo and website ARE
+   present — an introduction that does not identify itself is not
+   an introduction.
+
+   Signature: the founding year set as the largest thing on the
+   page. Nearly seventy years of trading is the single most
+   persuasive fact this business owns, so it is not buried in a
+   line of body copy.
+
+   Locked: no pricing anywhere.
+   ============================================================ */
+
+:root{
+  --ink:     #1a1a2e;
+  --ink-2:   #5a6068;
+  --brand:   #157bba;
+  --brand-2: #4b8db6;
+  --tint:    #eaf4fb;
+  --line:    #e4ebf1;
+  --white:   #ffffff;
+
+  --display: "Archivo Black", system-ui, sans-serif;
+  --stamp:   "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body:    "Barlow", system-ui, sans-serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background:#c9d6de;
+  display:flex; flex-wrap:wrap; gap:48px;
+  padding:48px; align-items:flex-start;
+  font-family:var(--body);
+}
+body.export{ padding:0; gap:0; background:none; display:block; }
+
+.canvas{
+  width:1080px; flex:0 0 1080px;
+  background:var(--white);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  color:var(--ink);
+}
+.canvas--post  { height:1350px; }
+.canvas--story { height:1920px; }
+
+/* ---------- MASTHEAD ---------- */
+.mast{
+  flex:0 0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:28px 60px 24px;
+  border-bottom:1px solid var(--line);
+}
+.canvas--story .mast{ padding:130px 60px 24px; }  /* clears the IG profile bar */
+.mast__logo{ height:60px; width:auto; display:block; }
+.mast__since{
+  font-family:var(--stamp); font-weight:600; font-size:21px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--brand-2);
+}
+
+/* ---------- THE PHOTOGRAPH ---------- */
+.shot{ position:relative; flex:0 0 auto; overflow:hidden; }
+.canvas--post  .shot{ height:606px; }
+.canvas--story .shot{ height:800px; }
+
+.shot__img{
+  position:absolute; inset:0;
+  background-image:url("assets/hero.jpg");
+  background-size:cover; background-position:center 46%;
+  filter:saturate(1.04) contrast(1.04);
+}
+.shot__foot{
+  position:absolute; left:0; right:0; bottom:0; height:170px;
+  background:linear-gradient(180deg, rgba(11,18,22,0) 0%, rgba(11,18,22,.54) 100%);
+}
+.chip{
+  position:absolute; left:60px; bottom:36px;
+  display:inline-flex; align-items:center; gap:12px;
+  background:var(--brand); color:#fff;
+  font-family:var(--stamp); font-weight:700; font-size:23px;
+  letter-spacing:.19em; text-transform:uppercase;
+  padding:12px 21px;
+}
+.chip::before{ content:""; width:11px; height:11px; border-radius:50%; background:#fff; }
+
+.rule{ flex:0 0 auto; height:6px; background:var(--brand); }
+
+/* ---------- BODY ---------- */
+.body{
+  flex:1 1 auto;
+  padding:38px 60px 38px;
+  display:flex; flex-direction:column;
+}
+.canvas--story .body{ padding:48px 60px 190px; }
+
+/* SIGNATURE — the year carries the message */
+.headline{
+  font-family:var(--display);
+  font-size:52px; line-height:1.02; letter-spacing:-.02em;
+  text-transform:uppercase; color:var(--ink);
+}
+.headline .yr{
+  display:block; margin-top:4px;
+  font-size:112px; line-height:.94; letter-spacing:-.03em; color:var(--brand);
+}
+.canvas--story .headline{ font-size:60px; }
+.canvas--story .headline .yr{ font-size:132px; }
+
+.lede{
+  margin-top:20px;
+  font-family:var(--body); font-weight:400;
+  font-size:29px; line-height:1.42; color:var(--ink-2);
+}
+.canvas--story .lede{ font-size:32px; }
+
+/* two branches, given equal weight — this is the "where do I find you" answer */
+.where{
+  margin-top:24px; display:flex;
+  border:1px solid #cfe2f2; background:var(--tint);
+  border-left:8px solid var(--brand);
+}
+.canvas--story .where{ margin-top:34px; }
+.where__col{ flex:1 1 50%; padding:18px 26px; }
+.where__col + .where__col{ border-left:1px solid #cfe2f2; }
+.where__city{
+  font-family:var(--stamp); font-weight:700; font-size:31px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink);
+}
+.where__area{
+  margin-top:3px;
+  font-family:var(--body); font-weight:500; font-size:25px; color:var(--ink-2);
+}
+
+.foot{
+  margin-top:auto; padding-top:26px;
+  display:flex; align-items:baseline; justify-content:space-between; gap:20px;
+  border-top:1px solid var(--line);
+}
+.foot__num{
+  font-family:var(--display); font-size:58px; line-height:1;
+  letter-spacing:-.015em; color:var(--brand);
+}
+.canvas--story .foot__num{ font-size:66px; }
+.foot__site{
+  font-family:var(--stamp); font-weight:600; font-size:26px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2);
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== THE ARTWORK — EDIT HERE ===================== -->
+<template id="art">
+  <div class="mast">
+    <img class="mast__logo" src="assets/logo-blue.png" alt="Bombay Engineering Syndicate">
+    <span class="mast__since">Est. 1957</span>
+  </div>
+
+  <div class="shot">
+    <div class="shot__img"></div>
+    <div class="shot__foot"></div>
+    <span class="chip">Motors · Pumps · Spares</span>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="body">
+    <h1 class="headline">Supplying Indian<br>industry since<span class="yr">1957</span></h1>
+
+    <p class="lede">
+      Electric motors, pumps and spares for factories, contractors and builders
+      across India — held in stock at both branches, sized by people who know the
+      application, and delivered without the wait.
+    </p>
+
+    <div class="where">
+      <div class="where__col">
+        <div class="where__city">Mumbai</div>
+        <div class="where__area">Fort · Kala Ghoda</div>
+      </div>
+      <div class="where__col">
+        <div class="where__city">Ahmedabad</div>
+        <div class="where__area">Satellite</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span class="foot__num">98200 42210</span>
+      <span class="foot__site">bombayengg.net</span>
+    </div>
+  </div>
+</template>
+<!-- =================================================================== -->
+
+<script>
+(function () {
+  var SIZES = [
+    { id: 'post',  cls: 'canvas canvas--post'  },
+    { id: 'story', cls: 'canvas canvas--story' }
+  ];
+  var art  = document.getElementById('art');
+  var only = location.hash ? location.hash.slice(1) : null;
+  if (only) document.body.classList.add('export');
+  SIZES.forEach(function (s) {
+    if (only && s.id !== only) return;
+    var el = document.createElement('div');
+    el.id = s.id; el.className = s.cls;
+    el.appendChild(art.content.cloneNode(true));
+    document.body.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

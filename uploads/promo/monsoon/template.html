@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BES — Motor Damage · Social Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BES — MOTOR DAMAGE CAMPAIGN · SOCIAL TEMPLATE
+   ------------------------------------------------------------
+   The artwork is written ONCE, in <template id="art">, and stamped
+   into both sizes. Edit the copy there and both outputs follow.
+
+   Review :  open template.html — both artboards, side by side
+   Export :  template.html#post   1080x1350  Instagram feed
+             template.html#story  1080x1920  Story / WhatsApp status
+   Render :  ./render.sh
+
+   Palette is taken from the live site (xsite/css/style.css + landing.css):
+   #157bba primary, #4b8db6 secondary, #1a1a2e ink, #eaf4fb / #f8fafb tints.
+
+   No masthead and no footer by request — the phone number is the only
+   identifier on the artwork, so the photograph gets the height instead.
+
+   Locked by the brief: no brand names, no pricing.
+   ============================================================ */
+
+:root{
+  --ink:     #1a1a2e;   /* site heading ink */
+  --ink-2:   #5a6068;   /* site body grey */
+  --brand:   #157bba;   /* site primary */
+  --brand-2: #4b8db6;   /* site secondary */
+  --tint:    #eaf4fb;   /* site pale blue */
+  --line:    #e4ebf1;   /* site hairline */
+  --silt:    #a97f45;   /* the water line stain — the one off-palette note */
+  --white:   #ffffff;
+
+  --display: "Archivo Black", system-ui, sans-serif;
+  --stamp:   "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body:    "Barlow", system-ui, sans-serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background:#c9d6de;
+  display:flex; flex-wrap:wrap; gap:48px;
+  padding:48px; align-items:flex-start;
+  font-family:var(--body);
+}
+/* Export mode isolates one artboard so the screenshot lands on the
+   artwork, not the review gallery. */
+body.export{ padding:0; gap:0; background:none; display:block; }
+
+.canvas{
+  width:1080px; flex:0 0 1080px;
+  background:var(--white);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  color:var(--ink);
+}
+.canvas--post  { height:1350px; }
+.canvas--story { height:1920px; }
+
+/* ---------- HEADER ----------
+   Centred, against the left-aligned body below it, so it reads as a banner
+   rather than as the first line of the message. On the story it carries a
+   126px top pad to clear Instagram's profile bar. */
+.head{
+  flex:0 0 auto; text-align:center;
+  padding:22px 60px 20px;
+  border-bottom:1px solid var(--line);
+}
+.canvas--story .head{ padding:126px 60px 22px; }
+.head__label{
+  display:block;
+  font-family:var(--stamp); font-weight:700; font-size:27px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink);
+}
+.head__num{
+  display:block; margin-top:5px;
+  font-family:var(--display); font-size:54px; line-height:1;
+  letter-spacing:-.015em; color:var(--brand);
+}
+.canvas--story .head__num{ font-size:60px; }
+
+/* ---------- THE PHOTOGRAPH ----------
+   Full bleed, ungraded, nothing printed on top of it. The machine is the
+   evidence; darkening it to make room for type would trade the strongest
+   thing on the page for the second strongest. On the story it runs to the
+   very top edge — Instagram's profile bar simply overlays the photo, which
+   costs nothing, rather than covering type. */
+.shot{ position:relative; flex:0 0 auto; overflow:hidden; }
+.canvas--post  .shot{ height:630px; }
+.canvas--story .shot{ height:835px; }
+
+.shot__img{
+  position:absolute; inset:0;
+  background-image:url("assets/hero.jpg");
+  background-size:cover; background-position:center 60%;
+  filter:saturate(1.06) contrast(1.05);
+}
+/* just enough gradient at the foot of the photo to seat the chip */
+.shot__foot{
+  position:absolute; left:0; right:0; bottom:0; height:180px;
+  background:linear-gradient(180deg, rgba(11,18,22,0) 0%, rgba(11,18,22,.52) 100%);
+}
+.chip{
+  position:absolute; left:60px; bottom:38px;
+  display:inline-flex; align-items:center; gap:12px;
+  background:var(--brand); color:#fff;
+  font-family:var(--stamp); font-weight:700; font-size:24px;
+  letter-spacing:.20em; text-transform:uppercase;
+  padding:13px 22px;
+}
+.chip::before{ content:""; width:11px; height:11px; border-radius:50%; background:#fff; }
+
+/* ---------- THE WATER LINE ----------
+   Signature device. A flooded motor carries a silt stain at the height the
+   water reached — it is on the photograph above, and it becomes the rule
+   that closes it, unlabelled. Everything above the line is the problem;
+   everything below it is what we do about it. */
+.waterline{ flex:0 0 auto; height:6px; position:relative; z-index:2; }
+.waterline__rule{
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--silt) 0%, #c49a5e 20%, var(--silt) 46%,
+                                    #b89055 72%, var(--silt) 100%);
+}
+
+/* ---------- RESPONSE ---------- */
+.body{
+  flex:1 1 auto;
+  padding:40px 60px 40px;
+  display:flex; flex-direction:column;
+}
+.canvas--story .body{ padding:44px 60px 192px; }  /* clears the IG reply bar */
+
+.headline{
+  font-family:var(--display);
+  font-size:48px; line-height:1.08; letter-spacing:-.02em;
+  text-transform:uppercase; color:var(--ink);
+}
+.headline em{ font-style:normal; color:var(--brand); }
+.canvas--story .headline{ font-size:62px; }
+
+.subline{
+  margin-top:16px;
+  font-family:var(--body); font-weight:500;
+  font-size:32px; line-height:1.26; color:var(--ink-2);
+}
+.subline b{ font-weight:600; color:var(--ink); box-shadow:inset 0 -4px 0 var(--brand); }
+.canvas--story .subline{ font-size:34px; }
+
+/* ---------- SIGNATURE: THE RATING PLATE ----------
+   Every motor on a shop floor carries one of these, riveted to the housing.
+   It is the object this audience reads for a living, and the landing page
+   already asks them to send us theirs. So the offer is set as a plate: the
+   same stamped condensed caps, the same label/value grid, the same rivets. */
+.plate{
+  margin-top:22px; position:relative;
+  background:var(--tint);
+  border:1px solid #cfe2f2; border-left:8px solid var(--brand);
+  padding:16px 32px 14px;
+}
+.canvas--story .plate{ margin-top:32px; padding:22px 34px 18px; }
+
+.rivet{
+  position:absolute; width:13px; height:13px; border-radius:50%;
+  background:radial-gradient(circle at 34% 30%, #ffffff 0%, #b6c9d6 52%, #7f96a6 100%);
+}
+.rivet--tr{ top:12px; right:12px; }
+.rivet--br{ bottom:12px; right:12px; }
+
+.plate__head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  border-bottom:2px solid #bcd8ee; padding-bottom:9px; margin-bottom:0;
+}
+.plate__title{
+  font-family:var(--stamp); font-weight:700; font-size:27px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink);
+}
+.plate__ref{
+  font-family:var(--stamp); font-weight:600; font-size:19px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--brand);
+}
+.plate__row{
+  display:flex; align-items:baseline; gap:20px;
+  padding:9px 0; border-bottom:1px solid #d7e7f4;
+}
+.plate__row:last-child{ border-bottom:0; padding-bottom:2px; }
+.plate__k{
+  font-family:var(--stamp); font-weight:600; font-size:23px;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--ink-2);
+  flex:0 0 250px;
+}
+.plate__v{
+  font-family:var(--stamp); font-weight:700; font-size:33px;
+  letter-spacing:.02em; text-transform:uppercase; line-height:1.05; color:var(--ink);
+}
+/* kW is an SI symbol — never let the plate's uppercasing turn it into "KW". */
+.plate__v.plate__v--si{ text-transform:none; }
+
+/* ---------- CALL ---------- */
+.call{
+  margin-top:auto; padding-top:22px;
+  display:flex; align-items:center; gap:24px;
+}
+.call__label{
+  font-family:var(--stamp); font-weight:700; font-size:24px;
+  letter-spacing:.20em; text-transform:uppercase; color:var(--ink-2);
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  border-left:5px solid var(--brand); padding-right:12px;
+}
+.call__num{
+  font-family:var(--display); font-size:86px; line-height:.94;
+  letter-spacing:-.015em; color:var(--brand);
+}
+.canvas--story .call__num{ font-size:94px; }
+.call__sub{
+  margin-top:8px;
+  font-family:var(--stamp); font-weight:600; font-size:24px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2);
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== THE ARTWORK — EDIT HERE ===================== -->
+<template id="art">
+  <div class="head">
+    <span class="head__label">Motors on ex-stock basis</span>
+    <span class="head__num">98200 42210</span>
+  </div>
+
+  <div class="shot">
+    <div class="shot__img"></div>
+    <div class="shot__foot"></div>
+    <span class="chip">Monsoon damage</span>
+  </div>
+
+  <div class="waterline">
+    <div class="waterline__rule"></div>
+  </div>
+
+  <div class="body">
+    <h1 class="headline">Motor damaged due to <em>flood</em> or any other reasons?</h1>
+    <p class="subline">Talk to us <b>before</b> you send it for rewinding.</p>
+
+    <div class="plate">
+      <span class="rivet rivet--tr"></span><span class="rivet rivet--br"></span>
+
+      <div class="plate__head">
+        <span class="plate__title">Replacement motors</span>
+        <span class="plate__ref">Ex-stock</span>
+      </div>
+
+      <div class="plate__row"><span class="plate__k">Efficiency</span><span class="plate__v">IE2 / IE3 / IE4</span></div>
+      <div class="plate__row"><span class="plate__k">Type of motor</span><span class="plate__v">Flame proof or standard TEFC</span></div>
+    </div>
+
+    <div class="call">
+      <span class="call__label">Call</span>
+      <div>
+        <div class="call__num">98200 42210</div>
+        <div class="call__sub">Or WhatsApp us the nameplate</div>
+      </div>
+    </div>
+  </div>
+</template>
+<!-- =================================================================== -->
+
+<script>
+(function () {
+  var SIZES = [
+    { id: 'post',  cls: 'canvas canvas--post'  },   // 1080 x 1350 — Instagram feed
+    { id: 'story', cls: 'canvas canvas--story' }    // 1080 x 1920 — Story / WhatsApp status
+  ];
+  var art  = document.getElementById('art');
+  var only = location.hash ? location.hash.slice(1) : null;
+
+  if (only) document.body.classList.add('export');
+
+  SIZES.forEach(function (s) {
+    if (only && s.id !== only) return;
+    var el = document.createElement('div');
+    el.id = s.id;
+    el.className = s.cls;
+    el.appendChild(art.content.cloneNode(true));
+    document.body.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>
