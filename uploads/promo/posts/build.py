@@ -253,6 +253,9 @@ def build_one(p, root):
         ('NOTE', ('    <p class="note">' + p['note'] + '</p>') if p.get('note') else ''),
         ('HL', p['hl']), ('HL_STORY', p['hl_story']),
         ('SHOT_H', p['shot']), ('SHOT_H_STORY', p['shot_story']),
+        # WA trades 8px off the top pad for 44px more at the bottom, so the
+        # photo gives back the 36px difference.
+        ('SHOT_H_WA', p['shot_story'] - 36),
         ('KEY_W', p['key_w']), ('VAL', p['val']),
     ]:
         tpl = tpl.replace('{{%s}}' % token, str(val))
@@ -262,8 +265,9 @@ def build_one(p, root):
     open(os.path.join(d, 'ig-caption.txt'), 'w', encoding='utf-8').write(p['caption'].strip() + '\n')
 
     # render both artboards
-    for hid, size, out in [('post', '1080,1350', f"{p['slug']}-post.png"),
-                           ('story', '1080,1920', f"{p['slug']}-story.png")]:
+    for hid, size, out in [('post',  '1080,1350', f"{p['slug']}-post.png"),
+                           ('story', '1080,1920', f"{p['slug']}-story.png"),
+                           ('wa',    '1080,1920', f"{p['slug']}-whatsapp.png")]:
         subprocess.run([CHROME, '--headless', '--disable-gpu', '--no-sandbox',
                         '--hide-scrollbars', '--force-device-scale-factor=1',
                         '--virtual-time-budget=15000', f'--window-size={size}',

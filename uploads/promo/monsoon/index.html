@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>BES — Monsoon campaign artwork</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a2e; --ink-2:#5a6068; --brand:#157bba; --brand-2:#4b8db6;
+  --tint:#eaf4fb; --tint-2:#f8fafb; --line:#e4ebf1; --silt:#a97f45;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--tint-2);color:var(--ink);
+  font-family:"Barlow",system-ui,sans-serif;
+  padding:40px 20px 70px;line-height:1.5;
+}
+.wrap{max-width:1120px;margin:0 auto}
+
+.mast{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap;gap:12px}
+.mast img{height:52px;width:auto;display:block}
+.mast span{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:14px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--brand-2)}
+
+.eyebrow{
+  font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--brand);
+  display:flex;align-items:center;gap:11px;margin-bottom:12px;
+}
+.eyebrow::before{content:"";width:32px;height:4px;background:var(--brand)}
+h1{font-family:"Archivo Black",sans-serif;font-size:clamp(28px,5.6vw,46px);line-height:1.02;letter-spacing:-.02em}
+.sub{margin-top:12px;color:var(--ink-2);font-size:17px;max-width:62ch}
+.rule{height:4px;margin:26px 0 36px;
+  background:linear-gradient(90deg,var(--silt),#c49a5e 22%,var(--silt) 60%,#b89055 100%)}
+
+.grid{display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.card{background:#fff;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+.card__body{padding:20px 22px 24px}
+.card__t{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:22px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink)}
+.card__m{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:14px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);margin-top:5px}
+.dl{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.dl a{
+  flex:1 1 auto;text-align:center;text-decoration:none;
+  font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:16px;
+  letter-spacing:.13em;text-transform:uppercase;
+  padding:13px 16px;background:var(--brand);color:#fff;
+}
+.dl a.alt{background:#fff;border:1px solid #cfe2f2;color:var(--brand)}
+.dl a:hover{filter:brightness(1.08)}
+.dl a:focus-visible{outline:3px solid var(--silt);outline-offset:2px}
+
+.note{margin-top:42px;padding:24px 26px;background:var(--tint);
+  border:1px solid #cfe2f2;border-left:8px solid var(--brand);color:var(--ink-2);font-size:15px}
+.note b{color:var(--ink)}
+.note a{color:var(--brand)}
+.note ul{margin:10px 0 0 20px}
+.note li{margin-bottom:7px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast">
+    <img src="assets/logo-blue.png" alt="Bombay Engineering Syndicate">
+    <span>Internal · not for posting</span>
+  </div>
+
+  <div class="eyebrow">Monsoon damage</div>
+  <h1>Campaign artwork</h1>
+  <p class="sub">Tap a button to download. On a phone, long-press the image instead to save it straight to your camera roll.</p>
+  <div class="rule"></div>
+
+  <div class="grid">
+    <div class="card">
+      <img src="out/thumb-post.jpg" alt="Instagram feed post preview">
+      <div class="card__body">
+        <div class="card__t">Instagram feed</div>
+        <div class="card__m">1080 × 1350 · 4:5</div>
+        <div class="dl">
+          <a href="out/monsoon-post.jpg" download>JPG</a>
+          <a class="alt" href="out/monsoon-post.png" download>PNG</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="out/thumb-story.jpg" alt="Story and WhatsApp status preview">
+      <div class="card__body">
+        <div class="card__t">Story · WhatsApp status</div>
+        <div class="card__m">1080 × 1920 · 9:16</div>
+        <div class="dl">
+          <a href="out/monsoon-story.jpg" download>JPG</a>
+          <a class="alt" href="out/monsoon-story.png" download>PNG</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Posting copy</b> — captions, the WhatsApp forward text and hashtags are in
+    <a href="caption.md">caption.md</a>.
+    <ul>
+      <li>Post the <b>JPG</b> — Instagram and WhatsApp recompress anyway, and it uploads faster. The PNG is there if you need it lossless for print.</li>
+      <li>The story leaves 192px clear at the bottom so Instagram's reply bar will not cover the phone number. The photograph runs to the top edge, so the profile bar just overlays the image.</li>
+      <li>To change the wording, edit <a href="template.html">template.html</a> and re-run <code>render.sh</code>.</li>
+    </ul>
+  </div>
+  <div data-feedback="monsoon"></div>
+  <script src="../feedback.js"></script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>BES — Introduction post (draft)</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a2e; --ink-2:#5a6068; --brand:#157bba; --brand-2:#4b8db6;
+  --tint:#eaf4fb; --tint-2:#f8fafb; --line:#e4ebf1; --warn:#a9761f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--tint-2);color:var(--ink);font-family:"Barlow",system-ui,sans-serif;
+  padding:36px 20px 70px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto}
+
+.mast{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;
+  border-bottom:1px solid var(--line);margin-bottom:26px;flex-wrap:wrap;gap:12px}
+.mast img{height:48px;width:auto;display:block}
+
+.flag{display:inline-flex;align-items:center;gap:10px;background:#fdf3e0;border:1px solid #f0dcb4;
+  color:var(--warn);font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;
+  letter-spacing:.18em;text-transform:uppercase;padding:10px 18px;margin-bottom:16px}
+.flag::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--warn)}
+
+h1{font-family:"Archivo Black",sans-serif;font-size:clamp(28px,5.4vw,44px);line-height:1.03;letter-spacing:-.02em}
+.sub{margin-top:11px;color:var(--ink-2);font-size:17px;max-width:64ch}
+.rule{height:4px;margin:24px 0 34px;background:var(--brand)}
+
+.cols{display:grid;gap:34px;grid-template-columns:minmax(280px,400px) 1fr;align-items:start}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+
+.shots{display:grid;gap:20px}
+.card{background:#fff;border:1px solid var(--line);overflow:hidden}
+.card img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+.card__b{padding:14px 18px 18px}
+.card__t{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;
+  letter-spacing:.13em;text-transform:uppercase}
+.card__m{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:13px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);margin-top:4px}
+.dl{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
+.dl a{flex:1 1 auto;text-align:center;text-decoration:none;font-family:"Barlow Condensed",sans-serif;
+  font-weight:700;font-size:15px;letter-spacing:.13em;text-transform:uppercase;
+  padding:11px 14px;background:var(--brand);color:#fff}
+.dl a.alt{background:#fff;border:1px solid #cfe2f2;color:var(--brand)}
+.dl a:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+
+.pane{background:#fff;border:1px solid var(--line)}
+.pane__h{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:16px 22px;border-bottom:1px solid var(--line);background:var(--tint)}
+.pane__t{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;
+  letter-spacing:.14em;text-transform:uppercase}
+button{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;letter-spacing:.12em;
+  text-transform:uppercase;padding:10px 18px;background:var(--brand);color:#fff;border:0;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+pre{margin:0;padding:22px;white-space:pre-wrap;word-wrap:break-word;
+  font-family:"Barlow",system-ui,sans-serif;font-size:16px;line-height:1.62;color:var(--ink)}
+.fold{display:block;margin:0 22px;padding:7px 0;border-top:1px dashed #cbd8e2;
+  font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-2)}
+
+.note{margin-top:34px;padding:22px 26px;background:var(--tint);border:1px solid #cfe2f2;
+  border-left:8px solid var(--brand);color:var(--ink-2);font-size:15px}
+.note b{color:var(--ink)}
+.note ul{margin:9px 0 0 20px}
+.note li{margin-bottom:6px}
+.note a{color:var(--brand)}
+code{background:#fff;border:1px solid #cfe2f2;padding:1px 6px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mast">
+    <img src="assets/logo-blue.png" alt="Bombay Engineering Syndicate">
+    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;
+      letter-spacing:.2em;text-transform:uppercase;color:var(--brand-2)">Internal review</span>
+  </div>
+
+  <div class="flag">Draft — nothing has been published</div>
+  <h1>Introduction post</h1>
+  <p class="sub">First post for @besyndicate. Review the artwork and the caption, then tell me to publish — the account is connected and ready, but nothing goes out until you say so.</p>
+  <div class="rule"></div>
+
+  <div class="cols">
+    <div class="shots">
+      <div class="card">
+        <img src="out/thumb-post.jpg" alt="Instagram feed post">
+        <div class="card__b">
+          <div class="card__t">Feed post</div>
+          <div class="card__m">1080 × 1350 · 4:5</div>
+          <div class="dl">
+            <a href="out/intro-post.jpg" download>Download</a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="out/thumb-story.jpg" alt="Story">
+        <div class="card__b">
+          <div class="card__t">Story</div>
+          <div class="card__m">1080 × 1920 · 9:16</div>
+          <div class="dl">
+            <a href="out/intro-story.jpg" download>Download</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane__h">
+        <span class="pane__t">Caption</span>
+        <button id="copy" type="button">Copy caption</button>
+      </div>
+      <pre id="cap">Bombay Engineering Syndicate. Supplying Indian industry since 1957.</pre>
+      <span class="fold">↑ everything above shows before Instagram's “more” link</span>
+      <pre id="cap2">Sixty-nine years of putting the right motor on the right foundation — for factories, OEMs, core sector clients, contractors, builders and consultants across India.
+
+Motors from 0.37 to 630 kW · IE2, IE3 and IE4 · Flame Proof and Standard TEFC · Genuine Spares
+Pumps for Industry, Fire Fighting, De-Watering, Buildings and Agriculture · Genuine Spares
+
+Held in stock at both branches, sized by people who know the application, delivered without the wait.
+
+📍 Mumbai — Fort, Kala Ghoda
+📍 Ahmedabad — Satellite
+
+We&#x27;ll use this page for what we stock, what nearly seven decades on the shop floor has taught us, and the occasional thing worth knowing before you buy.
+
+Tell us what you&#x27;re running and we&#x27;ll tell you what fits.
+📞 98200 42210 · bombayengg.net
+
+#IndustrialMotors #ElectricMotor #WaterPumps #IE3Motors #FlameProofMotor #HazardousAreaMotors #Dewatering #FireFightingPumps #ETP #STP #SewageTreatment #WastewaterPumping #Mumbai #Ahmedabad #FactoryMaintenance #PlantEngineering #ManufacturingIndia #IndustrialSupplies #MotorsAndPumps</pre>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Before you approve, three things worth a look</b>
+    <ul>
+      <li><b>No brand names.</b> I kept the monsoon campaign's rule here. If you want the dealerships named on your introduction post, tell me — but CG Power (motors) and Crompton (pumps) are separate companies and must never share a phrase.</li>
+      <li><b>“Close to seventy years.”</b> 1957 to 2026 is 69 years, so this is accurate as written.</li>
+      <li><b>The line about what this page is for</b> sets the expectation that it is not purely an ad feed. Worth keeping only if you actually intend to post knowledge-centre material — which is what will build a following.</li>
+    </ul>
+    Full notes in <a href="caption.md">caption.md</a>. The post is the photograph alone — no type on the image, since the words carry in the caption. Image direction: <b>A — hero motor</b>.
+  </div>
+</div>
+
+<script>
+document.getElementById('copy').addEventListener('click', function () {
+  var text = document.getElementById('cap').textContent + '\n\n' +
+             document.getElementById('cap2').textContent;
+  navigator.clipboard.writeText(text).then(function () {
+    var b = document.getElementById('copy');
+    b.textContent = 'Copied';
+    setTimeout(function () { b.textContent = 'Copy caption'; }, 1600);
+  });
+});
+</script>
+
+<div class="wrap"><div data-feedback="intro"></div></div>
+<script src="../feedback.js"></script>
+</body>
+</html>

@@ -36,6 +36,11 @@ for p in POSTS:
           <a href="{p['slug']}/out/{p['slug']}-story.jpg" download>JPG</a>
           <a class="pdf" href="{p['slug']}/out/{p['slug']}-story.pdf" download>PDF for Canva</a></div>
       </div>
+      <div class="card">
+        <img src="{p['slug']}/out/thumb-wa.jpg" alt="WhatsApp Status">
+        <div class="cb"><div class="ct">WhatsApp Status &middot; 1080&times;1920</div>
+          <a href="{p['slug']}/out/{p['slug']}-whatsapp.jpg" download>JPG</a></div>
+      </div>
     </div>
     <div class="pane">
       <div class="ph"><span class="pt">Caption</span>
@@ -45,6 +50,7 @@ for p in POSTS:
       <pre id="r-{p['slug']}">{html.escape(rest)}</pre>
     </div>
   </div>
+  <div data-feedback="{p['slug']}"></div>
 </section>""")
 
 nav = ' '.join(f'<a href="#{p["slug"]}">{html.escape(p["title"])}</a>' for p in POSTS)
@@ -168,6 +174,7 @@ CG Power on motors, Crompton on pumps — and the header line switches with it.<
 </div>
 
 </div>
+<script src="../feedback.js"></script>
 <script>
 document.querySelectorAll('button[data-slug]').forEach(function(b){{
   b.addEventListener('click',function(){{

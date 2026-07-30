@@ -118,6 +118,18 @@ body.export{padding:0;gap:0;background:none;display:block}
 .canvas--story .call__num{font-size:86px}
 .call__sub{margin-top:7px;font-family:var(--stamp);font-weight:600;font-size:22px;
   letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+
+/* ── WhatsApp Status ────────────────────────────────────────────────────────
+   Same 1080x1920 as an Instagram Story, so the WA artboard carries every
+   Story rule and only re-cuts the safe zones: WhatsApp's sender bar is
+   shallower than Instagram's profile bar, its reply field deeper.
+
+   These MUST stay last. `.canvas--story .head` has identical specificity and
+   uses the `padding` shorthand, so if these sit earlier the shorthand simply
+   resets padding-top and the overrides silently do nothing. */
+.canvas--wa .head{padding-top:118px}
+.canvas--wa .body{padding-bottom:236px}
+.canvas--wa .shot{height:{{SHOT_H_WA}}px}
 </style>
 </head>
 <body>
@@ -166,7 +178,11 @@ body.export{padding:0;gap:0;background:none;display:block}
 
 <script>
 (function () {
-  var SIZES = [{id:'post',cls:'canvas canvas--post'},{id:'story',cls:'canvas canvas--story'}];
+  var SIZES = [
+    {id:'post',  cls:'canvas canvas--post'},
+    {id:'story', cls:'canvas canvas--story'},
+    {id:'wa',    cls:'canvas canvas--story canvas--wa'}   // WhatsApp Status
+  ];
   var art = document.getElementById('art');
   var only = location.hash ? location.hash.slice(1) : null;
   if (only) document.body.classList.add('export');
@@ -176,7 +192,7 @@ body.export{padding:0;gap:0;background:none;display:block}
   // Printing (rather than screenshotting) keeps the type as real text, which is
   // what makes the PDF land in Canva as editable text boxes instead of a picture.
   if (only) {
-    var dims = { post: [1080, 1350], story: [1080, 1920] }[only];
+    var dims = { post: [1080, 1350], story: [1080, 1920], wa: [1080, 1920] }[only];
     if (dims) {
       var st = document.createElement('style');
       st.textContent = '@page{size:' + dims[0] + 'px ' + dims[1] + 'px;margin:0}' +

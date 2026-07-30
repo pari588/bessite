@@ -48,6 +48,11 @@ function firstLine(string $s): string
     return mb_strtolower(preg_replace('/\s+/', ' ', $s));
 }
 
+/** Review state written by core/promo-feedback.php */
+$review = is_file('/home/bombayengg/promo-feedback.json')
+        ? (json_decode(file_get_contents('/home/bombayengg/promo-feedback.json'), true) ?: [])
+        : [];
+
 $live = igMedia();
 $published = [];
 foreach ($live as $m) {
@@ -57,7 +62,7 @@ echo '  instagram: ' . count($live) . " post(s) live\n";
 
 // ── build the cards ─────────────────────────────────────────────────────────
 $cards = [];
-$nReady = $nLive = 0;
+$nReady = $nLive = $nApproved = 0;
 
 foreach ($ITEMS as [$slug, $name, $desc, $postFile]) {
     $dir = ROOT . '/' . $slug;
@@ -76,8 +81,23 @@ foreach ($ITEMS as [$slug, $name, $desc, $postFile]) {
         if (strpos(basename($g), 'thumb') === false) { $story = $slug . '/out/' . basename($g); break; }
     }
 
+    $key = str_starts_with($slug, 'posts/') ? substr($slug, 6) : $slug;
+    $rv  = $review[$key] ?? null;
+    $rst = $rv['status'] ?? 'new';
+
     if ($hit) { $nLive++;  $badge = 'live';  $bt = 'Published ' . date('j M', strtotime($hit['timestamp'])); }
     else      { $nReady++; $badge = 'ready'; $bt = 'Ready — not published'; }
+    if ($rst === 'approved') $nApproved++;
+
+    $rbadge = '';
+    if ($rst === 'approved') {
+        $rbadge = '<span class="rv rv--ok">&#10003; Approved by you</span>';
+    } elseif ($rst === 'changes') {
+        $note = trim((string)($rv['note'] ?? ''));
+        $rbadge = '<span class="rv rv--chg">Changes requested</span>'
+                . ($note !== '' ? '<p class="rvn">' . htmlspecialchars(mb_substr($note, 0, 160))
+                                . (mb_strlen($note) > 160 ? '&hellip;' : '') . '</p>' : '');
+    }
 
     /**
      * The five batch posts live under posts/ and share ONE review page with
@@ -85,12 +105,12 @@ foreach ($ITEMS as [$slug, $name, $desc, $postFile]) {
      * returns 403 (directory listing is off, and should stay off). Link to the
      * anchor instead.
      */
-    $review = str_starts_with($slug, 'posts/')
-            ? 'posts/#' . substr($slug, 6)
-            : $slug . '/';
+    $reviewUrl = str_starts_with($slug, 'posts/')
+               ? 'posts/#' . substr($slug, 6)
+               : $slug . '/';
 
     $links = [];
-    $links[] = '<a class="b" href="' . $review . '">Review page</a>';
+    $links[] = '<a class="b" href="' . $reviewUrl . '">Review page</a>';
     if ($jpg)   $links[] = '<a href="' . $jpg . '" download>Feed JPG</a>';
     if ($story) $links[] = '<a href="' . $story . '" download>Story</a>';
     if ($pdf)   $links[] = '<a href="' . $pdf . '" download>PDF</a>';
@@ -105,6 +125,7 @@ foreach ($ITEMS as [$slug, $name, $desc, $postFile]) {
         . '<h3>' . htmlspecialchars($name) . '</h3>'
         . '<p class="d">' . htmlspecialchars($desc) . '</p>'
         . ($head ? '<p class="q">&ldquo;' . $head . '&rdquo;</p>' : '')
+        . $rbadge
         . '<div class="links">' . implode('', $links) . '</div>'
         . '</div></article>';
 }
@@ -153,6 +174,10 @@ h2{font-family:"Archivo Black",sans-serif;font-size:21px;margin:34px 0 14px}
 h3{font-family:"Archivo Black",sans-serif;font-size:17px;letter-spacing:-.01em}
 .d{margin-top:5px;font-size:14px;color:var(--ink-2)}
 .q{margin-top:9px;font-size:14px;font-style:italic;color:var(--ink)}
+.rv{display:inline-block;margin-top:9px;font-family:"Barlow Condensed",sans-serif;font-weight:700;
+ font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;color:#fff}
+.rv--ok{background:var(--live)} .rv--chg{background:var(--warn)}
+.rvn{margin-top:7px;font-size:13px;color:var(--ink-2);font-style:italic}
 .links{margin-top:auto;padding-top:13px;display:flex;flex-wrap:wrap;gap:6px}
 .links a{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.11em;
  text-transform:uppercase;text-decoration:none;padding:7px 11px;border:1px solid #cfe2f2;color:var(--brand)}
@@ -182,6 +207,7 @@ remembered to update.</p>
 <div class="stats">
   <div class="stat"><b>{$nLive}</b><span>published</span></div>
   <div class="stat"><b>{$nReady}</b><span>ready to post</span></div>
+  <div class="stat"><b>{$nApproved}</b><span>approved by you</span></div>
   <div class="stat"><b>10</b><span>designs in Canva</span></div>
 </div>
 <div class="rule"></div>
