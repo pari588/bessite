@@ -61,11 +61,32 @@ function updateAttendance()
 
     $attendanceID = intval($_POST["attendanceID"]);
 
+    // Get existing record for date
+    $DB->vals = array($attendanceID);
+    $DB->types = "i";
+    $DB->sql = "SELECT attendanceDate FROM " . $DB->pre . "attendance WHERE attendanceID=?";
+    $existing = $DB->dbRow();
+    $attendanceDate = $existing['attendanceDate'] ?? date('Y-m-d');
+
     // Sanitize inputs
-    if (isset($_POST["checkIn"])) $_POST["checkIn"] = cleanTitle($_POST["checkIn"]);
-    if (isset($_POST["checkOut"])) $_POST["checkOut"] = cleanTitle($_POST["checkOut"]);
     if (isset($_POST["attendanceStatus"])) $_POST["attendanceStatus"] = cleanTitle($_POST["attendanceStatus"]);
     if (isset($_POST["remarks"])) $_POST["remarks"] = cleanTitle($_POST["remarks"]);
+
+    // Handle time fields - combine date with time (HH:MM format)
+    if (!empty($_POST["checkIn"])) {
+        $checkInTime = cleanTitle($_POST["checkIn"]);
+        // If it's just HH:MM, combine with date
+        if (preg_match('/^\d{1,2}:\d{2}$/', $checkInTime)) {
+            $_POST["checkIn"] = $attendanceDate . ' ' . $checkInTime . ':00';
+        }
+    }
+    if (!empty($_POST["checkOut"])) {
+        $checkOutTime = cleanTitle($_POST["checkOut"]);
+        // If it's just HH:MM, combine with date
+        if (preg_match('/^\d{1,2}:\d{2}$/', $checkOutTime)) {
+            $_POST["checkOut"] = $attendanceDate . ' ' . $checkOutTime . ':00';
+        }
+    }
 
     // Calculate working hours if both check-in and check-out exist
     if (!empty($_POST["checkIn"]) && !empty($_POST["checkOut"])) {
@@ -93,26 +114,59 @@ function calculateLateEarly(&$data)
 {
     global $DB;
 
-    // Get HRMS settings
-    $DB->vals = array(1);
-    $DB->types = "i";
-    $DB->sql = "SELECT settingKey, settingValue FROM " . $DB->pre . "hrms_settings WHERE status=?";
-    $settings = $DB->dbRows();
+    // Default values
+    $workStart = '09:00';
+    $workEnd = '18:00';
+    $lateGrace = 15;
+    $earlyGrace = 15;
 
-    $settingsArr = array();
-    foreach ($settings as $s) {
-        $settingsArr[$s['settingKey']] = $s['settingValue'];
+    // Try to get user-specific settings first
+    if (!empty($data['userID'])) {
+        $DB->vals = array(intval($data['userID']));
+        $DB->types = "i";
+        // saturdayStartTime/saturdayEndTime included 2026-07-30 — this module had the
+        // same omission as the CAMS sync, so a manually added Saturday record was
+        // scored against weekday hours (staff leaving on time at 16:00 flagged ~2h early).
+        $DB->sql = "SELECT workStartTime, workEndTime, lateGraceMinutes, saturdayStartTime, saturdayEndTime FROM " . $DB->pre . "x_admin_user WHERE userID=?";
+        $userSettings = $DB->dbRow();
+
+        if ($userSettings) {
+            $isSaturday = !empty($data['attendanceDate']) && date('w', strtotime($data['attendanceDate'])) == 6;
+            if ($isSaturday && !empty($userSettings['saturdayStartTime'])) {
+                $workStart = $userSettings['saturdayStartTime'];
+                $workEnd = $userSettings['saturdayEndTime'] ?: '16:00:00';
+            } else {
+                if (!empty($userSettings['workStartTime'])) $workStart = $userSettings['workStartTime'];
+                if (!empty($userSettings['workEndTime'])) $workEnd = $userSettings['workEndTime'];
+            }
+            if (!empty($userSettings['lateGraceMinutes'])) $lateGrace = intval($userSettings['lateGraceMinutes']);
+        }
     }
 
-    $workStart = $settingsArr['work_start_time'] ?? '09:00';
-    $workEnd = $settingsArr['work_end_time'] ?? '18:00';
-    $lateGrace = intval($settingsArr['late_grace_minutes'] ?? 15);
-    $earlyGrace = intval($settingsArr['early_checkout_grace_minutes'] ?? 15);
+    // Fall back to global HRMS settings if not set per user
+    if ($workStart == '09:00' || $workEnd == '18:00') {
+        $DB->vals = array(1);
+        $DB->types = "i";
+        $DB->sql = "SELECT settingKey, settingValue FROM " . $DB->pre . "hrms_settings WHERE status=?";
+        $settings = $DB->dbRows();
+
+        $settingsArr = array();
+        foreach ($settings as $s) {
+            $settingsArr[$s['settingKey']] = $s['settingValue'];
+        }
+
+        if ($workStart == '09:00' && !empty($settingsArr['work_start_time'])) $workStart = $settingsArr['work_start_time'];
+        if ($workEnd == '18:00' && !empty($settingsArr['work_end_time'])) $workEnd = $settingsArr['work_end_time'];
+        if ($lateGrace == 15 && isset($settingsArr['late_grace_minutes'])) $lateGrace = intval($settingsArr['late_grace_minutes']);
+        $earlyGrace = intval($settingsArr['early_checkout_grace_minutes'] ?? 15);
+    }
 
     $data['isLate'] = 0;
     $data['isEarlyCheckout'] = 0;
     $data['lateMinutes'] = 0;
     $data['earlyMinutes'] = 0;
+    $data['scheduledIn'] = $workStart;
+    $data['scheduledOut'] = $workEnd;
 
     // Check late arrival
     if (!empty($data['checkIn'])) {
