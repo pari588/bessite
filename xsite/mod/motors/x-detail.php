@@ -38,7 +38,7 @@ $breadcrumbs[] = array(
 // Add product page
 $breadcrumbs[] = array(
     'name' => $TPL->data['motorTitle'],
-    'url' => $_SERVER['REQUEST_URI'] ?? ''
+    'url' => SITEURL . ($_SERVER['REQUEST_URI'] ?? '')
 );
 
 if (function_exists('echoBreadcrumbSchema')) {
@@ -84,7 +84,7 @@ if (function_exists('echoBreadcrumbSchema')) {
         <div class="row">
             <div class="col-lg-6 col-xl-6">
                 <div class="product-details__img" style="height: auto; margin-top: 0;">
-                    <img src="<?php echo UPLOADURL . "/motor/530_530_crop_100/" . $TPL->data['motorImage']; ?>" alt="<?php echo htmlspecialchars($TPL->data['motorTitle'], ENT_QUOTES, 'UTF-8'); ?> - Industrial motor specifications and performance details" style="width: 100%; height: auto; display: block;">
+                    <img src="<?php echo UPLOADURL . "/motor/530_530_crop_100/" . $TPL->data['motorImage']; ?>" alt="<?php echo htmlspecialchars($TPL->data['motorTitle'], ENT_QUOTES, 'UTF-8'); ?> - Industrial motor specifications and performance details" width="530" height="530" fetchpriority="high" style="width: 100%; height: auto; display: block;">
                 </div>
             </div>
             <div class="col-lg-6 col-xl-6" style="display: flex; flex-direction: column; justify-content: flex-start;">
@@ -109,10 +109,10 @@ if (function_exists('echoBreadcrumbSchema')) {
 <?php if (is_array($motorDetailArr) && count($motorDetailArr) > 0) { ?>
     <section class="Specifications">
         <div class="testimonial-two__shape-1 float-bob-x">
-            <img src="<?php echo SITEURL; ?>/images/pump-2.png" alt="">
+            <img src="<?php echo SITEURL; ?>/images/pump-2.png" alt="" loading="lazy" width="150" height="150">
         </div>
         <div class="testimonial-two__shape-2 float-bob-y">
-            <img src="<?php echo SITEURL; ?>/images/pump-1.png" alt="">
+            <img src="<?php echo SITEURL; ?>/images/pump-1.png" alt="" loading="lazy" width="150" height="150">
         </div>
         <div class="container">
             <div class="spec-tbl">

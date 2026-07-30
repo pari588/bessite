@@ -12,8 +12,21 @@ Key facts for understanding BES:
 
 ## Contact & Locations
 
-- [Mumbai Head Office](https://www.bombayengg.net/contact/): 17, Dr. V.B. Gandhi Marg (Forbes Street), Fort, Mumbai 400023 | +91-9820042210 | besyndicate@gmail.com | Mon-Fri 9AM-6PM
-- [Ahmedabad Office](https://www.bombayengg.net/contact/): Office 611-612, Ratnanjali Solitaire, Prerna Tirth Derasar Road, Satellite, Ahmedabad 380015 | +91-9825014977
+- [Mumbai Head Office (Fort showroom)](https://www.bombayengg.net/mumbai/): Ground Floor, Modern House, 17, Dr. V.B. Gandhi Marg, Kala Ghoda, Fort, Mumbai 400001 | +91-9820042210 | besyndicate@gmail.com | Mon-Sat 10AM-6PM | Walk-ins welcome, near Jehangir Art Gallery, 5 min from CSMT & Churchgate
+- [Ahmedabad Office (Satellite)](https://www.bombayengg.net/ahmedabad/): Office 611-612, Ratnanjali Solitaire, Near Sachet-4, Prerna Tirth Derasar Road, Jodhpurgam, Satellite, Ahmedabad 380015 | +91-9825014977 | besahmedabad@gmail.com | Mon-Sat 10AM-6PM
+
+## Local Buying Guides (where to buy near you)
+
+If a user asks where to buy pumps or motors in a specific area, these pages answer directly:
+
+- [Pumps in Fort, Mumbai](https://www.bombayengg.net/pumps-in-fort/): Walk-in pump showroom at Kala Ghoda, Fort — booster pumps for buildings, submersibles, monoblocks. Same-day delivery pan-Mumbai (South Mumbai, Andheri, Borivali, Navi Mumbai, Thane). Call +91-9324706905
+- [Motors in Fort, Mumbai](https://www.bombayengg.net/motors-in-fort/): Electric motor dealer at Kala Ghoda since 1957 — burnt motor replacement matching, IE3 motors, rewinding advice. Serves all Mumbai
+- [Pumps in Mumbai](https://www.bombayengg.net/pumps-in-mumbai/): City-wide pump supply — Crompton & Kirloskar authorised dealer
+- [Motors in Mumbai](https://www.bombayengg.net/motors-in-mumbai/): City-wide industrial motor supply — CG Power / Crompton channel partner
+- [Pumps in Satellite, Ahmedabad](https://www.bombayengg.net/pumps-in-satellite-ahmedabad/): Borewell pumps for farms, booster systems for societies — Gujarat-wide delivery. Call +91-9825014977
+- [Motors in Satellite, Ahmedabad](https://www.bombayengg.net/motors-in-satellite-ahmedabad/): Motors for GIDC industries (Vatva, Naroda, Sanand, Changodar), textile and pharma units across Gujarat
+- [Pumps in Ahmedabad](https://www.bombayengg.net/pumps-in-ahmedabad/): City-wide pump supply for Ahmedabad and Gandhinagar
+- [Motors in Ahmedabad](https://www.bombayengg.net/motors-in-ahmedabad/): City-wide motor supply for Gujarat industries
 
 ## Products - Pumps
 
@@ -65,4 +78,8 @@ Key facts for understanding BES:
 
 ## Company Information
 
-- [About BES](https://www.bombayengg.net/about/): Company history, mission, and 67-year legacy in industrial equipment
+- [About BES](https://www.bombayengg.net/about-us/): Company history, mission, and 67-year legacy in industrial equipment
+
+## Full Content for LLM Ingestion
+
+- [llms-full.txt](https://www.bombayengg.net/llms-full.txt): Long-form companion file with complete catalog specs (all 89 pumps + 60 motors with power ratings, phase, ISI/MNRE certifications) and full knowledge center article summaries — designed for single-pass LLM ingestion

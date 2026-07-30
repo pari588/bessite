@@ -1246,6 +1246,17 @@ i.chk em:after {
     color: var(--mellis-gray);
 }
 
+/* Knowledge Center article sub-headings (blue) — add breathing room:
+   clear gap above the heading and a line-space below before the content. */
+.blog-details p.kc-subhead {
+    margin-top: 34px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.blog-details p.kc-subhead span {
+    font-size: 19px;
+}
+
 .footer-widget__links-list li:nth-child(1)::before,
 .contact-links-list li:nth-child(1):before {
     content: "\f3c5";
@@ -1269,6 +1280,46 @@ i.chk em:after {
 .footer-widget__links-list li:nth-last-child(1)::before,
 .contact-links-list li:nth-last-child(1):before {
     content: "\f3cd";
+}
+
+/* Footer navigation links — separate list so they don't inherit the
+   position-based contact icons (location/phone/email/mobile). */
+.footer-nav-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    text-align: left;
+}
+/* The Tools column reuses the social-box (which is text-align:right for
+   the old social icons) — force its heading + links to left-align. */
+.footer-widget__social-box .footer-widget__title-box {
+    text-align: left;
+}
+.footer-nav-list li {
+    position: relative;
+    margin-bottom: 8px;
+    padding-left: 18px;
+    color: var(--mellis-gray);
+    line-height: 1.5;
+}
+.footer-nav-list li::before {
+    content: "\f105";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--mellis-base);
+    line-height: 1.5;
+}
+.footer-nav-list li a {
+    color: var(--mellis-gray);
+    -webkit-transition: all 300ms ease;
+    transition: all 300ms ease;
+}
+.footer-nav-list li a:hover {
+    color: var(--mellis-base);
 }
 
 .contact-links-list li a {
@@ -2462,7 +2513,7 @@ div.select-box:after {
     height: auto;
     display: block;
 }
-.blog-details > .container{padding-top: 140px;}
+.blog-details > .container{padding-top: 140px; padding-bottom: 90px;}
 
 
 @media screen and (max-height: 800px) {
@@ -2522,5 +2573,114 @@ div.select-box:after {
     .webapp div.mxdialog div.body {
         padding: 20px 15px;
     }
-    .blog-details > .container{padding-top: 15px;}
+    .blog-details > .container{padding-top: 15px; padding-bottom: 50px;}
+}
+/* ── Knowledge Center article tables ─────────────────────────────────────────
+   Articles store raw <table border="1"> markup from the editor. These rules
+   give every KC table a consistent, on-brand look: content-sized + centred
+   (so a 2-column chart no longer stretches the full column width), brand
+   header, zebra rows, and horizontal scroll on small screens.
+   Inline attrs (border="1", width:100%, bgcolor) are overridden deliberately. */
+.kc-table-wrap{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:30px 0}
+.blog-details table{
+    width:auto !important;
+    min-width:min(460px,100%);
+    max-width:100%;
+    margin:0 auto 0 0 !important;   /* left-aligned within the article column */
+    border-collapse:separate !important;
+    border-spacing:0;
+    border:1px solid #e3eaf0 !important;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 3px 16px rgba(21,123,186,.08);
+    background:#fff;
+    font-size:15px;
+    line-height:1.6;
+}
+.blog-details table thead,
+.blog-details table thead tr{background:#157bba !important}
+.blog-details table thead th{
+    background:#157bba !important;
+    color:#fff !important;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.055em;
+    text-transform:uppercase;
+    text-align:left;
+    padding:14px 24px !important;
+    border:0 !important;
+    white-space:nowrap;
+}
+.blog-details table tbody td{
+    padding:12px 24px !important;
+    border:0 !important;
+    border-top:1px solid #eef2f6 !important;
+    color:#4a5561;
+    vertical-align:top;
+}
+.blog-details table tbody tr:first-child td{border-top:0 !important}
+.blog-details table tbody tr:nth-child(even){background:#f8fbfd}
+.blog-details table tbody tr:hover{background:#eaf4fb}
+.blog-details table tbody td:first-child{font-weight:600;color:#1d2b39;white-space:nowrap}
+@media (max-width:767px){
+    .blog-details table{font-size:14px;min-width:0}
+    .blog-details table thead th{padding:11px 15px !important;font-size:12px}
+    .blog-details table tbody td{padding:10px 15px !important}
+}
+
+/* ── Pagination on small screens ─────────────────────────────────────────────
+   .mxpaging is a nowrap flex row built for desktop; on phones the record count
+   ("1 – 6 of 63") and 10+ page links were crammed onto one line and wrapped
+   unevenly. Below 768px: put the count on its own centred line, let the page
+   links wrap as a centred group, and enlarge tap targets. */
+@media (max-width:767px){
+    .mxpaging{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:6px 3px;
+        padding:6px 0;
+    }
+    .mxpaging > div{            /* the "1 – 6 of 63" record count */
+        flex:0 0 100%;
+        max-width:100%;
+        text-align:center;
+        padding:0 0 2px;
+        font-size:13px;
+        color:#7a8288;
+    }
+    .mxpaging a{
+        min-width:34px;
+        padding:8px 10px;
+        margin:0;
+        line-height:18px;
+        text-align:center;
+        font-size:14px;
+    }
+    .product__showing-result{padding-bottom:6px}
+}
+
+/* ── Knowledge Center article typography on tablet/mobile ────────────────────
+   device.css shrinks EVERY <p> site-wide (14px ≤1023px, 13px ≤768px) via a
+   bare `p` in a selector list, but never touches <li> — so article body text
+   rendered at 13px while bullet lists stayed 16px, in the same article.
+   Desktop is already consistent at 16px; this makes small screens match. */
+@media screen and (max-width:1023px){
+    .blog-details p,
+    .blog-details li,
+    .blog-details td{
+        font-size:16px;
+        line-height:1.75;
+    }
+    /* editor-authored byline is hard-coded to 10px inline — lift to a legible size */
+    .blog-details p[style*="italic"] span[style*="font-size"]{
+        font-size:13px !important;
+    }
+}
+/* Keep the embedded HP⇄kW calculator's own typography — it lives inside
+   .blog-details, so the article-body rule above would otherwise flatten it. */
+@media screen and (max-width:1023px){
+    .blog-details .hpkw-calc__sub{font-size:13px;line-height:1.5}
+    .blog-details .hpkw-calc__result{font-size:17px;line-height:1.5}
+    .blog-details .hpkw-calc__note{font-size:12px;line-height:1.6}
+}
 }

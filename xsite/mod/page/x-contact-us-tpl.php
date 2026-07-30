@@ -18,6 +18,47 @@ $MXFRM = new mxForm();
 $MXFRM->xAction = "saveContactUsInfo";
 
 ?>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Bombay Engineering Syndicate",
+    "url": "<?php echo SITEURL; ?>/contact-us/",
+    "description": "Get in touch with Bombay Engineering Syndicate — industrial motors and submersible pumps supplier since 1957. Mumbai head office and Ahmedabad branch. Email, phone, and address details for sales and service.",
+    "inLanguage": "en-IN",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "Bombay Engineering Syndicate",
+        "url": "<?php echo SITEURL; ?>/"
+    },
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Bombay Engineering Syndicate",
+        "@id": "<?php echo SITEURL; ?>/#organization",
+        "contactPoint": [
+            {
+                "@type": "ContactPoint",
+                "telephone": "+919324706905",
+                "contactType": "Customer Service",
+                "areaServed": ["Maharashtra", "Mumbai"],
+                "availableLanguage": ["en", "hi"]
+            },
+            {
+                "@type": "ContactPoint",
+                "telephone": "+919825014977",
+                "contactType": "Customer Service",
+                "areaServed": ["Gujarat", "Ahmedabad"],
+                "availableLanguage": ["en", "hi", "gu"]
+            }
+        ]
+    }
+}
+</script>
+<style>
+.page-header .page-header__inner h1 {
+    color: #ffffff !important;
+}
+</style>
 <!--Page Header Start-->
 <section class="page-header">
     <div class="page-header__bg" style="background-image: url(<?php echo SITEURL . '/images/page-header-bg.jpg' ?>);">
@@ -29,7 +70,7 @@ $MXFRM->xAction = "saveContactUsInfo";
                 <li><span>/</span></li>
                 <li><?php echo $TPL->data["pageTitle"] ?></li>
             </ul>
-            <h2><?php echo $TPL->data["pageTitle"] ?></h2>
+            <h1><?php echo $TPL->data["pageTitle"] ?></h1>
         </div>
     </div>
 </section>
@@ -40,6 +81,51 @@ $MXFRM->xAction = "saveContactUsInfo";
     <?php echo $TPL->data["pageContent"] ?>
 </section>
 <!--Spa Center Three End-->
+
+<!--Google Maps - Office Locations Start-->
+<section class="contact-maps">
+    <div class="container">
+        <div class="section-title text-center" style="margin-bottom: 30px;">
+            <h2 class="section-title__title">Our Office Locations</h2>
+            <p class="section-title__text">Visit us at our Mumbai or Ahmedabad office</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="map-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> Mumbai Office</h3>
+                    <p>2nd Floor, Modern House, Dr. V.B. Gandhi Marg, Kala Ghoda, Fort, Mumbai, Maharashtra - 400001</p>
+                    <p><a href="tel:+919324706905"><i class="fas fa-phone-alt"></i> +91 93247 06905</a></p>
+                    <div class="map-embed">
+                        <iframe src="https://www.google.com/maps?q=Bombay+Engineering+Syndicate,+Modern+House,+17+Dr+V.B.+Gandhi+Marg,+Kala+Ghoda,+Fort,+Mumbai+400001&z=17&output=embed" width="100%" height="300" style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bombay Engineering Syndicate Mumbai Office"></iframe>
+                    </div>
+                    <p style="margin-top: 12px;"><a href="<?php echo SITEURL; ?>/mumbai/" style="font-weight: 600; color: #157bba;"><i class="fas fa-arrow-right"></i> View Full Mumbai Office Details</a></p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> Ahmedabad Office</h3>
+                    <p>Office No. 611-612, Ratnanjali Solitaire, Satellite, Ahmedabad - 380015</p>
+                    <p><a href="tel:+919825014977"><i class="fas fa-phone-alt"></i> +91 98250 14977</a></p>
+                    <div class="map-embed">
+                        <iframe src="https://www.google.com/maps?q=Bombay+Engineering+Syndicate,+611-612+Ratnanjali+Solitaire,+Satellite,+Ahmedabad+380015&z=17&output=embed" width="100%" height="300" style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bombay Engineering Syndicate Ahmedabad Office"></iframe>
+                    </div>
+                    <p style="margin-top: 12px;"><a href="<?php echo SITEURL; ?>/ahmedabad/" style="font-weight: 600; color: #157bba;"><i class="fas fa-arrow-right"></i> View Full Ahmedabad Office Details</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+.contact-maps { padding: 50px 0; background: #f8fafb; }
+.map-card { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.map-card h3 { font-size: 20px; color: #1a1a2e; margin-bottom: 10px; }
+.map-card h3 i { color: #157bba; margin-right: 8px; }
+.map-card p { font-size: 14px; color: #555; margin-bottom: 8px; }
+.map-card a { color: #157bba; text-decoration: none; }
+.map-card a i { margin-right: 6px; }
+.map-embed { margin-top: 16px; }
+</style>
+<!--Google Maps - Office Locations End-->
 
 <!--Contact Page Start-->
 <section class="contact-page">

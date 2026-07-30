@@ -214,7 +214,7 @@
         </div>
 
         <p class="lp-coverage__intro">
-            While our Gujarat office is in <strong>Satellite, Ahmedabad</strong>, our reach extends across the entire state. As a CG Power &amp; Crompton channel partner since 1957, Bombay Engineering Syndicate delivers LT and HT motors, flame-proof motors, IE3/IE4 energy-efficient motors, and spares to industries in Central Gujarat, South Gujarat, Saurashtra and Kutch. Whether you run a textile unit in Ahmedabad, a chemical plant in Ankleshwar, a ceramic factory in Morbi, or a pharma unit in Vadodara, we deliver the right motor to your GIDC estate.
+            While our Gujarat office is in <strong>Satellite, Ahmedabad</strong>, our reach extends across the entire state. As a CG Power channel partner since 1957, Bombay Engineering Syndicate delivers LT and HT motors, flame-proof motors, IE3/IE4 energy-efficient motors, and spares to industries in Central Gujarat, South Gujarat, Saurashtra and Kutch. Whether you run a textile unit in Ahmedabad, a chemical plant in Ankleshwar, a ceramic factory in Morbi, or a pharma unit in Vadodara, we deliver the right motor to your GIDC estate.
         </p>
 
         <div class="lp-coverage__grid">

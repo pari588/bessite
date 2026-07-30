@@ -17,7 +17,7 @@ echoProductSchema($TPL->data, $detailData);
 $breadcrumbs = array(
     array('name' => 'Pumps', 'url' => SITEURL . '/pump/'),
     array('name' => $TPL->dataM['categoryTitle'], 'url' => SITEURL . '/' . $TPL->dataM['seoUri'] . '/'),
-    array('name' => $TPL->data['pumpTitle'], 'url' => $_SERVER['REQUEST_URI'] ?? '')
+    array('name' => $TPL->data['pumpTitle'], 'url' => SITEURL . ($_SERVER['REQUEST_URI'] ?? ''))
 );
 echoBreadcrumbSchema($breadcrumbs);
 ?>
@@ -47,14 +47,31 @@ echoBreadcrumbSchema($breadcrumbs);
 .page-header .page-header__inner h1 {
     color: #ffffff !important;
 }
+.spec-call-btn {
+    display: inline-block;
+    white-space: nowrap;
+    background-color: #157bba;
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.25s ease;
+}
+.spec-call-btn:hover {
+    background-color: #0f5a8f;
+    color: #ffffff !important;
+}
 </style>
 <!--Product Details Start-->
 <section class="product-details">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-xl-6">
-                <div class="product-details__img">
-                    <img src="<?php echo UPLOADURL . "/pump/530_530_crop_100/" . $TPL->data['pumpImage']; ?>" alt="<?php echo htmlspecialchars($TPL->data['pumpTitle'], ENT_QUOTES, 'UTF-8'); ?> - Submersible pump specifications and features">
+                <div class="product-details__img" style="height:auto; align-items:flex-start;">
+                    <img src="<?php echo UPLOADURL . "/pump/530_530_crop_100/" . $TPL->data['pumpImage']; ?>" alt="<?php echo htmlspecialchars($TPL->data['pumpTitle'], ENT_QUOTES, 'UTF-8'); ?> - Submersible pump specifications and features" width="530" height="530" fetchpriority="high" style="width:100%; height:auto; display:block; object-fit:contain;">
                 </div>
             </div>
             <div class=" col-lg-6 col-xl-6">
@@ -137,10 +154,10 @@ echoBreadcrumbSchema($breadcrumbs);
 <?php if (isset($pumsDetailArr) && count($pumsDetailArr) > 0) { ?>
     <section class="Specifications">
         <div class="testimonial-two__shape-1 float-bob-x">
-            <img src="<?php echo SITEURL; ?>/images/pump-2.png" alt="">
+            <img src="<?php echo SITEURL; ?>/images/pump-2.png" alt="" loading="lazy" width="150" height="150">
         </div>
         <div class="testimonial-two__shape-2 float-bob-y">
-            <img src="<?php echo SITEURL; ?>/images/pump-1.png" alt="">
+            <img src="<?php echo SITEURL; ?>/images/pump-1.png" alt="" loading="lazy" width="150" height="150">
         </div>
         <div class="container">
             <div class="section-title text-center">
@@ -159,7 +176,7 @@ echoBreadcrumbSchema($breadcrumbs);
                                 <th>No. of Stage</th>
                                 <th>Head Range (m)</th>
                                 <th>Discharge Range</th>
-                                <th>MRP (INR)</th>
+                                <th>Price</th>
                                 <th>Warranty</th>
                             </tr>
                         </thead>
@@ -174,7 +191,7 @@ echoBreadcrumbSchema($breadcrumbs);
                                     <td>" . $specification["noOfStageD"] . "</td>
                                     <td>" . $specification["headRange"] . "</td>
                                     <td>" . $specification["dischargeRange"] . "</td>
-                                    <td>" . $specification["mrp"] . "</td>
+                                    <td style=\"text-align:center;\"><a href=\"tel:+919324706905\" class=\"spec-call-btn\" aria-label=\"Call Bombay Engineering Syndicate for the best price\">Call for Price</a></td>
                                     <td>" . $specification["warrenty"] . "</td>
                                 </tr>";
                             } ?>

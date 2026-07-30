@@ -222,12 +222,41 @@ function getUserOffDays($userID = 0)
     return $userOffDaysArr;
 }
 
+/**
+ * Is this driver on recorded leave on the given date?
+ *
+ * Drivers do not mark in themselves (no device on site, phone portal unused), so
+ * autoMarkin() creates a baseline duty row each working day. While a driver is on
+ * leave those rows are meaningless noise in the overtime report — this guard skips
+ * them. An open-ended leave (toDate NULL) counts until it is marked returned.
+ *
+ * @param int    $userID mx_user.userID
+ * @param string $date   Y-m-d (defaults to today)
+ */
+function isDriverOnLeave($userID = 0, $date = "")
+{
+    global $DB;
+    if (!$userID) return false;
+    if ($date == "") $date = date("Y-m-d");
+
+    $DB->vals = array($userID, $date, $date);
+    $DB->types = "iss";
+    $DB->sql = "SELECT driverLeaveID FROM `" . $DB->pre . "driver_leave`
+                WHERE userID=? AND status=1 AND isReturned=0
+                  AND fromDate <= ?
+                  AND (toDate IS NULL OR toDate >= ?)
+                LIMIT 1";
+    $DB->dbRow();
+    return ($DB->numRows > 0);
+}
+
 function autoMarkin()
 {
     global $DB;
     $str = "Auto Markin failed.";
     $currDate = date("Y-m-d");
     $currentDayNo = date('N', strtotime($currDate));
+    $currentTime = date("H:i:s");
 
     $DB->vals = array(1, 1);
     $DB->types = "ii";
@@ -238,16 +267,27 @@ function autoMarkin()
     if ($DB->numRows > 0) {
         foreach ($userData as $k => $v) {
 
+            // Skip drivers on recorded leave — no baseline duty row while away.
+            if (isDriverOnLeave($v['userID'], $currDate)) {
+                echo $v['userName'] . " is on leave, skipping. ";
+                continue;
+            }
+
             $userOffDaysArr = getUserOffDays($v['userID']);
             if (!in_array($currentDayNo, $userOffDaysArr)) {
+
+                // Only create record after driver's shift start time
+                $userFromTime = date("H:i:s", strtotime($v["userFromTime"]));
+                if ($currentTime < $userFromTime) {
+                    echo "Too early for " . $v['userName'] . " (shift starts at " . $userFromTime . "). ";
+                    continue;
+                }
 
                 $DB->vals = array(1, $currDate, $v['userID']);
                 $DB->types = "isi";
                 $DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=?  AND dmDate=? AND userID=?";
                 $driverManagement = $DB->dbRow();
                 if ($DB->numRows == 0) {
-
-                    $userFromTime = date("H:i:s", strtotime($v["userFromTime"]));
 
                     $arrIn = array(
                         "dmDate" => date("Y-m-d"),
@@ -295,46 +335,46 @@ function autoMarkout()
 
 
 
-            if (!in_array($prevDayNo, $userOffDaysArr)) {
+            // Always check for open shifts — even on off-days, since drivers may have marked in
+            // on their off-day (overtime work) and forgotten to mark out.
+            $isOffDay = in_array($prevDayNo, $userOffDaysArr);
 
-                $DB->vals = array(1, $prevDate, $v['userID']);
-                $DB->types = "isi";
-                $DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=?  AND dmDate=? AND userID=?";
-                $driverManagement = $DB->dbRow();
+            $DB->vals = array(1, $prevDate, $v['userID']);
+            $DB->types = "isi";
+            $DB->sql = "SELECT * FROM `" . $DB->pre . "driver_management` WHERE status=? AND dmDate=? AND userID=? AND (toTime IS NULL OR toTime = '' OR toTime = '0000-00-00 00:00:00' OR toTime <= fromTime) ORDER BY driverManagementID DESC LIMIT 1";
+            $driverManagement = $DB->dbRow();
 
-                if ($DB->numRows > 0) {
-                    if ($driverManagement['toTime'] == "") {
-                        $driverManagementID = intval($driverManagement['driverManagementID']);
+            if ($DB->numRows > 0) {
+                $driverManagementID = intval($driverManagement['driverManagementID']);
+                $userToTime = date("H:i:s", strtotime($v["userToTime"]));
+                $shiftEnd = $prevDate . " " . $userToTime;
+                $fromTime = $driverManagement['fromTime'];
 
-
-                        $userToTime = date("H:i:s", strtotime($v["userToTime"]));
-                        $toTime = date("Y-m-d " . $userToTime, strtotime("-1 day"));
-
-                        $ch = curl_init();
-                        $requestParam = "xAction=UPDATE&driverManagementID=" . $driverManagementID . "&toTime=" . $toTime . "&fromTime=" . $driverManagement['fromTime'] . "&expenseAmt=" . $driverManagement['expenseAmt'] . "&dmDate=" . $driverManagement['dmDate'];
-                        curl_setopt($ch, CURLOPT_URL, SITEURL . "/xadmin/mod/driver-management/x-driver-management.inc.php");
-                        curl_setopt($ch, CURLOPT_HEADER, 0);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_POST, true);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $requestParam);
-                        $result = curl_exec($ch);
-
-                        $resultArr = json_decode($result, true);
-                        // echo "<pre>";
-                        // print_r($resultArr);
-                        // exit;
-
-                        if ($resultArr['err'] == 0) {
-                            $str = "Auto Markout Successfully";
-                        }
-                    } else {
-                        $str = "Markout already done.";
-                    }
+                // If fromTime is past shift end (late-night mark-in or off-day work),
+                // we can't infer a real toTime — close with toTime = fromTime + 1 min so it's a valid closed record.
+                if (strtotime($fromTime) >= strtotime($shiftEnd)) {
+                    $toTime = date("Y-m-d H:i:s", strtotime($fromTime . " +1 minute"));
+                } else {
+                    $toTime = $shiftEnd;
                 }
-                echo $str;
+
+                // Saved in process via the shared engine — was a cURL POST to the admin
+                // endpoint (with CURLOPT_SSL_VERIFYPEER disabled), which made the nightly
+                // close-off dependent on the site being reachable from itself.
+                require_once dirname(__FILE__) . "/../core/driver-overtime.inc.php";
+                $resultArr = dvSaveOvertime($driverManagementID, array(
+                    "fromTime"   => $fromTime,
+                    "toTime"     => $toTime,
+                    "dmDate"     => $driverManagement['dmDate'],
+                    "expenseAmt" => ($driverManagement['expenseAmt'] ?? 0),
+                ));
+                if (isset($resultArr['err']) && $resultArr['err'] == 0) {
+                    $str = "Auto Markout Successfully (" . $v['userName'] . ($isOffDay ? ", off-day" : "") . ")";
+                }
+            } else {
+                $str = $isOffDay ? "Off-day, no open shift." : "Markout already done.";
             }
+            echo $str;
         }
     }
 }

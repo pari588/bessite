@@ -60,7 +60,7 @@ if (!function_exists('getHpKwCalculator')) {
 </div>
 
 <style>
-.hpkw-calc{border:1px solid #e2e6ea;border-radius:12px;padding:24px;margin:28px 0;background:linear-gradient(180deg,#f7fbff 0%,#ffffff 60%);box-shadow:0 4px 18px rgba(21,123,186,.08);font-family:'Manrope',Arial,sans-serif;max-width:720px}
+.hpkw-calc{border:1px solid #e2e6ea;border-radius:12px;padding:24px;margin:28px auto;background:linear-gradient(180deg,#f7fbff 0%,#ffffff 60%);box-shadow:0 4px 18px rgba(21,123,186,.08);font-family:'Manrope',Arial,sans-serif;max-width:720px}
 .hpkw-calc__head{text-align:center;margin-bottom:18px}
 .hpkw-calc__icon{font-size:26px;color:#f5a623}
 .hpkw-calc__title{font-family:'Libre Baskerville',serif;font-size:22px;color:#157bba;margin:4px 0 2px}

@@ -23,11 +23,11 @@ header(
     "Content-Security-Policy: "
   . "default-src 'self'; "
   . "script-src 'self' 'unsafe-inline' https://www.bombayengg.net https://www.google.com https://www.gstatic.com https://www.googletagmanager.com; "
-  . "style-src 'self' 'unsafe-inline'; "
-  . "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; "
-  . "font-src 'self'; "
+  . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+  . "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://maps.gstatic.com https://maps.googleapis.com; "
+  . "font-src 'self' https://fonts.gstatic.com data:; "
   . "connect-src 'self' https://www.google.com https://www.google-analytics.com https://www.googletagmanager.com; "
-  . "frame-src https://www.google.com; "
+  . "frame-src https://www.google.com https://www.google.com/maps/; "
   . "object-src 'none'; "
   . "frame-ancestors 'none'; "
   . "base-uri 'self'; "
@@ -64,11 +64,17 @@ $siteSettingInfo = getSiteInfo();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary Meta Tags -->
-    <title>Industrial Motors & Pumps Supplier | Mumbai & Ahmedabad</title>
-    <meta name="title" content="Industrial Motors & Pumps Supplier | Mumbai & Ahmedabad" />
-    <meta name="description" content="Leading industrial motors & submersible pumps supplier in Mumbai & Ahmedabad. Energy-efficient motors, water pumps. Trusted since 1957." />
-    <meta name="keywords" content="industrial motors, submersible pumps, water pumps, energy-efficient motors, motor supplier, pump dealer, Mumbai, Ahmedabad, Crompton, AC motors, induction motors, electric pumps" />
+    <!-- Primary Meta Tags (dynamic from DB, fallback to defaults) -->
+    <?php echo mxGetMeta(); ?>
+    <?php if (empty($TPL->metaTitle)): ?>
+    <title>Industrial Motors & Pumps | Bombay Engineering Syndicate</title>
+    <?php endif; ?>
+    <?php if (empty($TPL->metaDesc)): ?>
+    <meta name="description" content="Leading industrial motors & submersible pumps supplier in Mumbai & Ahmedabad. Authorised CG Power motor dealer & Crompton pump dealer. Energy-efficient motors, water pumps. Trusted since 1957." />
+    <?php endif; ?>
+    <?php if (empty($TPL->metaKeyword)): ?>
+    <meta name="keywords" content="industrial motors, submersible pumps, water pumps, energy-efficient motors, motor supplier, pump dealer, Mumbai, Ahmedabad, Fort, Kala Ghoda, Crompton, CG Power, Kirloskar, AC motors, induction motors, electric pumps, booster pumps, borewell pumps" />
+    <?php endif; ?>
 
     <!-- Language & Content -->
     <meta name="language" content="en-IN" />
@@ -86,38 +92,48 @@ $siteSettingInfo = getSiteInfo();
     <meta name="country" content="India" />
 
     <!-- Search Engine Robots -->
+    <?php
+    // Paginated pages (with offset/showRec) should not be indexed — canonical handles consolidation
+    $isPaginated = isset($_GET['offset']) || isset($_GET['showRec']);
+    $is404 = ($TPL->pageType === '404');
+    if ($isPaginated || $is404):
+    ?>
+    <meta name="robots" content="noindex, follow" />
+    <?php else: ?>
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
     <meta name="googlebot-news" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
+    <?php endif; ?>
 
     <!-- Format Detection & Canonical -->
     <meta name="format-detection" content="telephone=yes" />
     <?php
     // Build current page URL for canonical and hreflang (without query strings for cleaner SEO)
     $currentPath = strtok($_SERVER['REQUEST_URI'] ?? '', '?');
+    // Default to "/" for homepage when REQUEST_URI is missing/empty after rewrite
+    if (empty($currentPath)) {
+        $currentPath = '/';
+    }
     $currentPageUrl = rtrim(SITEURL, '/') . $currentPath;
     ?>
     <link rel="canonical" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="alternate" hreflang="en-IN" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="alternate" hreflang="x-default" href="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
 
-    <?php echo mxGetMeta(); ?>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(SITEURL . '/' . LIBDIR . '/js/jquery-3.3.1.min.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(COREURL . '/config.js.php', getJsVars()); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(COREURL . '/js/common.inc.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(COREURL . '/js/dialog.inc.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(COREURL . '/js/validate.inc.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(COREURL . '/js/form.inc.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(ADMINURL . '/core-admin/js/common.inc.js'); ?>"></script>
-    <script language="javascript" type="text/javascript" src="<?php echo mxGetUrl(ADMINURL . '/core-admin/js/inside.inc.js'); ?>"></script>
+    <script src="<?php echo mxGetUrl(SITEURL . '/' . LIBDIR . '/js/jquery-3.3.1.min.js'); ?>"></script>
+    <script defer src="<?php echo mxGetUrl(COREURL . '/config.js.php', getJsVars()); ?>"></script>
+    <script defer src="<?php echo mxGetUrl(COREURL . '/js/common.inc.js'); ?>"></script>
+    <script defer src="<?php echo mxGetUrl(COREURL . '/js/dialog.inc.js'); ?>"></script>
+    <script defer src="<?php echo mxGetUrl(COREURL . '/js/validate.inc.js'); ?>"></script>
+    <script defer src="<?php echo mxGetUrl(COREURL . '/js/form.inc.js'); ?>"></script>
 
     <!-- Open Graph Tags - Dynamic for Pump Pages, Static for Others -->
     <meta property="og:title" content="<?php echo defined('WHATSAPP_OG_TITLE') ? htmlspecialchars(WHATSAPP_OG_TITLE, ENT_QUOTES, 'UTF-8') : 'Motors & Pumps Supplier in Mumbai'; ?>" />
     <meta property="og:description" content="<?php echo defined('WHATSAPP_OG_DESCRIPTION') ? htmlspecialchars(WHATSAPP_OG_DESCRIPTION, ENT_QUOTES, 'UTF-8') : 'Energy-efficient motors, submersible pumps & industrial solutions. Trusted supplier since 1957. Locations: Mumbai & Ahmedabad. Free Enquiry Form.'; ?>" />
-    <meta property="og:url" content="<?php echo SITEURL; ?>" />
-    <meta property="og:image" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/moters.jpeg'; ?>" />
-    <meta property="og:image:secure_url" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/moters.jpeg'; ?>" />
+    <meta property="og:url" content="<?php echo htmlspecialchars($currentPageUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+    <meta property="og:image" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/motors.jpeg'; ?>" />
+    <meta property="og:image:secure_url" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/motors.jpeg'; ?>" />
     <meta property="og:image:width" content="<?php echo defined('WHATSAPP_OG_TYPE') && WHATSAPP_OG_TYPE === 'product' ? '530' : '1200'; ?>" />
     <meta property="og:image:height" content="<?php echo defined('WHATSAPP_OG_TYPE') && WHATSAPP_OG_TYPE === 'product' ? '530' : '630'; ?>" />
     <meta property="og:image:type" content="image/webp" />
@@ -131,99 +147,123 @@ $siteSettingInfo = getSiteInfo();
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="<?php echo defined('WHATSAPP_OG_TITLE') ? htmlspecialchars(WHATSAPP_OG_TITLE, ENT_QUOTES, 'UTF-8') : 'Motors & Pumps Supplier'; ?>" />
     <meta name="twitter:description" content="<?php echo defined('WHATSAPP_OG_DESCRIPTION') ? htmlspecialchars(WHATSAPP_OG_DESCRIPTION, ENT_QUOTES, 'UTF-8') : 'Leading supplier of energy-efficient industrial motors and pumps. Serving Mumbai & Ahmedabad since 1957.'; ?>" />
-    <meta name="twitter:image" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/moters.jpeg'; ?>" />
+    <meta name="twitter:image" content="<?php echo defined('WHATSAPP_OG_IMAGE') ? WHATSAPP_OG_IMAGE : SITEURL . '/images/motors.jpeg'; ?>" />
     <meta name="twitter:creator" content="@BombayEngg" />
 
-    <!-- LocalBusiness Schema with Enhanced Properties -->
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "Bombay Engineering Syndicate",
-            "alternateName": "BES",
-            "description": "Leading supplier of energy-efficient industrial motors, submersible pumps, and engineering solutions.",
-            "url": "<?php echo SITEURL; ?>",
-            "logo": "<?php echo SITEURL; ?>/images/logo.png",
-            "image": "<?php echo SITEURL; ?>/images/moters.jpeg",
-            "telephone": ["+919820042210", "+919825014977"],
-            "email": "besyndicate@gmail.com",
-            "address": [{
-                    "@type": "PostalAddress",
-                    "streetAddress": "17, Dr.V.B.Gandhi Marg (Forbes Street), Fort",
-                    "addressLocality": "Mumbai",
-                    "addressRegion": "Maharashtra",
-                    "postalCode": "400023",
-                    "addressCountry": "IN"
-                },
-                {
-                    "@type": "PostalAddress",
-                    "streetAddress": "Office No. 611, 612, Ratnanjali Solitaire, Near Sachet - 4, Prerna Tirth Derasar Road, Jodhpurgam, Satellite",
-                    "addressLocality": "Ahmedabad",
-                    "addressRegion": "Gujarat",
-                    "postalCode": "380015",
-                    "addressCountry": "IN"
-                }
-            ],
-            "priceRange": "$$",
-            "areaServed": [
-                {
-                    "@type": "City",
-                    "name": "Mumbai"
-                },
-                {
-                    "@type": "City",
-                    "name": "Ahmedabad"
-                },
-                {
-                    "@type": "State",
-                    "name": "Maharashtra"
-                },
-                {
-                    "@type": "State",
-                    "name": "Gujarat"
-                }
-            ],
-            "openingHours": "Mo-Fr 09:00-18:00",
-            "geo": [{
-                    "@type": "GeoCoordinates",
-                    "latitude": "18.9333",
-                    "longitude": "72.8333"
-                },
-                {
-                    "@type": "GeoCoordinates",
-                    "latitude": "23.0225",
-                    "longitude": "72.5714"
-                }
-            ],
-            "foundingDate": "1957"<?php
-                $socialUrls = array_filter([
-                    $siteSettingInfo['facebookUrl'] ?? '',
-                    $siteSettingInfo['twitterUrl'] ?? '',
-                    $siteSettingInfo['instaUrl'] ?? '',
-                    $siteSettingInfo['pintrestUrl'] ?? ''
-                ]);
-                if (!empty($socialUrls)): ?>,
-            "sameAs": <?php echo json_encode(array_values($socialUrls)); ?>
-            <?php endif; ?>
-        }
-    </script>
-
-    <!-- Organization Schema -->
+    <!-- Organization Schema with Location Departments -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "Organization",
             "name": "Bombay Engineering Syndicate",
-            "logo": "<?php echo SITEURL; ?>/images/logo.png",
+            "@id": "<?php echo SITEURL; ?>/#organization",
+            "alternateName": "BES",
             "url": "<?php echo SITEURL; ?>",
-            "description": "Established in 1957, trusted supplier of industrial motors, pumps, and engineering solutions in India.",
+            "logo": "<?php echo SITEURL; ?>/images/logo.png",
+            "image": "<?php echo SITEURL; ?>/images/motors.jpeg",
             "foundingDate": "1957",
-            "telephone": ["+919820042210", "+919825014977"],
+            "description": "Leading supplier of energy-efficient industrial motors, submersible pumps, and engineering solutions. Serving Mumbai and Ahmedabad since 1957.",
             "email": "besyndicate@gmail.com",
+            "department": [
+                {
+                    "@type": "ElectricalStore",
+                    "name": "Bombay Engineering Syndicate - Mumbai",
+                    "@id": "<?php echo SITEURL; ?>/mumbai/#organization",
+                    "url": "<?php echo SITEURL; ?>/mumbai/",
+                    "telephone": "+919324706905",
+                    "email": "besyndicate@gmail.com",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "2nd Floor, Modern House, Dr. V.B. Gandhi Marg, Kala Ghoda, Fort",
+                        "addressLocality": "Mumbai",
+                        "addressRegion": "Maharashtra",
+                        "postalCode": "400001",
+                        "addressCountry": "IN"
+                    },
+                    "geo": {
+                        "@type": "GeoCoordinates",
+                        "latitude": "18.9275",
+                        "longitude": "72.8334"
+                    },
+                    "openingHoursSpecification": [
+                        {
+                            "@type": "OpeningHoursSpecification",
+                            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                            "opens": "10:00",
+                            "closes": "18:00"
+                        }
+                    ],
+                    "priceRange": "$$",
+                    "areaServed": [
+                        {"@type": "State", "name": "Maharashtra"},
+                        {"@type": "City", "name": "Mumbai"},
+                        {"@type": "City", "name": "Thane"},
+                        {"@type": "City", "name": "Navi Mumbai"},
+                        {"@type": "City", "name": "Pune"},
+                        {"@type": "City", "name": "Nashik"},
+                        {"@type": "City", "name": "Nagpur"},
+                        {"@type": "City", "name": "Vasai-Virar"},
+                        {"@type": "Place", "name": "Andheri"},
+                        {"@type": "Place", "name": "Bandra"},
+                        {"@type": "Place", "name": "Borivali"},
+                        {"@type": "Place", "name": "Powai"},
+                        {"@type": "Place", "name": "Worli"},
+                        {"@type": "Place", "name": "Lower Parel"},
+                        {"@type": "Place", "name": "Kurla"}
+                    ]
+                },
+                {
+                    "@type": "ElectricalStore",
+                    "name": "Bombay Engineering Syndicate - Ahmedabad",
+                    "@id": "<?php echo SITEURL; ?>/ahmedabad/#organization",
+                    "url": "<?php echo SITEURL; ?>/ahmedabad/",
+                    "telephone": "+919825014977",
+                    "email": "besahmedabad@gmail.com",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": "Office No. 611, 612, Ratnanjali Solitaire, Near Sachet - 4, Prerna Tirth Derasar Road, Jodhpurgam, Satellite",
+                        "addressLocality": "Ahmedabad",
+                        "addressRegion": "Gujarat",
+                        "postalCode": "380015",
+                        "addressCountry": "IN"
+                    },
+                    "geo": {
+                        "@type": "GeoCoordinates",
+                        "latitude": "23.0309",
+                        "longitude": "72.5277"
+                    },
+                    "openingHoursSpecification": [
+                        {
+                            "@type": "OpeningHoursSpecification",
+                            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                            "opens": "10:00",
+                            "closes": "18:00"
+                        }
+                    ],
+                    "priceRange": "$$",
+                    "areaServed": [
+                        {"@type": "State", "name": "Gujarat"},
+                        {"@type": "City", "name": "Ahmedabad"},
+                        {"@type": "City", "name": "Gandhinagar"},
+                        {"@type": "City", "name": "Surat"},
+                        {"@type": "City", "name": "Vadodara"},
+                        {"@type": "City", "name": "Rajkot"},
+                        {"@type": "City", "name": "Jamnagar"},
+                        {"@type": "City", "name": "Bhavnagar"},
+                        {"@type": "Place", "name": "Satellite"},
+                        {"@type": "Place", "name": "Bopal"},
+                        {"@type": "Place", "name": "Naranpura"},
+                        {"@type": "Place", "name": "Maninagar"},
+                        {"@type": "Place", "name": "Vatva GIDC"},
+                        {"@type": "Place", "name": "Sanand"},
+                        {"@type": "Place", "name": "Vastrapur"}
+                    ]
+                }
+            ],
             "contactPoint": [
                 {
                     "@type": "ContactPoint",
-                    "telephone": "+919820042210",
+                    "telephone": "+919324706905",
                     "contactType": "Customer Service",
                     "areaServed": "IN",
                     "availableLanguage": "en"
@@ -236,68 +276,184 @@ $siteSettingInfo = getSiteInfo();
                     "availableLanguage": "en"
                 }
             ]<?php
-                $orgSocialUrls = array_filter([
+                // sameAs — pull from site_setting if populated, else default to BES Google Business Profile placeholder.
+                // Replace these with real URLs when ready (LinkedIn, Facebook, YouTube, Instagram).
+                $orgSocialUrls = array_values(array_filter([
                     $siteSettingInfo['facebookUrl'] ?? '',
                     $siteSettingInfo['twitterUrl'] ?? '',
-                    $siteSettingInfo['instaUrl'] ?? ''
-                ]);
+                    $siteSettingInfo['instaUrl'] ?? '',
+                    $siteSettingInfo['pintrestUrl'] ?? ''
+                ]));
                 if (!empty($orgSocialUrls)): ?>,
-            "sameAs": <?php echo json_encode(array_values($orgSocialUrls)); ?>
+            "sameAs": <?php echo json_encode($orgSocialUrls); ?>
             <?php endif; ?>
         }
     </script>
 
-    <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="shortcut icon" type="image/x-icon" />
-    <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="icon" type="image/x-icon" />
-    <link href="<?php echo UPLOADURL; ?>/setting/<?php echo $MXSET['FAVICON']; ?>" rel="apple-touch-icon" />
+    <!-- Services offered (boosts local-pack visibility for "motor repair Mumbai", "pump installation Ahmedabad", etc.) -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "@id": "<?php echo SITEURL; ?>/#services",
+            "provider": {
+                "@type": "Organization",
+                "@id": "<?php echo SITEURL; ?>/#organization",
+                "name": "Bombay Engineering Syndicate"
+            },
+            "areaServed": [
+                {"@type": "Country", "name": "India"},
+                {"@type": "State", "name": "Maharashtra"},
+                {"@type": "State", "name": "Gujarat"}
+            ],
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Industrial Motor and Pump Services",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Industrial Motor Supply & Sales",
+                            "description": "Authorised CG Power industrial motor supply across the full power range — HV, LV, energy-efficient (IE2/IE3/IE4), hazardous-area (Ex db/eb/ec/pz), FHP commercial, and special application motors."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Submersible and Industrial Pump Supply",
+                            "description": "Crompton submersible borewell pumps, openwell pumps, monoblock pumps, booster pumps, mini pumps for residential, agricultural, and industrial applications."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Motor Installation and Commissioning",
+                            "description": "On-site motor installation, alignment, commissioning, and start-up support for new equipment and replacements."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Motor Repair and Rewinding",
+                            "description": "Industrial motor rewinding, bearing replacement, and factory-grade repair services with Class F/H insulation and quality testing."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Pump Maintenance and Repair",
+                            "description": "Pump troubleshooting, impeller and seal replacement, mechanical seal kits, and bearing replacement for residential, agricultural, and industrial pumps."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Application Engineering and Sizing",
+                            "description": "Free expert consultation on motor selection, pump sizing, NPSH calculation, energy efficiency upgrades, and starter/VFD specification."
+                        }
+                    }
+                ]
+            }
+        }
+    </script>
+
+<?php if (defined('WHATSAPP_OG_TYPE') && WHATSAPP_OG_TYPE === 'article' && defined('ARTICLE_PUBLISHED_DATE')): ?>
+    <meta property="article:published_time" content="<?php echo htmlspecialchars(ARTICLE_PUBLISHED_DATE, ENT_QUOTES, 'UTF-8'); ?>" />
+    <meta property="article:modified_time" content="<?php echo htmlspecialchars(ARTICLE_PUBLISHED_DATE, ENT_QUOTES, 'UTF-8'); ?>" />
+    <meta property="article:author" content="Bombay Engineering Syndicate" />
+<?php endif; ?>
+
+    <link rel="icon" href="<?php echo SITEURL; ?>/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo SITEURL; ?>/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo SITEURL; ?>/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo SITEURL; ?>/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/bootstrap/css/bootstrap.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/animate/animate.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/animate/custom-animate.css') ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/fontawesome/css/all.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/jarallax/jarallax.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/jquery-magnific-popup/jquery.magnific-popup.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/nouislider/nouislider.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/nouislider/nouislider.pips.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/odometer/odometer.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/tiny-slider/tiny-slider.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/reey-font/stylesheet.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/owl-carousel/owl.carousel.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/owl-carousel/owl.theme.default.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/bxslider/jquery.bxslider.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/bootstrap-select/css/bootstrap-select.min.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/jquery-ui/jquery-ui.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/timepicker/timePicker.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/vendors/twenty-twenty/twentytwenty.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/mellis.css') ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/mellis-responsive.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/style.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/device.css'); ?>" />
-    <link rel="stylesheet" href="<?php echo mxGetUrl(SITEURL . '/css/material-design-3.css'); ?>" />
+    <?php
+    // ---- Critical (render-blocking) CSS: core layout only ----
+    $criticalCss = array(
+        SITEURL . '/vendors/bootstrap/css/bootstrap.min.css',
+        // jarallax.css must be blocking: the jarallax JS initialises at DOM-ready
+        // and paints section backgrounds; without its positioning rules the
+        // parallax background renders invisible (tiny file, no perf cost).
+        SITEURL . '/vendors/jarallax/jarallax.css',
+        SITEURL . '/css/mellis.css',
+        SITEURL . '/css/mellis-responsive.css',
+        SITEURL . '/css/style.css',
+        SITEURL . '/css/device.css',
+        SITEURL . '/css/material-design-3.css',
+    );
+    // ---- Deferred CSS: plugin/widget styles for below-the-fold features.
+    // Loaded async via media="print" swap so they don't block first paint.
+    $deferredCss = array(
+        SITEURL . '/vendors/fontawesome/css/all.min.css',
+        SITEURL . '/vendors/animate/animate.min.css',
+        SITEURL . '/vendors/animate/custom-animate.css',
+        SITEURL . '/vendors/jquery-magnific-popup/jquery.magnific-popup.css',
+        SITEURL . '/vendors/nouislider/nouislider.min.css',
+        SITEURL . '/vendors/nouislider/nouislider.pips.css',
+        SITEURL . '/vendors/odometer/odometer.min.css',
+        SITEURL . '/vendors/tiny-slider/tiny-slider.min.css',
+        SITEURL . '/vendors/reey-font/stylesheet.css',
+        SITEURL . '/vendors/owl-carousel/owl.carousel.min.css',
+        SITEURL . '/vendors/owl-carousel/owl.theme.default.min.css',
+        SITEURL . '/vendors/bxslider/jquery.bxslider.css',
+        SITEURL . '/vendors/bootstrap-select/css/bootstrap-select.min.css',
+        SITEURL . '/vendors/jquery-ui/jquery-ui.css',
+        SITEURL . '/vendors/timepicker/timePicker.css',
+        SITEURL . '/vendors/twenty-twenty/twentytwenty.css',
+    );
+    // Google Fonts (already display=swap) — async as well
+    $deferredFonts = array(
+        'https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap',
+        'https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap',
+        'https://fonts.googleapis.com/css2?family=Parisienne&display=swap',
+    );
+    foreach ($criticalCss as $cssUrl) {
+        echo '<link rel="stylesheet" href="' . mxGetUrl($cssUrl) . '" />' . "\n    ";
+    }
+    foreach ($deferredFonts as $fontUrl) {
+        echo '<link rel="stylesheet" href="' . $fontUrl . '" media="print" onload="this.media=\'all\'" />' . "\n    ";
+    }
+    foreach ($deferredCss as $cssUrl) {
+        echo '<link rel="stylesheet" href="' . mxGetUrl($cssUrl) . '" media="print" onload="this.media=\'all\'" />' . "\n    ";
+    }
+    ?>
+    <noscript>
+        <?php foreach (array_merge($deferredFonts, array()) as $fontUrl) {
+            echo '<link rel="stylesheet" href="' . $fontUrl . '" />' . "\n        ";
+        }
+        foreach ($deferredCss as $cssUrl) {
+            echo '<link rel="stylesheet" href="' . mxGetUrl($cssUrl) . '" />' . "\n        ";
+        } ?>
+    </noscript>
 
     <!-- Business Contact Information Meta Tags -->
-    <meta name="business:contact_data:street_address" content="17, Dr.V.B.Gandhi Marg (Forbes Street), Fort, Mumbai" />
+    <meta name="business:contact_data:street_address" content="2nd Floor, Modern House, Dr. V.B. Gandhi Marg, Kala Ghoda, Fort, Mumbai" />
     <meta name="business:contact_data:locality" content="Mumbai" />
     <meta name="business:contact_data:region" content="Maharashtra" />
-    <meta name="business:contact_data:postal_code" content="400023" />
+    <meta name="business:contact_data:postal_code" content="400001" />
     <meta name="business:contact_data:country_name" content="India" />
-    <meta name="business:contact_data:phone_number" content="+919820042210" />
+    <meta name="business:contact_data:phone_number" content="+919324706905" />
     <meta name="business:contact_data:email" content="besyndicate@gmail.com" />
 
     <!-- Business Hours Meta Tags -->
-    <meta name="business:hours:monday" content="09:00-18:00" />
-    <meta name="business:hours:tuesday" content="09:00-18:00" />
-    <meta name="business:hours:wednesday" content="09:00-18:00" />
-    <meta name="business:hours:thursday" content="09:00-18:00" />
-    <meta name="business:hours:friday" content="09:00-18:00" />
-    <meta name="business:hours:saturday" content="closed" />
+    <meta name="business:hours:monday" content="10:00-18:00" />
+    <meta name="business:hours:tuesday" content="10:00-18:00" />
+    <meta name="business:hours:wednesday" content="10:00-18:00" />
+    <meta name="business:hours:thursday" content="10:00-18:00" />
+    <meta name="business:hours:friday" content="10:00-18:00" />
+    <meta name="business:hours:saturday" content="10:00-18:00" />
     <meta name="business:hours:sunday" content="closed" />
 
     <!-- Mobile & Accessibility Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Bombay Engineering" />
@@ -305,8 +461,34 @@ $siteSettingInfo = getSiteInfo();
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <meta name="theme-color" content="#1a1a1a" />
 
-    <!-- Google reCAPTCHA v3 Script -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google reCAPTCHA — lazy-loaded: ~375 KB, so only fetch it on pages that
+         actually contain a captcha, and only on first user interaction
+         (5 s fallback so the widget is always ready before a submit). -->
+    <script>
+    (function () {
+        var loaded = false;
+        function loadRecaptcha() {
+            if (loaded) return;
+            loaded = true;
+            var s = document.createElement('script');
+            s.src = 'https://www.google.com/recaptcha/api.js';
+            s.async = true;
+            s.defer = true;
+            document.head.appendChild(s);
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Pages mark captcha usage either with a .g-recaptcha widget div or a
+            // hidden g-recaptcha-response field (inquiry forms).
+            if (!document.querySelector('.g-recaptcha, [name="g-recaptcha-response"]')) return;
+            // Some templates (contact-us) load api.js themselves — don't double-load.
+            if (document.querySelector('script[src*="recaptcha/api.js"]')) { loaded = true; return; }
+            ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
+                window.addEventListener(evt, loadRecaptcha, { passive: true, once: true });
+            });
+            setTimeout(loadRecaptcha, 5000);
+        });
+    })();
+    </script>
 </head>
 
 <body>

@@ -33,12 +33,82 @@ if (!empty($TPL->dataM)) {
 echoBreadcrumbSchema($breadcrumbs);
 ?>
 
+<?php if (!empty($TPL->dataM['synopsis'])) { ?>
+<section class="category-intro">
+    <div class="container">
+        <div class="category-intro__card">
+            <span class="category-intro__eyebrow">Overview &amp; Buying Guide</span>
+            <div class="category-intro__text">
+                <?php echo $TPL->dataM['synopsis']; ?>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+.category-intro{padding:38px 0 6px}
+.category-intro__card{background:#fff;border:1px solid #eef2f6;border-left:4px solid #157bba;border-radius:10px;box-shadow:0 4px 20px rgba(21,123,186,.07);padding:26px 32px;max-width:980px;margin:0 auto;text-align:center}
+.category-intro__text{text-align:left}
+.category-intro__eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#157bba;background:rgba(21,123,186,.08);padding:5px 12px;border-radius:20px;margin-bottom:16px}
+.category-intro__text p{font-size:15px;line-height:1.8;color:#586674;margin:0 0 15px}
+.category-intro__text p:first-of-type{font-size:17.5px;line-height:1.7;color:#283746;font-weight:500}
+.category-intro__text p:last-child{margin-bottom:0}
+.category-intro__text strong{color:#16283a;font-weight:700}
+.category-intro__text ul{margin:0 0 15px;padding-left:0;list-style:none}
+.category-intro__text ul li{position:relative;padding-left:26px;margin-bottom:9px;font-size:15px;line-height:1.7;color:#586674}
+.category-intro__text ul li::before{content:'';position:absolute;left:0;top:9px;width:8px;height:8px;background:#157bba;border-radius:50%}
+.category-intro__text a{color:#157bba;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(21,123,186,.4)}
+.category-intro__text a[href*="inquiry"],.category-intro__text a[href*="contact"]{display:inline-block;margin-top:8px;background:#157bba;color:#fff!important;padding:10px 20px;border-radius:6px;border:0;font-weight:600;border-bottom:0;transition:background .2s}
+.category-intro__text a[href*="inquiry"]:hover,.category-intro__text a[href*="contact"]:hover{background:#0f5a8f}
+@media(max-width:767px){.category-intro__card{padding:20px 18px}.category-intro__text p:first-of-type{font-size:16px}}
+</style>
+<?php } ?>
 <section class="product">
     <div class="container">
         <div class="row">
             <?php getSideNav(); ?>
             <div class="col-xl-8 col-lg-8">
-                <?php $motorProductsArr =  getPumpProducts(); ?>
+                <?php
+                $motorProductsArr = getPumpProducts();
+                // ItemList schema for AI/Google to see all products on this category page
+                if (!empty($motorProductsArr['productList'])) {
+                    // Build absolute URLs per-row using each product's actual category path (cseoUri)
+                    $itemsForSchema = array();
+                    foreach ($motorProductsArr['productList'] as $row) {
+                        $catPath = $row['cseoUri'] ?? ($TPL->dataM['seoUri'] ?? '');
+                        if (empty($row['seoUri']) || empty($catPath)) continue;
+                        $itemsForSchema[] = array(
+                            'pumpTitle'  => $row['pumpTitle'] ?? '',
+                            // Pre-build the full slug as cat-path/product-slug so generator concatenation works
+                            'pumpSeoUri' => $row['seoUri'],
+                            '_catPath'   => $catPath,
+                        );
+                    }
+                    if (!empty($itemsForSchema) && function_exists('echoItemListSchema')) {
+                        // For mixed-category lists, generate manually
+                        $listItems = array();
+                        $pos = 1;
+                        foreach ($itemsForSchema as $it) {
+                            $listItems[] = array(
+                                '@type' => 'ListItem',
+                                'position' => $pos++,
+                                'url' => SITEURL . '/' . trim($it['_catPath'], '/') . '/' . $it['pumpSeoUri'] . '/',
+                                'name' => $it['pumpTitle']
+                            );
+                        }
+                        $schemaData = array(
+                            '@context' => 'https://schema.org',
+                            '@type' => 'ItemList',
+                            'itemListOrder' => 'https://schema.org/ItemListOrderAscending',
+                            'numberOfItems' => count($listItems),
+                            'itemListElement' => $listItems
+                        );
+                        echo "\n<!-- ItemList Schema (JSON-LD) -->\n";
+                        echo '<script type="application/ld+json">' . "\n";
+                        echo json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+                        echo "\n</script>\n";
+                    }
+                }
+                ?>
                 <div class="product__items">
                     <?php if (count($motorProductsArr["productList"]) > 0) { ?>
                         <?php if ($motorProductsArr["strPaging"] != "") { ?>

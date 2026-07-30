@@ -79,6 +79,14 @@ if (function_exists('echoBreadcrumbSchema')) {
             if (strpos($kcBody, '[[HP_KW_CALCULATOR]]') !== false && function_exists('getHpKwCalculator')) {
                 $kcBody = str_replace('[[HP_KW_CALCULATOR]]', getHpKwCalculator(), $kcBody);
             }
+            // Wrap editor-authored tables so wide ones scroll horizontally on
+            // phones instead of breaking the layout (styling lives in style.css).
+            if (stripos($kcBody, '<table') !== false) {
+                $kcBody = preg_replace(
+                    '/<table\b/i', '<div class="kc-table-wrap"><table', $kcBody
+                );
+                $kcBody = preg_replace('/<\/table>/i', '</table></div>', $kcBody);
+            }
             echo $kcBody;
             ?>
         </div>

@@ -80,6 +80,8 @@ class manageTemplate
 
     private function setHome()
     {
+        $this->metaTitle = "";
+        $this->pageType = "home";
         $this->tplFile = SITEPATH . "/$this->modDir/home/x-home.php";
         $this->tplInc = SITEPATH . "/$this->modDir/home/x-home.inc.php";
         $this->modPath = SITEPATH . "/$this->modDir/home";
@@ -114,6 +116,7 @@ class manageTemplate
 
         if ($this->tplFile && $cnt > 0) {
             $this->pageType = "module";
+            $this->metaTitle = "";
             $iPath = SITEPATH . "/$this->modDir/$module/x-$module.inc.php";
             if (file_exists($iPath) && is_file($iPath)) {
                 $this->tplInc = $iPath;

@@ -46,10 +46,10 @@ if (isset($TPL->uriArr[0]) && $TPL->uriArr[0] == "driver") {
 <!-- Contact Us form End. -->
 <footer class="site-footer" <?php echo $footerStyle; ?>>
     <div class="site-footer__shape-1 float-bob-x">
-        <img src="<?php echo SITEURL . '/images/footer-shape-1.png' ?>" alt="Decorative shape - footer section background">
+        <img src="<?php echo SITEURL . '/images/footer-shape-1.png' ?>" alt="Decorative shape - footer section background" width="354" height="432" loading="lazy">
     </div>
     <div class="site-footer__shape-2 float-bob-y">
-        <img src="<?php echo SITEURL . '/images/footer-shape-2.png' ?>" alt="Decorative shape - footer section accent">
+        <img src="<?php echo SITEURL . '/images/footer-shape-2.png' ?>" alt="Decorative shape - footer section accent" width="189" height="410" loading="lazy">
     </div>
     <div class="container">
         <?php echo $siteSettingInfo["siteFooterInfo"]; ?>
@@ -73,7 +73,7 @@ if (isset($TPL->uriArr[0]) && $TPL->uriArr[0] == "driver") {
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/owl-carousel/owl.carousel.min.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/bxslider/jquery.bxslider.min.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/bootstrap-select/js/bootstrap-select.min.js'); ?>"></script>
-<script src="<?php echo mxGetUrl(SITEURL . '/vendors/jquery-ui/jquery-ui.js'); ?>"></script>
+<script src="<?php echo mxGetUrl(SITEURL . '/vendors/jquery-ui/jquery-ui.min.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/timepicker/timePicker.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/circleType/jquery.circleType.js'); ?>"></script>
 <script src="<?php echo mxGetUrl(SITEURL . '/vendors/circleType/jquery.lettering.min.js'); ?>"></script>

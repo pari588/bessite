@@ -47,6 +47,15 @@ if (!function_exists('generatePumpProductSchema')) {
             $category = $productData['pumpType'] ?? $productData['categoryTitle'] ?? 'Water Pumps';
         }
 
+        // Brand/manufacturer differ by product line — these are TWO SEPARATE companies
+        // since the 2016 demerger of the original Crompton Greaves:
+        //   motors/drives -> CG Power and Industrial Solutions Ltd
+        //   pumps         -> Crompton Greaves Consumer Electricals Ltd ("Crompton")
+        $brandName = $isMotor ? 'CG Power' : 'Crompton';
+        $mfrName   = $isMotor
+            ? 'CG Power and Industrial Solutions Ltd'
+            : 'Crompton Greaves Consumer Electricals Ltd';
+
         // Business decision (2026-07): prices are NOT published anywhere — the site
         // shows a "Call for Price" CTA instead. Structured data must match the visible
         // page, so no price is ever taken from the mrp field for schema output.
@@ -89,11 +98,11 @@ if (!function_exists('generatePumpProductSchema')) {
             "image" => $image,
             "brand" => array(
                 "@type" => "Brand",
-                "name" => "Crompton"
+                "name" => $brandName
             ),
             "manufacturer" => array(
                 "@type" => "Organization",
-                "name" => "Crompton Greaves"
+                "name" => $mfrName
             ),
             // Only include offers when we have a real numeric price
             // (Google rejects Product schema with non-numeric price values)

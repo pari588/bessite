@@ -5,6 +5,11 @@
     $homeInfoDataArr = $getHomeInfoArr["homeInfoData"];
     $homeSliderDataArr = $getHomeInfoArr["homeSliderData"];
     $bestPartnerDataArr = $getHomeInfoArr["bestPartnerData"];
+    // Preload the LCP hero image: it's a CSS background inside the slider, so the
+    // browser can't discover it until styles resolve — preload removes that delay.
+    if (!empty($homeSliderDataArr[0]["sliderImage"])) {
+        echo '<link rel="preload" as="image" fetchpriority="high" href="' . SITEURL . '/uploads/home/' . $homeSliderDataArr[0]["sliderImage"] . '" />' . "\n";
+    }
     ?>
   <!--Main Slider Start-->
   <section class="main-slider-two">
@@ -114,7 +119,7 @@
   <!-- features -->
   <!-- challenging requirements -->
   <section class="spa-center">
-      <div class="spa-center__bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%" style="background-image: url(<?php echo SITEURL . '/images/we-are_bg.jpeg' ?>);"></div>
+      <div class="spa-center__bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%" style="background-image: url(<?php echo SITEURL . '/images/we-are_bg.webp' ?>);"></div>
       <div class="spa-center__inner">
           <div class="container">
               <div class="spa-center__content text-center">
@@ -132,14 +137,14 @@
   <!--Services Start-->
   <section class="why-choose-one">
       <div class="why-choose-one__shape-1 float-bob-x">
-          <img src="<?php echo SITEURL . '/images/services-shape-bg.png' ?>" alt="Decorative shape - services section background">
+          <img src="<?php echo SITEURL . '/images/services-shape-bg.png' ?>" alt="Decorative shape - services section background" width="314" height="679">
       </div>
       <div class="container">
           <div class="row">
               <div class="col-xl-6">
                   <div class="why-choose-one__left">
                       <div class="why-choose-one__img">
-                          <img src="<?php echo SITEURL . '/uploads/home/' . $homeInfoDataArr["serviceImg"]; ?>" alt="Industrial motors and pump installation services" />
+                          <img src="<?php echo SITEURL . '/uploads/home/' . $homeInfoDataArr["serviceImg"]; ?>" alt="Industrial motors and pump installation services" width="900" height="600" loading="lazy" decoding="async" />
                       </div>
                   </div>
               </div>
@@ -186,7 +191,7 @@
                       <div class="col-xl-2 col-lg-4 col-md-4 col-6">
                           <div class="instagram__single">
                               <div class="instagram__img">
-                                  <img src="<?php echo SITEURL . '/uploads/home/' . $val["bestPartnerImg"]; ?>" alt="<?php echo htmlspecialchars($val["bestPartnerName"], ENT_QUOTES, 'UTF-8'); ?> - Partner company logo">
+                                  <img src="<?php echo SITEURL . '/uploads/home/' . $val["bestPartnerImg"]; ?>" alt="<?php echo htmlspecialchars($val["bestPartnerName"], ENT_QUOTES, 'UTF-8'); ?> - Partner company logo" loading="lazy" decoding="async">
                               </div>
                           </div>
                       </div>

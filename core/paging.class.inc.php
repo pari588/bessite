@@ -50,8 +50,8 @@ class Paging
 			$this->html_code[] = '<a class="no-prev"></a>';
 		} else {
 			if ($this->ptype != "short")
-				$this->html_code[] = '<a class="first" href="' . $this->url . '&' . $this->offset . '=0' . '"></a>';
-			$this->html_code[] = '<a class="prev" href="' . $this->url . '&' . $this->offset . '=' . ($curr_page - $this->rec_per_page) . '"></a>';
+				$this->html_code[] = '<a rel="nofollow" class="first" href="' . $this->url . '&' . $this->offset . '=0' . '"></a>';
+			$this->html_code[] = '<a rel="nofollow" class="prev" href="' . $this->url . '&' . $this->offset . '=' . ($curr_page - $this->rec_per_page) . '"></a>';
 		}
 
 		if ($this->ptype != "short") {
@@ -59,7 +59,7 @@ class Paging
 				if ($i == ($curr_page / $this->rec_per_page) + 1) {
 					$this->html_code[] = "<a href=\"\" class=\"active\">$i</a>";
 				} else {
-					$this->html_code[] = "<a href=\"$this->url&$this->offset=" . ($i - 1) * $this->rec_per_page . "\">$i</a>";
+					$this->html_code[] = "<a rel=\"nofollow\" href=\"$this->url&$this->offset=" . ($i - 1) * $this->rec_per_page . "\">$i</a>";
 				}
 			}
 		}
@@ -69,9 +69,9 @@ class Paging
 			if ($this->ptype != "short")
 				$this->html_code[] = '<a class="no-last"></a>';
 		} else {
-			$this->html_code[] = '<a class="next" href="' . $this->url . '&' . $this->offset . '=' . ($curr_page + $this->rec_per_page) . '"></a>';
+			$this->html_code[] = '<a rel="nofollow" class="next" href="' . $this->url . '&' . $this->offset . '=' . ($curr_page + $this->rec_per_page) . '"></a>';
 			if ($this->ptype != "short")
-				$this->html_code[] = '<a class="last" href="' . $this->url . '&' . $this->offset . '=' . (($this->tot_pages - 1) * $this->rec_per_page) . '"></a>';
+				$this->html_code[] = '<a rel="nofollow" class="last" href="' . $this->url . '&' . $this->offset . '=' . (($this->tot_pages - 1) * $this->rec_per_page) . '"></a>';
 		}
 
 		$this->html_code = implode("", $this->html_code);
