@@ -119,6 +119,18 @@ body.export{padding:0;gap:0;background:none;display:block}
 .call__sub{margin-top:7px;font-family:var(--stamp);font-weight:600;font-size:22px;
   letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
 
+/* ── Full-bleed photograph ──────────────────────────────────────────────────
+   The default .shot is built for product cutouts: contained, centred, and
+   multiplied onto the tint so a white background disappears. A photograph
+   needs the opposite — fill the panel, no blend, and a gradient at the foot
+   so the chip stays readable over whatever is under it. */
+.shot--photo{background:#0b1216}
+.shot--photo img{max-width:none;max-height:none;width:100%;height:100%;
+  object-fit:cover;mix-blend-mode:normal}
+.shot--photo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:180px;
+  background:linear-gradient(180deg,rgba(11,18,22,0) 0%,rgba(11,18,22,.55) 100%)}
+.shot--photo .badge{z-index:2}
+
 /* ── WhatsApp Status ────────────────────────────────────────────────────────
    Same 1080x1920 as an Instagram Story, so the WA artboard carries every
    Story rule and only re-cuts the safe zones: WhatsApp's sender bar is
@@ -145,9 +157,9 @@ body.export{padding:0;gap:0;background:none;display:block}
     </span>
   </div>
 
-  <div class="shot">
+  <div class="shot{{SHOT_MOD}}">
     <img src="assets/product.jpg" alt="{{IMG_ALT}}">
-    <span class="badge">{{BADGE}}</span>
+{{BADGE_TAG}}
   </div>
 
   <div class="rule"></div>

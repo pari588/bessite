@@ -39,6 +39,7 @@ const POSTS = [
     'read-the-nameplate' => ['uploads/promo/posts/read-the-nameplate/out/read-the-nameplate-post.jpg', 'uploads/promo/posts/read-the-nameplate/ig-caption.txt'],
     'sewage-drainage'    => ['uploads/promo/posts/sewage-drainage/out/sewage-drainage-post.jpg',       'uploads/promo/posts/sewage-drainage/ig-caption.txt'],
     'booster-pumps'      => ['uploads/promo/posts/booster-pumps/out/booster-pumps-post.jpg',           'uploads/promo/posts/booster-pumps/ig-caption.txt'],
+    'dewatering-pumps'   => ['uploads/promo/posts/dewatering-pumps/out/dewatering-pumps-post.jpg',     'uploads/promo/posts/dewatering-pumps/ig-caption.txt'],
 ];
 
 $opt    = getopt('', ['slug:', 'image:', 'caption-file:', 'only:', 'dry-run']);

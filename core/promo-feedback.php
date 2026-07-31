@@ -21,7 +21,7 @@ const STORE = '/home/bombayengg/promo-feedback.json';
 const SLUGS = [
     'monsoon', 'intro', 'product-ie4',
     'hazardous-area', 'fire-pump-motors', 'read-the-nameplate',
-    'sewage-drainage', 'booster-pumps',
+    'sewage-drainage', 'booster-pumps', 'dewatering-pumps',
 ];
 
 date_default_timezone_set('Asia/Kolkata');

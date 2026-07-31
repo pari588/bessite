@@ -110,9 +110,12 @@ Specifying for a new building or replacing an existing set? Send us the pump cur
 {
  'slug':'read-the-nameplate', 'kind':'motor',
  'title':'How to Read a Motor Nameplate',
- 'src':'uploads/knowledge-center/cg-nameplate.png',
+ # client-supplied plate, Jul 2026 — reads 'CG Power and Industrial Solutions Ltd'
+ # (the previous one showed the pre-2016 'Crompton Greaves Ltd' on a CG post)
+ # client-supplied, already cropped to the plate with the frame intact — used as is
+ 'src':'uploads/promo/posts/read-the-nameplate/assets/nameplate.jpg',
  'img_alt':'Motor rating plate',
- 'badge':'Know your motor',
+ 'badge':'',            # plate fills the frame; the headline already names it
  'headline':'Everything we need<br><em>is on this plate.</em>',
  'subline':'One clear photo of the rating plate and we can size a replacement '
            'without visiting your site. Here is what we actually read.',
@@ -122,7 +125,7 @@ Specifying for a new building or replacing an existing set? Send us the pump cur
          ('RPM / Poles','The speed',0),
          ('IP / Class','The environment',0)],
  'cta':'WhatsApp the nameplate to 98200 42210',
- 'hl':58, 'hl_story':70, 'shot':500, 'shot_story':740, 'key_w':215, 'val':29,
+ 'hl':58, 'hl_story':70, 'shot':520, 'shot_story':760, 'key_w':215, 'val':29,
  'caption':"""Everything we need is on this plate.
 
 Most enquiries start with "I need a 5 HP motor." That is rarely enough. Two motors of the same rating can be completely different machines.
@@ -180,6 +183,43 @@ Standby matters too. A single pump in a basement is a single point of failure on
 🔗 bombayengg.net
 
 #SewagePump #DrainagePump #Dewatering #SubmersiblePump #Monsoon #Waterlogging #BasementFlooding #STP #ETP #WastewaterPumping #HousingSociety #BuildingServices #FacilityManagement #Mumbai #Ahmedabad #IndustrialSupplies""",
+},
+{
+ 'slug':'dewatering-pumps', 'kind':'pump', 'photo':True,
+ 'title':'Dewatering Pumps',
+ 'src':'uploads/promo/posts/dewatering-pumps/assets/hero.jpg',
+ 'img_alt':'Submersible dewatering pump clearing a flooded floor',
+ 'badge':'Monsoon &mdash; dewatering',
+ 'headline':'Every hour it stands,<br><em>it costs you.</em>',
+ 'subline':'Submersible dewatering pumps for flooded Basements, Pits, Compounds '
+           'and Shop Floors &mdash; ex-stock through the monsoon.',
+ 'plate_title':'Dewatering pumps', 'plate_ref':'Ex-stock',
+ 'rows':[('Handles','Rainwater · Seepage · Muddy Water',0),
+         ('Built for','Basements · Pits · Compounds',0),
+         ('Supply','Single and Three Phase',0)],
+ 'note':'Genuine spares available',
+ 'cta':'Tell us the depth and the discharge height',
+ 'hl':54, 'hl_story':66, 'shot':560, 'shot_story':860, 'key_w':200, 'val':28,
+ 'caption':"""Every hour it stands, it costs you.
+
+Monsoon water in a Basement, a Pit or a Compound is never just water. It is stock, motors, panels and production sitting in it, and the bill grows with every hour it stays.
+
+Worth knowing before you buy, because it is the mistake we see most: a dewatering pump and a sewage pump are not the same machine. Dewatering pumps shift rainwater, seepage and muddy water quickly. Sewage pumps use vortex or cutter impellers and wide passages to pass solids and effluent. Put a dewatering pump on a sewage sump and it jams. Put a sewage pump on a clear-water job and you have paid for passages you will never use.
+
+⚙️ Handles — rainwater, seepage, muddy water
+🏢 Built for — Basements, Pits, Compounds, Shop Floors
+⚡ Supply — single and three phase
+🔧 Genuine spares available
+
+Sizing takes three numbers: how deep the water sits, how high it has to be lifted, and the discharge pipe size. Send us those and we will match the pump to the job rather than to the catalogue.
+
+If you are buying in the middle of a flood you are already too late to compare. Sort it before the next spell.
+
+📞 98200 42210
+✉️ besyndicate@gmail.com
+🔗 bombayengg.net
+
+#DewateringPump #Dewatering #SubmersiblePump #Monsoon #Waterlogging #BasementFlooding #FloodWater #DrainagePump #WaterPump #HousingSociety #BuildingServices #FacilityManagement #ConstructionSite #PlantMaintenance #Mumbai #Ahmedabad #IndustrialSupplies""",
 },
 {
  'slug':'booster-pumps', 'kind':'pump',
@@ -248,7 +288,11 @@ def build_one(p, root):
     for token, val in [
         ('TITLE', p['title']), ('HEADBAR', headbar),
         ('BRAND_LOGO', logo), ('BRAND_ALT', brand_alt), ('BRAND_H', brand_h),
-        ('IMG_ALT', p['img_alt']), ('BADGE', p['badge']),
+        ('SHOT_MOD', ' shot--photo' if p.get('photo') else ''),
+        ('IMG_ALT', p['img_alt']),
+        # a post can opt out of the chip — on the nameplate post the plate fills
+        # the panel and the headline already names it, so the chip only collided
+        ('BADGE_TAG', ('    <span class="badge">' + p['badge'] + '</span>') if p.get('badge') else ''),
         ('HEADLINE', p['headline']), ('SUBLINE', p['subline']),
         ('PLATE_TITLE', p['plate_title']), ('PLATE_REF', p['plate_ref']),
         ('PLATE_ROWS', rows), ('CTA', p['cta']),

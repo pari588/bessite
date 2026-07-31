@@ -28,6 +28,7 @@ $ITEMS = [
     ['posts/read-the-nameplate', 'How to Read a Nameplate',     'Knowledge post — the empty competitor lane', 'read-the-nameplate-post.jpg'],
     ['posts/sewage-drainage',    'Sewage & Drainage Pumps',     'Monsoon-relevant pump post',                 'sewage-drainage-post.jpg'],
     ['posts/booster-pumps',      'Pressure Booster Pumps',      'High-rise water pressure',                   'booster-pumps-post.jpg'],
+    ['posts/dewatering-pumps',   'Dewatering Pumps',            'Monsoon — clearing flooded floors',          'dewatering-pumps-post.jpg'],
 ];
 
 // ── live Instagram state ────────────────────────────────────────────────────
