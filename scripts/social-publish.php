@@ -40,6 +40,7 @@ const POSTS = [
     'sewage-drainage'    => ['uploads/promo/posts/sewage-drainage/out/sewage-drainage-post.jpg',       'uploads/promo/posts/sewage-drainage/ig-caption.txt'],
     'booster-pumps'      => ['uploads/promo/posts/booster-pumps/out/booster-pumps-post.jpg',           'uploads/promo/posts/booster-pumps/ig-caption.txt'],
     'dewatering-pumps'   => ['uploads/promo/posts/dewatering-pumps/out/dewatering-pumps-post.jpg',     'uploads/promo/posts/dewatering-pumps/ig-caption.txt'],
+    'forced-cooling'     => ['uploads/promo/posts/forced-cooling/out/forced-cooling-post.jpg',         'uploads/promo/posts/forced-cooling/ig-caption.txt'],
 ];
 
 $opt    = getopt('', ['slug:', 'image:', 'caption-file:', 'only:', 'dry-run']);

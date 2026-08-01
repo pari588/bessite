@@ -26,6 +26,7 @@ $ITEMS = [
     ['posts/hazardous-area',     'Hazardous Area Motors',       'Flameproof / increased safety / non-sparking', 'hazardous-area-post.jpg'],
     ['posts/fire-pump-motors',   'UL Listed Fire Pump Motors',  'Fire pump motors, UL 1004-5 / NFPA 20',      'fire-pump-motors-post.jpg'],
     ['posts/read-the-nameplate', 'How to Read a Nameplate',     'Knowledge post — the empty competitor lane', 'read-the-nameplate-post.jpg'],
+    ['posts/forced-cooling',     'Forced Cooling on VFD Drives','Knowledge post — IC411 vs IC416',            'forced-cooling-post.jpg'],
     ['posts/sewage-drainage',    'Sewage & Drainage Pumps',     'Monsoon-relevant pump post',                 'sewage-drainage-post.jpg'],
     ['posts/booster-pumps',      'Pressure Booster Pumps',      'High-rise water pressure',                   'booster-pumps-post.jpg'],
     ['posts/dewatering-pumps',   'Dewatering Pumps',            'Monsoon — clearing flooded floors',          'dewatering-pumps-post.jpg'],
