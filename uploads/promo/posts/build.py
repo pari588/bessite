@@ -147,10 +147,10 @@ So: photograph the plate, straight on, in good light. Send it to us. We will tel
 #MotorNameplate #IndustrialMotors #ElectricMotor #MotorSizing #FactoryMaintenance #PlantEngineering #MaintenanceTips #EngineeringBasics #IE3Motors #EnergyEfficiency #MotorReplacement #Mumbai #Ahmedabad #IndustrialSupplies #ManufacturingIndia""",
 },
 {
- 'slug':'forced-cooling', 'kind':'motor', 'photo':True,
+ 'slug':'forced-cooling', 'kind':'motor',
  'title':'Forced Cooling on VFD Drives',
  'src':'uploads/promo/posts/forced-cooling/assets/hero.jpg',
- 'img_alt':'Motor fitted with an independent forced-cooling blower',
+ 'img_alt':'IC416 motor with an independent forced-cooling blower on the non-drive end',
  'badge':'Know your motor',
  'headline':'The motor slows.<br><em>So does its fan.</em>',
  'subline':'On a VFD in constant-torque duty the losses stay put. The cooling does not. '
@@ -162,7 +162,7 @@ So: photograph the plate, straight on, in good light. Send it to us. We will tel
          ('Result','Full torque to near zero',0)],
  'note':'We size the blower with the motor',
  'cta':'Tell us the speed range and the duty',
- 'hl':56, 'hl_story':68, 'shot':500, 'shot_story':780, 'key_w':230, 'val':28,
+ 'hl':56, 'hl_story':68, 'shot':520, 'shot_story':760, 'key_w':230, 'val':28,
  'caption':"""The motor slows. So does its fan.
 
 A standard TEFC motor is IC411 — the cooling fan sits on the motor's own shaft. Slow the motor down and the fan slows with it. On a pump or a fan load that is fine, because the torque demand falls away with speed too.
