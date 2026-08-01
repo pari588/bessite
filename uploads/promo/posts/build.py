@@ -163,28 +163,31 @@ So: photograph the plate, straight on, in good light. Send it to us. We will tel
  'note':'We size the blower with the motor',
  'cta':'Tell us the speed range and the duty',
  'hl':56, 'hl_story':68, 'shot':520, 'shot_story':760, 'key_w':230, 'val':28,
- 'caption':"""The motor slows. So does its fan.
+ 'caption':"""IC416 puts the cooling fan on its own motor. 🔧
 
-A standard TEFC motor is IC411 — the cooling fan sits on the motor's own shaft. Slow the motor down and the fan slows with it. On a pump or a fan load that is fine, because the torque demand falls away with speed too.
+⚙️ Why it matters on a drive
+A standard TEFC motor is IC411 — the fan sits on the motor's own shaft.
+Slow the motor and the fan slows with it.
+On a pump or fan load that is fine: the torque demand falls away too.
+On constant-torque duty it is not.
+Full torque means near-full current, and near-full current means near-full heat — while the shaft fan is moving a fraction of the air it was built for.
+The heat stays. The cooling leaves.
 
-On constant-torque duty it is not fine.
+✅ What IC416 changes
+✅ Fan runs at constant speed, independent of the motor
+✅ Full airflow at 5 Hz and at 50 Hz alike
+✅ Full torque from near zero to base speed, no derate
 
-A Conveyor, an Extruder, a Mixer, a Hoist or a positive-displacement pump needs full torque at every speed. Full torque means near-full current, and near-full current means the motor keeps making close to its full heat — while the shaft-mounted fan is delivering a fraction of the air it was designed for. The heat stays. The cooling leaves.
+🏭 Where it is needed
+Conveyors · Extruders · Mixers · Hoists · Positive-Displacement Pumps · Machine Tools
 
-Run it that way continuously and the winding temperature climbs. A self-cooled motor on constant-torque duty usually has to be derated once it runs below roughly half its base speed. Where exactly depends on the frame and the manufacturer's curve — it is not a single number.
-
-Forced cooling, IC416 under IEC 60034-6, puts the fan on its own small motor running at constant speed no matter what the main motor is doing. Full airflow at 5 Hz and at 50 Hz alike, so the motor holds its torque rating from near zero to base speed without a derate.
-
-Why it matters more at higher outputs: a bigger frame has less surface area for every kilowatt of loss it must shed, and the absolute heat is larger. What a small motor shrugs off, a big one does not.
-
-⚙️ Standard fit — IC411, fan on the motor shaft
-🌬️ Forced cooling — IC416, independent blower
-📏 Airflow — constant at any speed
-✅ Result — full torque from near zero to base speed
+📏 The rule of thumb
+A self-cooled motor on constant-torque duty usually needs derating below roughly half base speed. Where exactly depends on the frame and the manufacturer's curve.
+It bites harder at higher outputs — a bigger frame has less surface area for every kilowatt of loss it has to shed.
 
 Look at your nameplate. If it reads IC411 and that motor is on a drive doing constant-torque work at low speed, it is worth a conversation.
 
-Send us the speed range, the duty and the output, and we will tell you whether you need forced cooling or a derate.
+What are you running slow on a drive? Send us the speed range, the duty and the output, and we will tell you whether it needs forced cooling or a derate.
 
 📞 98200 42210
 ✉️ besyndicate@gmail.com
